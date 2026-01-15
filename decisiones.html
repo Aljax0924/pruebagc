@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decisiones - Ruta del Páramo</title>
+	<link rel="icon" type="image/png" sizes="128x128" href="decisionesicon.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="decisionesicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="decisionesicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="decisionesicon.png">
+	<link rel="apple-touch-icon" href="decisionesicon.png">
+	<meta name="theme-color" content="#16A34A">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .score-board {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .map-container {
+            position: relative;
+            padding: 40px;
+            background: linear-gradient(to bottom, #87CEEB 0%, #98D8C8 100%);
+            min-height: 150px;
+        }
+
+        .path {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            width: 90%;
+            height: 4px;
+            background: #8b6914;
+            transform: translateY(-50%);
+            border-radius: 2px;
+        }
+
+        .station {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #4a7c2c;
+            border: 4px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .station:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .station.active {
+            background: #FFD700;
+            animation: pulse 1s infinite;
+        }
+
+        .station.completed {
+            background: #2d5016;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.15); }
+        }
+
+        .game-content {
+            padding: 40px;
+        }
+
+        .situation {
+            display: none;
+        }
+
+        .situation.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .situation h2 {
+            color: #2d5016;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .situation h3 {
+            color: #4a7c2c;
+            margin: 20px 0 15px 0;
+            font-size: 1.3em;
+        }
+
+        .situation p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .option-btn {
+            background: linear-gradient(135deg, #4a7c2c 0%, #5a9c3c 100%);
+            color: white;
+            border: none;
+            padding: 18px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1em;
+            text-align: left;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .option-btn:active {
+            transform: translateY(0);
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+
+        .feedback.partial {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+        }
+
+        .next-btn {
+            background: #2d5016;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .next-btn:hover {
+            background: #1e3c72;
+            transform: translateY(-2px);
+        }
+
+        .final-result {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .final-result.show {
+            display: block;
+            animation: fadeIn 0.8s;
+        }
+
+        .final-result h2 {
+            font-size: 2.5em;
+            color: #2d5016;
+            margin-bottom: 20px;
+        }
+
+        .final-result .badge {
+            font-size: 5em;
+            margin: 30px 0;
+        }
+
+        .final-result p {
+            font-size: 1.3em;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #4a7c2c 0%, #5a9c3c 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-top: 30px;
+            transition: all 0.3s;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .intro {
+            text-align: center;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #2d5016;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-top: 30px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(255,215,0,0.4);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255,215,0,0.6);
+        }
+		.inline-logo {
+			width: 100px;
+			height: 100px;
+			vertical-align: middle;
+			margin-right: 10px;
+		}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+				<img src="decisiones.png" alt="Logo del juego" class="inline-logo">
+				Decisiones - Ruta del Páramo
+			</h1>
+            <p>Juego de decisiones para la conservación de aves</p>
+            <div class="score-board">
+                Puntaje: <span id="score">0</span> / 9
+            </div>
+        </div>
+
+        <div class="map-container" id="mapContainer" style="display: none;">
+            <div class="path"></div>
+            <div class="station" style="left: 5%;" data-station="0">1</div>
+            <div class="station" style="left: 20%;" data-station="1">2</div>
+            <div class="station" style="left: 35%;" data-station="2">3</div>
+            <div class="station" style="left: 50%;" data-station="3">4</div>
+            <div class="station" style="left: 65%;" data-station="4">5</div>
+            <div class="station" style="left: 80%;" data-station="5">6</div>
+        </div>
+
+        <div class="game-content">
+            <div class="intro active" id="intro">
+                <h2>🌿 Bienvenido al Parque Nacional Natural Chingaza</h2>
+                <p style="margin: 30px 0; font-size: 1.2em; line-height: 1.8;">
+                    En este juego tomarás decisiones que afectarán la conservación de las aves del parque. 
+                    Cada decisión tiene consecuencias y te otorgará puntos según tu elección.
+                </p>
+                <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <p><strong>✅ Decisión correcta:</strong> +1 punto</p>
+                    <p><strong>⚠️ Decisión parcialmente correcta:</strong> 0 puntos</p>
+                    <p><strong>❌ Decisión incorrecta:</strong> −1 punto</p>
+                </div>
+                <button class="start-btn" onclick="startGame()">Comenzar Aventura</button>
+            </div>
+
+            <div id="situations"></div>
+
+            <div class="final-result" id="finalResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let currentSituation = 0;
+
+        const situations = [
+            {
+                station: 0,
+                title: "🗺️ ESTACIÓN 1 – INGRESO AL PARQUE",
+                subtitle: "Situación 1: Normas del parque",
+                description: "Al ingresar al PNN Chingaza, el guía recuerda las normas para proteger la fauna, especialmente las aves.",
+                options: [
+                    { text: "A. Ignorar las normas, solo estás de visita", points: -1, feedback: "❌ Riesgo de afectar aves y su hábitat" },
+                    { text: "B. Leerlas y cumplirlas durante el recorrido", points: 1, feedback: "✅ Reduces impactos negativos. ¡Excelente decisión!" },
+                    { text: "C. Cumplir solo algunas", points: 0, feedback: "⚠️ Protección parcial. Podrías hacerlo mejor." }
+                ]
+            },
+            {
+                station: 1,
+                title: "🗺️ ESTACIÓN 2 – SENDERO ECOLÓGICO",
+                subtitle: "Situación 2: Avistamiento cercano",
+                description: "Observas un colibrí alimentándose de flores muy cerca del sendero.",
+                options: [
+                    { text: "A. Acercarte para tomar una foto", points: -1, feedback: "❌ Estrés y huida del ave" },
+                    { text: "B. Observar a distancia y en silencio", points: 1, feedback: "✅ Comportamiento natural preservado. ¡Perfecto!" },
+                    { text: "C. Llamar a otros visitantes", points: 0, feedback: "⚠️ Aumenta el ruido en el área" }
+                ]
+            },
+            {
+                station: 1,
+                title: "🗺️ ESTACIÓN 2 – SENDERO ECOLÓGICO",
+                subtitle: "Situación 3: Ruido en el sendero",
+                description: "Un grupo comienza a hablar en voz alta y a reproducir música.",
+                options: [
+                    { text: "A. Unirte a la música", points: -1, feedback: "❌ Ahuyenta aves del área" },
+                    { text: "B. Pedir silencio de forma respetuosa", points: 1, feedback: "✅ Reduce estrés en la fauna. ¡Bien hecho!" },
+                    { text: "C. Ignorar la situación", points: 0, feedback: "⚠️ El ruido continúa afectando" }
+                ]
+            },
+            {
+                station: 2,
+                title: "🗺️ ESTACIÓN 3 – ZONA DE ANIDACIÓN",
+                subtitle: "Situación 4: Nido en el suelo",
+                description: "Encuentras un nido camuflado cerca del sendero.",
+                options: [
+                    { text: "A. Tocarlo para revisarlo", points: -1, feedback: "❌ Riesgo de abandono del nido" },
+                    { text: "B. Señalizar y alejarte del lugar", points: 1, feedback: "✅ Protección del ciclo reproductivo. ¡Excelente!" },
+                    { text: "C. Tomar fotos muy cerca", points: -1, feedback: "❌ Estrés para el ave madre" }
+                ]
+            },
+            {
+                station: 2,
+                title: "🗺️ ESTACIÓN 3 – ZONA DE ANIDACIÓN",
+                subtitle: "Situación 5: Fotografía irresponsable",
+                description: "Un visitante se acerca demasiado a un ave incubando.",
+                options: [
+                    { text: "A. Ignorar la situación", points: 0, feedback: "⚠️ El riesgo continúa" },
+                    { text: "B. Explicar por qué debe mantener distancia", points: 1, feedback: "✅ Prevención de daño. ¡Muy bien!" },
+                    { text: "C. Tomar fotos también", points: -1, feedback: "❌ Aumenta el estrés del ave" }
+                ]
+            },
+            {
+                station: 3,
+                title: "🗺️ ESTACIÓN 4 – CUERPO DE AGUA",
+                subtitle: "Situación 6: Ave herida",
+                description: "Observas un ave con dificultad para volar cerca de una laguna.",
+                options: [
+                    { text: "A. Llevarla contigo", points: -1, feedback: "❌ Manejo inadecuado del ave" },
+                    { text: "B. Informar a las autoridades del parque", points: 1, feedback: "✅ Atención especializada garantizada. ¡Perfecto!" },
+                    { text: "C. Intentar curarla sin conocimiento", points: -1, feedback: "❌ Riesgo para el ave" }
+                ]
+            },
+            {
+                station: 3,
+                title: "🗺️ ESTACIÓN 4 – CUERPO DE AGUA",
+                subtitle: "Situación 7: Alimentación artificial",
+                description: "Un visitante lanza comida a las aves acuáticas.",
+                options: [
+                    { text: "A. Unirte a la actividad", points: -1, feedback: "❌ Dependencia alimentaria dañina" },
+                    { text: "B. Explicar que altera su dieta natural", points: 1, feedback: "✅ Protección del comportamiento natural. ¡Excelente!" },
+                    { text: "C. Reír y grabar", points: -1, feedback: "❌ Normaliza el daño" }
+                ]
+            },
+            {
+                station: 4,
+                title: "🗺️ ESTACIÓN 5 – MIRADOR DE AVES",
+                subtitle: "Situación 8: Observación responsable",
+                description: "Desde el mirador puedes ver varias aves con binoculares.",
+                options: [
+                    { text: "A. Usar binoculares y guardar silencio", points: 1, feedback: "✅ Avistamiento sin impacto. ¡Perfecto!" },
+                    { text: "B. Gritar para atraerlas", points: -1, feedback: "❌ Estrés en las aves" },
+                    { text: "C. Lanzar objetos para que vuelen", points: -1, feedback: "❌ Alteración del hábitat" }
+                ]
+            },
+            {
+                station: 5,
+                title: "🗺️ ESTACIÓN 6 – CIERRE DEL RECORRIDO",
+                subtitle: "Situación 9: Basura en el sendero",
+                description: "Al finalizar el recorrido encuentras basura dejada por otros visitantes.",
+                options: [
+                    { text: "A. Dejarla allí", points: -1, feedback: "❌ Contaminación del hábitat" },
+                    { text: "B. Recogerla y reportarla", points: 1, feedback: "✅ Reducción de impactos. ¡Excelente guardián!" },
+                    { text: "C. Tomarle fotos y seguir caminando", points: 0, feedback: "⚠️ No se soluciona el problema" }
+                ]
+            }
+        ];
+
+        function startGame() {
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('mapContainer').style.display = 'block';
+            loadSituation(0);
+            updateMap();
+        }
+
+        function loadSituation(index) {
+            const container = document.getElementById('situations');
+            const sit = situations[index];
+            
+            const div = document.createElement('div');
+            div.className = 'situation active';
+            div.id = `situation-${index}`;
+            
+            let optionsHTML = '';
+            sit.options.forEach((opt, i) => {
+                optionsHTML += `<button class="option-btn" onclick="selectOption(${index}, ${i})">${opt.text}</button>`;
+            });
+            
+            div.innerHTML = `
+                <h2>${sit.title}</h2>
+                <h3>${sit.subtitle}</h3>
+                <p>${sit.description}</p>
+                <div class="options">${optionsHTML}</div>
+                <div class="feedback" id="feedback-${index}"></div>
+            `;
+            
+            container.appendChild(div);
+        }
+
+        function selectOption(sitIndex, optIndex) {
+            const sit = situations[sitIndex];
+            const option = sit.options[optIndex];
+            
+            score += option.points;
+            document.getElementById('score').textContent = score;
+            
+            const feedbackDiv = document.getElementById(`feedback-${sitIndex}`);
+            feedbackDiv.innerHTML = `
+                <strong>${option.feedback}</strong>
+                <p>Puntos obtenidos: ${option.points > 0 ? '+' : ''}${option.points}</p>
+                ${currentSituation < situations.length - 1 ? '<button class="next-btn" onclick="nextSituation()">Continuar →</button>' : '<button class="next-btn" onclick="showResults()">Ver Resultados 🏆</button>'}
+            `;
+            
+            if (option.points > 0) {
+                feedbackDiv.className = 'feedback correct show';
+            } else if (option.points === 0) {
+                feedbackDiv.className = 'feedback partial show';
+            } else {
+                feedbackDiv.className = 'feedback incorrect show';
+            }
+            
+            const buttons = document.querySelectorAll(`#situation-${sitIndex} .option-btn`);
+            buttons.forEach(btn => btn.disabled = true);
+        }
+
+        function nextSituation() {
+            document.getElementById(`situation-${currentSituation}`).classList.remove('active');
+            currentSituation++;
+            
+            if (currentSituation < situations.length) {
+                loadSituation(currentSituation);
+                updateMap();
+            }
+        }
+
+        function updateMap() {
+            const stations = document.querySelectorAll('.station');
+            const currentStation = situations[currentSituation].station;
+            
+            stations.forEach((station, index) => {
+                station.classList.remove('active');
+                if (index < currentStation) {
+                    station.classList.add('completed');
+                } else if (index === currentStation) {
+                    station.classList.add('active');
+                }
+            });
+        }
+
+        function showResults() {
+            document.getElementById('mapContainer').style.display = 'none';
+            document.getElementById('situations').style.display = 'none';
+            
+            const resultDiv = document.getElementById('finalResult');
+            let badge = '';
+            let title = '';
+            let description = '';
+            
+            if (score >= 6) {
+                badge = '🛡️';
+                title = 'Guardián de Chingaza';
+                description = '¡Felicitaciones! Has demostrado un compromiso excepcional con la conservación. Tus decisiones protegen el hábitat y las aves del parque. ¡Eres un verdadero guardián!';
+            } else if (score >= 3) {
+                badge = '🌱';
+                title = 'Aliado de la Conservación';
+                description = '¡Buen trabajo! Tus decisiones muestran conciencia ambiental. Con un poco más de práctica, podrás convertirte en un guardián completo del parque.';
+            } else {
+                badge = '👣';
+                title = 'Visitante en Proceso de Aprendizaje';
+                description = 'Aún hay mucho por aprender sobre la conservación de aves. Te invitamos a informarte más sobre las prácticas responsables en áreas protegidas.';
+            }
+            
+            resultDiv.innerHTML = `
+                <h2>🏁 RESULTADO FINAL</h2>
+                <div class="badge">${badge}</div>
+                <h2>${title}</h2>
+                <div class="score-board" style="display: inline-block; margin: 20px 0;">
+                    Puntaje Final: ${score} / 9
+                </div>
+                <p>${description}</p>
+                <button class="restart-btn" onclick="location.reload()">Jugar de Nuevo</button>
+            `;
+            
+            resultDiv.classList.add('show');
+        }
+    </script>
+</body>
+</html>

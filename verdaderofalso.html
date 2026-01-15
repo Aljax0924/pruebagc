@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Qué tanto sabes? - Guardianes del Páramo</title>
+	<link rel="icon" type="image/png" sizes="128x128" href="verdaderofalsoicon.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="verdaderofalsoicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="verdaderofalsoicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="verdaderofalsoicon.png">
+	<link rel="apple-touch-icon" href="verdaderofalsoicon.png">
+	<meta name="theme-color" content="#16A34A">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #2e4a2e;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            font-size: 2.2em;
+            text-align: center;
+            color: #1b5e20;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            text-align: center;
+            color: #388e3c;
+            margin-bottom: 30px;
+            font-weight: normal;
+        }
+
+        .intro {
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #4a6a4a;
+        }
+
+        .progress {
+            text-align: center;
+            color: #66bb6a;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+        }
+
+        .statement-box {
+            background: #f1f8e9;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #66bb6a;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .statement {
+            font-size: 1.2em;
+            font-style: italic;
+            line-height: 1.6;
+            text-align: center;
+            color: #2e4a2e;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: 'Georgia', serif;
+        }
+
+        .btn-true {
+            background: #66bb6a;
+            color: white;
+        }
+
+        .btn-false {
+            background: #ff8a65;
+            color: white;
+        }
+
+        .btn-true:hover:not(:disabled) {
+            background: #4caf50;
+            transform: translateY(-2px);
+        }
+
+        .btn-false:hover:not(:disabled) {
+            background: #ff7043;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .explanation {
+            background: #fff9c4;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.6s ease;
+        }
+
+        .explanation.show {
+            opacity: 1;
+            max-height: 800px;
+        }
+
+        .explanation h3 {
+            color: #558b2f;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .explanation p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: #5a6a5a;
+        }
+
+        .reflection {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .reflection strong {
+            color: #2e7d32;
+        }
+
+        .btn-continue {
+            background: #7cb342;
+            color: white;
+            display: block;
+            margin: 0 auto;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .btn-continue.show {
+            opacity: 1;
+        }
+
+        .btn-continue:hover {
+            background: #689f38;
+            transform: translateY(-2px);
+        }
+
+        .final-reflection {
+            text-align: center;
+            line-height: 2;
+            font-size: 1.15em;
+            color: #2e4a2e;
+        }
+
+        .final-reflection strong {
+            color: #1b5e20;
+            font-size: 1.1em;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .bird-icon {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .statement {
+                font-size: 1.05em;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="intro-screen">
+            <div id="intro-screen">
+				<img src="verdaderofalso.png" alt="Logo ¿Qué tanto sabes?" class="logo-intro">
+			</div>
+            <div class="intro">
+                <p>Bienvenido, futuro Guardián del Páramo.</p>
+                <p style="margin-top: 15px;">
+                    Esta no es una prueba de conocimiento, sino una invitación a reflexionar sobre las aves que habitan los ecosistemas andinos de Colombia y su relación con nuestras acciones.
+                </p>
+                <p style="margin-top: 15px;">
+                    Verás 10 afirmaciones. No hay respuestas incorrectas, solo perspectivas para explorar.
+                </p>
+            </div>
+            <button onclick="startActivity()" class="btn-true" style="display: block; margin: 30px auto 0;">Comenzar</button>
+        </div>
+
+        <div id="question-screen" class="hidden">
+            <div class="progress" id="progress">Pregunta 1 de 10</div>
+            
+            <div class="statement-box">
+                <div class="statement" id="statement"></div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn-true" id="btn-true" onclick="answer(true)">Verdadero</button>
+                <button class="btn-false" id="btn-false" onclick="answer(false)">Falso</button>
+            </div>
+
+            <div class="explanation" id="explanation">
+                <h3>✔️ Si fuera verdadero:</h3>
+                <p id="true-explanation"></p>
+
+                <h3>❌ Si fuera falso:</h3>
+                <p id="false-explanation"></p>
+
+                <div class="reflection">
+                    <strong>🧠 Reflexión:</strong>
+                    <p id="reflection" style="margin-top: 10px;"></p>
+                </div>
+            </div>
+
+            <button class="btn-continue" id="btn-continue" onclick="nextQuestion()">Continuar</button>
+        </div>
+
+        <div id="final-screen" class="hidden">
+            <div class="bird-icon">🌿</div>
+            <h2 style="margin-bottom: 30px;">Gracias por reflexionar</h2>
+            <div class="final-reflection">
+                <p><strong>Ser Guardián del Páramo no significa acertar todas las respuestas,</strong></p>
+                <p>sino comprender que cada acción humana influye</p>
+                <p>en aves únicas y ecosistemas frágiles.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                bird: "Cóndor de los Andes",
+                statement: "El cóndor de los Andes es importante solo por ser un símbolo nacional.",
+                trueExp: "Es cierto que el cóndor es un símbolo cultural y patrio para Colombia, representando libertad y resistencia.",
+                falseExp: "Además de su valor simbólico, el cóndor cumple un rol ecológico fundamental como ave carroñera que ayuda a prevenir la propagación de enfermedades.",
+                reflection: "La conservación no debe basarse solo en símbolos, sino en funciones ecológicas reales que sostienen la salud de los ecosistemas."
+            },
+            {
+                bird: "Tingua bogotana",
+                statement: "La tingua bogotana solo vive en lugares completamente aislados del ser humano.",
+                trueExp: "Es verdad que esta especie prefiere ecosistemas bien conservados y con mínima intervención humana.",
+                falseExp: "Sin embargo, habita humedales cercanos a zonas urbanas, lo que la hace especialmente vulnerable a la contaminación y expansión de las ciudades.",
+                reflection: "La biodiversidad también sobrevive en espacios que compartimos con ella. Nuestra responsabilidad es mayor cuando compartimos territorio."
+            },
+            {
+                bird: "Tororoi de Cundinamarca",
+                statement: "Las aves pequeñas tienen poca importancia ecológica.",
+                trueExp: "Es cierto que las aves pequeñas suelen pasar desapercibidas en comparación con especies más grandes o vistosas.",
+                falseExp: "Sin embargo, controlan poblaciones de insectos y son indicadores precisos de la salud del bosque. Su presencia refleja equilibrio.",
+                reflection: "El tamaño no define la importancia ecológica. Cada organismo cumple una función específica en la red de la vida."
+            },
+            {
+                bird: "Perdiz de montaña",
+                statement: "El páramo y el bosque andino funcionan como ecosistemas conectados.",
+                trueExp: "Absolutamente. Muchas especies, incluida la perdiz, dependen de ambos ecosistemas en diferentes momentos de su ciclo de vida.",
+                falseExp: "No son ecosistemas aislados. El agua que nace en el páramo alimenta los bosques, y las aves transitan entre ambos.",
+                reflection: "La conservación debe pensarse como un sistema integrado, no por fragmentos. Proteger uno es proteger el otro."
+            },
+            {
+                bird: "Águila crestada",
+                statement: "La presencia de grandes rapaces indica un ecosistema saludable.",
+                trueExp: "Correcto. Las rapaces son depredadores tope que requieren presas abundantes, territorio extenso y equilibrio ecológico completo.",
+                falseExp: "Estas aves no pueden sobrevivir en ecosistemas degradados porque dependen de cadenas alimentarias complejas y funcionales.",
+                reflection: "Cuando desaparecen los depredadores superiores, es señal de que algo profundo no está bien en el ecosistema."
+            },
+            {
+                bird: "Pato andino",
+                statement: "Las aves acuáticas solo dependen del agua limpia.",
+                trueExp: "Es cierto que el agua limpia es vital para su alimentación, reproducción y supervivencia básica.",
+                falseExp: "Pero también necesitan vegetación ribereña, tranquilidad para anidar y conectividad entre cuerpos de agua. El ecosistema completo importa.",
+                reflection: "Proteger un ave implica cuidar todo su entorno: agua, plantas, silencio, espacio. La vida no ocurre en fragmentos."
+            },
+            {
+                bird: "Pato paramuno",
+                statement: "El cambio climático no afecta a las especies adaptadas al frío.",
+                trueExp: "Es verdad que estas especies han desarrollado adaptaciones físicas y comportamentales para resistir bajas temperaturas.",
+                falseExp: "Sin embargo, el calentamiento global reduce el hábitat disponible empujando las zonas frías hacia arriba, hasta que ya no hay más montaña.",
+                reflection: "La especialización extrema puede convertirse en vulnerabilidad. Lo que fue ventaja puede ser la causa de extinción."
+            },
+            {
+                bird: "Pava andina",
+                statement: "La caza afecta solo a la especie que se captura.",
+                trueExp: "Es obvio que la caza reduce directamente las poblaciones de la especie cazada.",
+                falseExp: "Pero también interrumpe procesos ecológicos como la dispersión de semillas. Una pava menos significa menos árboles futuros.",
+                reflection: "Cada especie sostiene a otras. Remover una pieza puede desestabilizar estructuras que tardaron siglos en formarse."
+            },
+            {
+                bird: "Periquito aliamarillo",
+                statement: "Las aves endémicas son más vulnerables a la extinción.",
+                trueExp: "Sí. Viven en áreas geográficas muy limitadas, lo que concentra todo su riesgo en un solo lugar.",
+                falseExp: "No pueden desplazarse fácilmente a otros territorios si su hábitat se degrada. Su hogar es único e insustituible.",
+                reflection: "Proteger el territorio de una especie endémica no es opcional. Es proteger su única oportunidad de existir."
+            },
+            {
+                bird: "Rastrojero de Cundinamarca",
+                statement: "La pérdida de vegetación afecta poco a las aves del suelo.",
+                trueExp: "Algunas aves pueden adaptarse temporalmente a condiciones cambiantes.",
+                falseExp: "Pero muchas especies dependen directamente del sotobosque para alimentarse, anidar y protegerse de depredadores.",
+                reflection: "El suelo también es hogar. La complejidad del bosque incluye todas sus capas, no solo las copas de los árboles."
+            },
+            {
+                bird: "Barbudito paramuno",
+                statement: "Las aves del páramo están adaptadas a condiciones extremas.",
+                trueExp: "Totalmente cierto. Han desarrollado adaptaciones únicas para sobrevivir al frío, la radiación solar intensa y la escasez de oxígeno.",
+                falseExp: "Pero esas adaptaciones no las hacen invulnerables a cambios rápidos causados por humanos, como el calentamiento o la fragmentación.",
+                reflection: "Adaptarse a lo natural no significa resistir lo artificial. La evolución no prevé bulldozers ni plaguicidas."
+            },
+            {
+                bird: "Tororoi paramuno",
+                statement: "El silencio del páramo es importante para las aves.",
+                trueExp: "Muchas especies dependen de cantos y llamados para comunicarse, defender territorio y atraer pareja. El silencio natural es su medio.",
+                falseExp: "El ruido humano constante altera su comportamiento, interfiere con la reproducción y genera estrés crónico.",
+                reflection: "El ruido también es contaminación. Lo que no vemos ni tocamos también puede destruir."
+            },
+            {
+                bird: "Canastero paramuno",
+                statement: "La fragmentación del hábitat afecta a las aves pequeñas.",
+                trueExp: "Definitivamente. Los fragmentos aislados reducen recursos, aumentan depredación y limitan el flujo genético entre poblaciones.",
+                falseExp: "Las aves pequeñas no pueden cruzar grandes distancias entre fragmentos. Quedan atrapadas en islas cada vez más pequeñas.",
+                reflection: "Los fragmentos no sustituyen ecosistemas completos. Un bosque partido en mil pedazos ya no es un bosque."
+            },
+            {
+                bird: "Gorrión paramuno",
+                statement: "No todas las aves comunes están fuera de peligro.",
+                trueExp: "Correcto. La abundancia actual no garantiza seguridad futura. Muchas especies comunes han colapsado en décadas.",
+                falseExp: "Asumir que lo común siempre será común nos ha llevado a perder especies que parecían inagotables.",
+                reflection: "Lo común hoy puede ser raro mañana. La conservación comienza antes de que la extinción sea inminente."
+            },
+            {
+                bird: "Colibrí pico de espada",
+                statement: "Algunas aves y plantas han evolucionado juntas.",
+                trueExp: "Absolutamente. Existen relaciones de coevolución tan específicas que ciertas flores solo pueden ser polinizadas por una especie de colibrí.",
+                falseExp: "Esta interdependencia significa que la pérdida de una especie condena a la otra. Son socios evolutivos inseparables.",
+                reflection: "La extinción no ocurre en singular. Cuando cae una especie, arrastra consigo a otras que dependían de ella."
+            },
+            {
+                bird: "Tucán celeste",
+                statement: "Las aves frugívoras ayudan a regenerar el bosque.",
+                trueExp: "Sí. Consumen frutos y dispersan semillas en sus heces, a menudo a kilómetros de distancia, permitiendo que nuevos árboles germinen.",
+                falseExp: "Sin estas aves, muchos árboles no podrían colonizar nuevas áreas. El bosque perdería su capacidad de expandirse y renovarse.",
+                reflection: "Sembrar sin manos también es posible. Las aves son jardineras del bosque desde hace millones de años."
+            },
+            {
+                bird: "Ala de zafiro",
+                statement: "Los colibríes solo cumplen una función estética.",
+                trueExp: "Es cierto que son hermosos y su presencia embellece el paisaje, atrayendo turismo y admiración.",
+                falseExp: "Pero son polinizadores esenciales de cientos de especies de plantas. Sin ellos, ecosistemas enteros colapsarían reproductivamente.",
+                reflection: "La belleza también poliniza. Lo que admiramos por estética suele sostener procesos invisibles pero vitales."
+            },
+            {
+                bird: "Guala común",
+                statement: "Las aves carroñeras son dañinas para el ambiente.",
+                trueExp: "Existe un prejuicio cultural que asocia a las aves carroñeras con suciedad o mal augurio.",
+                falseExp: "En realidad, limpian cadáveres rápidamente, previniendo la propagación de enfermedades y reciclando nutrientes al ecosistema.",
+                reflection: "Limpiar también es conservar. Las especies que nos parecen desagradables suelen cumplir las funciones más necesarias."
+            },
+            {
+                bird: "Buhito andino",
+                statement: "Las aves nocturnas también son afectadas por la luz artificial.",
+                trueExp: "La contaminación lumínica altera sus patrones de caza, reproducción y navegación. Dependen de la oscuridad natural.",
+                falseExp: "La luz constante desoriente a las presas, modifica comportamientos y puede causar colisiones con estructuras iluminadas.",
+                reflection: "La noche también necesita protección. La oscuridad es hábitat para miles de especies que hemos olvidado."
+            },
+            {
+                bird: "Focha común",
+                statement: "Los humedales son importantes para la conservación del páramo.",
+                trueExp: "Totalmente. Los humedales actúan como esponjas que regulan el flujo de agua, almacenan carbono y sostienen biodiversidad única.",
+                falseExp: "Son parte integral del sistema páramo. El agua que nace allí arriba fluye, se almacena y purifica en estos espacios.",
+                reflection: "El agua conecta todos los ecosistemas. Proteger humedales es proteger montañas, bosques, ríos y ciudades."
+            }
+        ];
+
+        let selectedQuestions = [];
+        let currentIndex = 0;
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function startActivity() {
+            selectedQuestions = shuffleArray(questions).slice(0, 10);
+            currentIndex = 0;
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('question-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = selectedQuestions[currentIndex];
+            document.getElementById('progress').textContent = `Pregunta ${currentIndex + 1} de 10`;
+            document.getElementById('statement').textContent = q.statement;
+            document.getElementById('true-explanation').textContent = q.trueExp;
+            document.getElementById('false-explanation').textContent = q.falseExp;
+            document.getElementById('reflection').textContent = q.reflection;
+            
+            document.getElementById('explanation').classList.remove('show');
+            document.getElementById('btn-continue').classList.remove('show');
+            document.getElementById('btn-true').disabled = false;
+            document.getElementById('btn-false').disabled = false;
+        }
+
+        function answer(userChoice) {
+            document.getElementById('btn-true').disabled = true;
+            document.getElementById('btn-false').disabled = true;
+            
+            setTimeout(() => {
+                document.getElementById('explanation').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('btn-continue').classList.add('show');
+                }, 400);
+            }, 300);
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < 10) {
+                showQuestion();
+            } else {
+                document.getElementById('question-screen').classList.add('hidden');
+                document.getElementById('final-screen').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,905 @@
+	<!DOCTYPE html>
+	<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Escalera de los Guardianes del Páramo</title>
+		<link rel="icon" type="image/png" sizes="128x128" href="escaleraicon.png">
+		<link rel="icon" type="image/png" sizes="64x64" href="escaleraicon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="escaleraicon.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="escaleraicon.png">
+		<link rel="apple-touch-icon" href="escaleraicon.png">
+		<meta name="theme-color" content="#16A34A">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			
+			body {
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				min-height: 100vh;
+				padding: 20px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			
+			.header {
+				text-align: center;
+				color: white;
+				margin-bottom: 20px;
+			}
+			
+			.header h1 {
+				font-size: 2em;
+				text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+				margin-bottom: 10px;
+			}
+			
+			.game-container {
+				background: white;
+				border-radius: 20px;
+				padding: 20px;
+				box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+				max-width: 1200px;
+				width: 100%;
+			}
+			
+			.board {
+				display: grid;
+				 grid-template-columns: repeat(10, 62px); /* 👈 CLAVE */
+				gap: 2px;
+				padding: 4px;
+				max-width: 320px;   /* 🔽 más angosto */
+				width: 100%;
+				margin: 0 auto;
+			}
+			
+			.cell {
+				aspect-ratio: 1;
+				background: white;
+				border: 2px solid #ddd;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				font-size: 0.65em;
+				font-weight: bold;
+				position: relative;
+				border-radius: 5px;
+				transition: all 0.3s;
+				padding: 4px;          /* 🔽 reduce el contenido interno */
+			}
+			
+			.cell:hover {
+				transform: scale(1.05);
+				z-index: 10;
+			}
+			
+			.cell-number {
+				position: absolute;
+				top: 2px;
+				left: 4px;
+				font-size: 0.8em;
+				color: #666;
+			}
+			
+			.question { background: #e3f2fd; }
+			.challenge { background: #fff3e0; }
+			.ladder { background: #e8f5e9; }
+			.slide { background: #ffebee; }
+			.jail { background: #f3e5f5; }
+			.finish { background: linear-gradient(135deg, #ffd700, #ffed4e); font-weight: bold; }
+			
+			.controls {
+				display: flex;
+				justify-content: space-around;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 15px;
+				margin-bottom: 20px;
+			}
+			
+			.player-info {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				padding: 15px 25px;
+				border-radius: 15px;
+				text-align: center;
+				min-width: 200px;
+			}
+			
+			.active-player {
+				box-shadow: 0 0 20px rgba(255,215,0,0.8);
+				transform: scale(1.05);
+			}
+			
+			.dice-container {
+				text-align: center;
+				align-self: center;
+			}
+			
+			.dice {
+				width: 80px;
+				height: 80px;
+				background: white;
+				border: 3px solid #667eea;
+				border-radius: 15px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 3em;
+				cursor: pointer;
+				transition: all 0.3s;
+				margin: 10px auto;
+				box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+			}
+			
+			.dice:hover {
+				transform: scale(1.1) rotate(5deg);
+				box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+			}
+			
+			.dice:active {
+				transform: scale(0.95);
+			}
+			.logo-title h1 {
+				color: #ffffff;               /* blanco puro */
+				font-weight: 800;
+				text-shadow: 
+					0 2px 4px rgba(0,0,0,0.45),
+					0 0 12px rgba(0,0,0,0.25);
+		}
+
+			.logo-title .tagline {
+				color: #e0e7ff;               /* blanco azulado suave */
+}
+			
+			.roll-btn {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				border: none;
+				padding: 12px 30px;
+				border-radius: 25px;
+				cursor: pointer;
+				font-size: 1em;
+				font-weight: bold;
+				transition: all 0.3s;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+			}
+			
+			.roll-btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+			}
+			
+			.roll-btn:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+				transform: none;
+			}
+			
+			.modal {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0,0,0,0.7);
+				z-index: 1000;
+				align-items: center;
+				justify-content: center;
+			}
+			
+			.modal-content {
+				background: white;
+				padding: 30px;
+				border-radius: 20px;
+				max-width: 500px;
+				width: 90%;
+				text-align: center;
+				box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+				animation: modalSlide 0.3s ease;
+			}
+			
+			@keyframes modalSlide {
+				from {
+					transform: translateY(-50px);
+					opacity: 0;
+				}
+				to {
+					transform: translateY(0);
+					opacity: 1;
+				}
+			}
+			
+			.modal h2 {
+				margin-bottom: 20px;
+				color: #667eea;
+			}
+			
+			.modal-buttons {
+				display: flex;
+				gap: 10px;
+				justify-content: center;
+				margin-top: 20px;
+			}
+			
+			.btn {
+				padding: 10px 25px;
+				border: none;
+				border-radius: 10px;
+				cursor: pointer;
+				font-size: 1em;
+				transition: all 0.3s;
+			}
+			
+			.btn-primary {
+				background: #667eea;
+				color: white;
+			}
+			
+			.btn-success {
+				background: #4caf50;
+				color: white;
+			}
+			
+			.btn-danger {
+				background: #f44336;
+				color: white;
+			}
+			
+			.btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+			}
+			
+			.message-log {
+				background: #f5f5f5;
+				padding: 15px;
+				border-radius: 10px;
+				max-height: 150px;
+				overflow-y: auto;
+				margin-top: 15px;
+			}
+			
+			.message {
+				padding: 8px;
+				margin: 5px 0;
+				border-radius: 5px;
+				animation: fadeIn 0.5s;
+			}
+			
+			@keyframes fadeIn {
+				from { opacity: 0; }
+				to { opacity: 1; }
+			}
+			
+			.message-info { background: #e3f2fd; }
+			.message-success { background: #e8f5e9; }
+			.message-warning { background: #fff3e0; }
+			.message-error { background: #ffebee; }
+									
+			.legend-box {
+				width: 20px;
+				height: 20px;
+				border-radius: 5px;
+				border: 2px solid #ddd;
+			}
+					.logo-img {
+			height: 120px;          /* controla el tamaño */
+			width: auto;
+			display: block;
+		}
+	.logo-title {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		}
+	.icon {
+		width: 60px;
+		height: 60px;
+		object-fit: contain;
+	}
+
+	.icon-small {
+		width: 40px;
+		height: 40px;
+	}
+
+	.icon-large {
+		width: 40px;
+		height: 40px;
+	}
+
+	.player-icon {
+		width: 35px;
+		height: 35px;
+		position: absolute;
+		bottom: 4px;
+	}
+
+	.legend-icon {
+		width: 20px;
+		height: 20px;
+	}
+
+	.cell-icon {
+		width: 42px;
+		height: 42px;
+		margin-top: 8px;
+}
+.game-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+@media (max-width: 900px) {
+    .game-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+ }
+.controls {
+    display: flex;
+    flex-direction: column;   /* 👈 CLAVE */
+    align-items: center;
+    gap: 20px;
+    width: 260px;
+    position: sticky;
+    top: 20px;
+}
+    .board {
+        max-width: 100%;
+    }
+}
+.legend {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 15px;
+    min-width: 180px;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend h3 {
+    margin-bottom: 10px;
+    text-align: center;
+    color: #667eea;
+}
+@media (max-width: 900px) {
+    .legend {
+        width: 100%;
+        align-items: center;
+    }
+}
+
+		</style>
+	</head>
+	<body>
+		<div class="logo-title">
+					<img src="escalera.png" alt="Logo Guardianes de Chingaza" class="logo-img">
+					<div>
+						<h1>Escalera de los Guardianes del Páramo</h1>
+						<p class="tagline">Aprende sobre las aves del Páramo mientras juegas</p>
+					</div>
+				</div>
+		
+<div class="game-container"> <!-- CONTENEDOR BLANCO -->
+
+    <div class="game-layout"> <!-- FILA PRINCIPAL -->
+
+        <!-- COLUMNA IZQUIERDA -->
+        <div class="controls">
+
+            <div class="dice-container">
+                <img id="dice" class="dice" src="dice-1.jpg" alt="Dado">
+                <button class="roll-btn" id="rollBtn">Lanzar Dado</button>
+                <p style="margin-top:10px;font-weight:bold;">
+                    Turno: <span id="currentTurn">Jugador 1</span>
+                </p>
+            </div>
+
+            <div class="player-info" id="player1Info">
+                <img src="player1.png" class="icon-large">
+                <h3>Jugador 1</h3>
+                <p>Casilla: <span id="player1Pos">1</span></p>
+                <p id="player1Jail" style="display:none; color:#ffeb3b;">
+                    🐦🔒 Turnos bloqueados: <span id="player1JailTurns">0</span>
+                </p>
+            </div>
+
+            <div class="player-info" id="player2Info">
+                <img src="player2.png" class="icon-large">
+                <h3>Jugador 2</h3>
+                <p>Casilla: <span id="player2Pos">1</span></p>
+                <p id="player2Jail" style="display:none; color:#ffeb3b;">
+                    🐦🔒 Turnos bloqueados: <span id="player2JailTurns">0</span>
+                </p>
+            </div>
+
+        </div> <!-- /controls -->
+
+        <!-- TABLERO -->
+        <div class="board" id="board"></div>
+
+        <!-- COLUMNA DERECHA -->
+        <div class="legend">
+            <h3>Referencias</h3>
+            <div class="legend-item">
+                <img src="pregunta.png" class="legend-icon"> Pregunta
+            </div>
+            <div class="legend-item">
+                <img src="reto.png" class="legend-icon"> Reto
+            </div>
+            <div class="legend-item">
+                <img src="escaleraa.png" class="legend-icon"> Escalera
+            </div>
+            <div class="legend-item">
+                <img src="tobogan.png" class="legend-icon"> Tobogán
+            </div>
+        </div> <!-- /legend -->
+
+    </div> <!-- /game-layout -->
+
+</div> <!-- /game-container -->
+		<div class="message-log" id="messageLog"></div>
+		<div class="modal" id="modal">
+			<div class="modal-content">
+				<h2 id="modalTitle"></h2>
+				<p id="modalText"></p>
+				<div class="modal-buttons" id="modalButtons"></div>
+			</div>
+		</div>
+
+		<script>
+			const gameState = {
+				currentPlayer: 1,
+				players: {
+					1: { position: 1, jailTurns: 0 },
+					2: { position: 1, jailTurns: 0 }
+				},
+				rolling: false
+			};
+
+			const ladders = {
+				4: { to: 14, msg: "¡Avistamiento responsable! ⬆️" },
+				9: { to: 31, msg: "¡Educación ambiental exitosa! ⬆️" },
+				21: { to: 42, msg: "¡Protección del hábitat! ⬆️" },
+				28: { to: 50, msg: "¡Monitoreo de aves efectivo! ⬆️" },
+				40: { to: 62, msg: "¡Investigación científica! ⬆️" },
+				56: { to: 78, msg: "¡Equilibrio ecológico! ⬆️" },
+				71: { to: 92, msg: "¡Conservación aplicada! ⬆️" }
+			};
+
+			const slides = {
+				17: { to: 7, msg: "Ruido excesivo molestó a las aves ⬇️" },
+				34: { to: 12, msg: "Pérdida de hábitat ⬇️" },
+				47: { to: 26, msg: "Basura en el páramo ⬇️" },
+				60: { to: 39, msg: "Alimentación artificial dañina ⬇️" },
+				73: { to: 52, msg: "Tráfico ilegal de aves ⬇️" },
+				88: { to: 66, msg: "Perturbación de nidos ⬇️" }
+			};
+
+			const jails = {
+				25: { turns: 1, msg: "Incumples normas del parque 🐦🔒" },
+				45: { turns: 1, msg: "Molestas la fauna 🐦🔒" },
+				69: { turns: 2, msg: "Intervención indebida 🐦🔒" },
+				85: { turns: 1, msg: "Daño al hábitat 🐦🔒" }
+			};
+
+			const questions = [
+				{ 
+					q: "¿Qué ecosistema caracteriza al PNN Chingaza?", 
+					correct: "Páramo",
+					incorrect: "Desierto"
+				},
+				{ 
+					q: "¿Qué función cumplen las aves frugívoras?", 
+					correct: "Dispersión de semillas",
+					incorrect: "Contaminación del suelo"
+				},
+				{ 
+					q: "¿Qué significa endemismo?", 
+					correct: "Que una especie solo vive en una región específica",
+					incorrect: "Que vive en cualquier parte del mundo"
+				},
+				{ 
+					q: "¿Qué acción ayuda a la conservación de aves?", 
+					correct: "Respetar su hábitat y las normas del parque",
+					incorrect: "Alimentarlas con comida humana"
+				},
+				{ 
+					q: "¿Qué es la avifauna?", 
+					correct: "Conjunto de aves de una región",
+					incorrect: "Conjunto de mamíferos del parque"
+				},
+				{ 
+					q: "¿Por qué las aves son importantes para el ecosistema?", 
+					correct: "Mantienen el equilibrio ecológico",
+					incorrect: "Porque cambian el clima"
+				},
+				{ 
+					q: "¿Qué ecosistema protege principalmente el PNN Chingaza?", 
+					correct: "Ecosistema de alta montaña",
+					incorrect: "Ecosistema marino"
+				},
+				{ 
+					q: "¿Cuál es una amenaza para las aves del PNN Chingaza?", 
+					correct: "Pérdida de hábitat",
+					incorrect: "Observación responsable"
+				},
+				{ 
+					q: "¿Qué tipo de aves ayudan al control de insectos?", 
+					correct: "Aves insectívoras",
+					incorrect: "Aves carroñeras"
+				},
+				{ 
+					q: "¿Qué se debe hacer al observar un nido de aves?", 
+					correct: "Mantener distancia y no intervenir",
+					incorrect: "Tocarlo para revisarlo"
+				}
+			];
+
+			const challenges = [
+				"Menciona una buena práctica de avistamiento de aves",
+				"Nombra una amenaza para las aves del PNN Chingaza",
+				"Di una función ecológica de las aves",
+				"Explica por qué es importante el páramo",
+				"Menciona un comportamiento responsable en el parque",
+				"Di qué significa observar aves sin perturbarlas"
+			];
+
+			const questionCells = [3, 11, 18, 23, 32, 38, 43, 51, 57, 64, 70, 76, 82, 89, 95];
+			const challengeCells = [8, 15, 24, 36, 48, 55, 63, 74, 81, 90];
+
+			function createBoard() {
+		const board = document.getElementById('board');
+		board.innerHTML = '';
+		
+		for (let row = 9; row >= 0; row--) {
+			for (let col = 0; col < 10; col++) {
+				const cellNum = row % 2 === 1 
+					? row * 10 + (10 - col)
+					: row * 10 + col + 1;
+				
+				const cell = document.createElement('div');
+				cell.className = 'cell';
+				cell.id = `cell${cellNum}`;
+				
+				let iconHTML = '';
+
+				if (cellNum === 100) {
+					cell.classList.add('finish');
+					iconHTML = `<img src="llegada.png" class="cell-icon">`;
+				} else if (ladders[cellNum]) {
+					cell.classList.add('ladder');
+					iconHTML = `<img src="escaleraa.png" class="cell-icon">`;
+				} else if (slides[cellNum]) {
+					cell.classList.add('slide');
+					iconHTML = `<img src="tobogan.png" class="cell-icon">`;
+				} else if (jails[cellNum]) {
+					cell.classList.add('jail');
+					iconHTML = `<img src="carcel.png" class="cell-icon">`;
+				} else if (questionCells.includes(cellNum)) {
+					cell.classList.add('question');
+					iconHTML = `<img src="pregunta.png" class="cell-icon">`;
+				} else if (challengeCells.includes(cellNum)) {
+					cell.classList.add('challenge');
+					iconHTML = `<img src="reto.png" class="cell-icon">`;
+				}
+				
+				cell.innerHTML = `
+					<span class="cell-number">${cellNum}</span>
+					${iconHTML}
+				`;
+				
+				board.appendChild(cell);
+			}
+		}
+		
+		updatePlayerPositions();
+	}	
+
+			function updatePlayerPositions() {
+				document.querySelectorAll('.player-icon').forEach(p => p.remove());
+				
+				Object.keys(gameState.players).forEach(player => {
+					const pos = gameState.players[player].position;
+					const cell = document.getElementById(`cell${pos}`);
+					if (cell) {
+						const playerDiv = document.createElement('img');
+						playerDiv.src = player === '1' ? 'player1.png' : 'player2.png';
+						playerDiv.className = 'player-icon';
+						playerDiv.style.left = player === '1' ? '5px' : '28px';
+						cell.appendChild(playerDiv);
+					}
+				});
+				
+				document.getElementById('player1Pos').textContent = gameState.players[1].position;
+				document.getElementById('player2Pos').textContent = gameState.players[2].position;
+				
+				if (gameState.players[1].jailTurns > 0) {
+					document.getElementById('player1Jail').style.display = 'block';
+					document.getElementById('player1JailTurns').textContent = gameState.players[1].jailTurns;
+				} else {
+					document.getElementById('player1Jail').style.display = 'none';
+				}
+				
+				if (gameState.players[2].jailTurns > 0) {
+					document.getElementById('player2Jail').style.display = 'block';
+					document.getElementById('player2JailTurns').textContent = gameState.players[2].jailTurns;
+				} else {
+					document.getElementById('player2Jail').style.display = 'none';
+				}
+			}
+
+			function addMessage(text, type = 'info') {
+				const log = document.getElementById('messageLog');
+				const msg = document.createElement('div');
+				msg.className = `message message-${type}`;
+				msg.textContent = text;
+				log.appendChild(msg);
+				log.scrollTop = log.scrollHeight;
+			}
+
+			function showModal(title, text, buttons) {
+				const modal = document.getElementById('modal');
+				document.getElementById('modalTitle').textContent = title;
+				document.getElementById('modalText').innerHTML = text; // 👈 CLAVE
+				
+				const btnContainer = document.getElementById('modalButtons');
+				btnContainer.innerHTML = '';
+				
+				buttons.forEach(btn => {
+					const button = document.createElement('button');
+					button.className = `btn ${btn.class}`;
+					button.textContent = btn.text;
+					button.onclick = btn.action;
+					btnContainer.appendChild(button);
+				});
+				
+				modal.style.display = 'flex';
+			}
+
+			function hideModal() {
+				document.getElementById('modal').style.display = 'none';
+			}
+
+			function rollDice() {
+				if (gameState.rolling) return;
+				
+				const player = gameState.currentPlayer;
+				
+				if (gameState.players[player].jailTurns > 0) {
+					gameState.players[player].jailTurns--;
+					addMessage(`Jugador ${player} pierde el turno. Turnos restantes en cárcel: ${gameState.players[player].jailTurns}`, 'warning');
+					updatePlayerPositions();
+					switchPlayer();
+					return;
+				}
+				
+				gameState.rolling = true;
+				document.getElementById('rollBtn').disabled = true;
+				
+				const dice = document.getElementById('dice');
+				let count = 0;
+				const interval = setInterval(() => {
+					dice.src = `dice-${Math.floor(Math.random() * 6) + 1}.jpg`;
+					count++;
+					if (count > 10) {
+						clearInterval(interval);
+						const result = Math.floor(Math.random() * 6) + 1;
+						dice.src = `dice-${result}.jpg`;
+						addMessage(`🎲 Jugador ${player} sacó: ${result}`, 'info');
+						movePlayer(player, result);
+					}
+				}, 100);
+			}
+
+			function movePlayer(player, steps) {
+				let newPos = gameState.players[player].position + steps;
+				
+				if (newPos > 100) {
+					const excess = newPos - 100;
+					newPos = 100 - excess;
+					addMessage(`¡Te pasaste! Retrocedes ${excess} casillas`, 'warning');
+				}
+				
+				gameState.players[player].position = newPos;
+				updatePlayerPositions();
+				
+				setTimeout(() => {
+					checkCell(player, newPos);
+				}, 500);
+			}
+
+			function checkCell(player, position) {
+				if (position === 100) {
+					showModal(
+						'🏆 ¡VICTORIA! 🏆',
+						`¡El Jugador ${player} ha ganado el juego!\n¡Eres un verdadero Guardián de Chingaza! 🌿🐦`,
+						[{
+							text: 'Jugar de nuevo',
+							class: 'btn-success',
+							action: () => {
+								hideModal();
+								resetGame();
+							}
+						}]
+					);
+					return;
+				}
+				
+				if (ladders[position]) {
+					addMessage(`${ladders[position].msg} Subes de ${position} a ${ladders[position].to}`, 'success');
+					gameState.players[player].position = ladders[position].to;
+					updatePlayerPositions();
+					setTimeout(() => finishTurn(), 1500);
+					return;
+				}
+				
+				if (slides[position]) {
+					addMessage(`${slides[position].msg} Bajas de ${position} a ${slides[position].to}`, 'error');
+					gameState.players[player].position = slides[position].to;
+					updatePlayerPositions();
+					setTimeout(() => finishTurn(), 1500);
+					return;
+				}
+				
+				if (jails[position]) {
+					gameState.players[player].jailTurns = jails[position].turns;
+					addMessage(`${jails[position].msg} Pierdes ${jails[position].turns} turno(s)`, 'error');
+					updatePlayerPositions();
+					setTimeout(() => finishTurn(), 1500);
+					return;
+				}
+				
+				if (questionCells.includes(position)) {
+					askQuestion(player);
+					return;
+				}
+				
+				if (challengeCells.includes(position)) {
+					askChallenge(player);
+					return;
+				}
+				
+				finishTurn();
+			}
+
+			function askQuestion(player) {
+				const q = questions[Math.floor(Math.random() * questions.length)];
+				
+				// Mezclar aleatoriamente las opciones
+				const options = [
+					{ text: q.correct, isCorrect: true },
+					{ text: q.incorrect, isCorrect: false }
+				];
+				
+				// Aleatorizar el orden
+				if (Math.random() > 0.5) {
+					options.reverse();
+				}
+				
+				showModal('Pregunta Educativa',`<img src="pregunta.png" class="icon-large"><br>${q.q}`,
+					[
+						{
+							text: options[0].text,
+							class: 'btn-primary',
+							action: () => {
+								hideModal();
+								if (options[0].isCorrect) {
+									addMessage(`¡Respuesta correcta! Te quedas en tu casilla`, 'success');
+									finishTurn();
+								} else {
+									const newPos = Math.max(1, gameState.players[player].position - 2);
+									gameState.players[player].position = newPos;
+									updatePlayerPositions();
+									addMessage(`Respuesta incorrecta. Retrocedes 2 casillas`, 'error');
+									finishTurn();
+								}
+							}
+						},
+						{
+							text: options[1].text,
+							class: 'btn-primary',
+							action: () => {
+								hideModal();
+								if (options[1].isCorrect) {
+									addMessage(`¡Respuesta correcta! Te quedas en tu casilla`, 'success');
+									finishTurn();
+								} else {
+									const newPos = Math.max(1, gameState.players[player].position - 2);
+									gameState.players[player].position = newPos;
+									updatePlayerPositions();
+									addMessage(`Respuesta incorrecta. Retrocedes 2 casillas`, 'error');
+									finishTurn();
+								}
+							}
+						}
+					]
+				);
+			}
+
+			function askChallenge(player) {
+				const ch = challenges[Math.floor(Math.random() * challenges.length)];
+				showModal(
+    'Reto',
+    `<img src="reto.png" class="icon-large" style="margin-bottom:10px"><br>${ch}`,
+    [
+        {
+            text: 'Cumplí el reto ✓',
+            class: 'btn-success',
+            action: () => {
+                hideModal();
+                gameState.players[player].position = Math.min(100, gameState.players[player].position + 1);
+                updatePlayerPositions();
+                addMessage(`¡Reto cumplido! Avanzas 1 casilla`, 'success');
+                finishTurn();
+            }
+        },
+        {
+            text: 'No pude cumplirlo ✗',
+            class: 'btn-danger',
+            action: () => {
+                hideModal();
+                addMessage(`No cumpliste el reto. Pierdes tu turno`, 'warning');
+                finishTurn();
+            }
+        }
+    ]
+);
+
+			}
+
+			function finishTurn() {
+				gameState.rolling = false;
+				document.getElementById('rollBtn').disabled = false;
+				switchPlayer();
+			}
+
+			function switchPlayer() {
+				gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
+				document.getElementById('currentTurn').textContent = `Jugador ${gameState.currentPlayer}`;
+				
+				document.getElementById('player1Info').classList.toggle('active-player', gameState.currentPlayer === 1);
+				document.getElementById('player2Info').classList.toggle('active-player', gameState.currentPlayer === 2);
+			}
+
+			function resetGame() {
+				gameState.currentPlayer = 1;
+				gameState.players = {
+					1: { position: 1, jailTurns: 0 },
+					2: { position: 1, jailTurns: 0 }
+				};
+				gameState.rolling = false;
+				
+				document.getElementById('messageLog').innerHTML = '';
+				addMessage('¡Nuevo juego iniciado! Jugador 1 comienza', 'success');
+				
+				updatePlayerPositions();
+				switchPlayer();
+				switchPlayer();
+			}
+
+			document.getElementById('rollBtn').addEventListener('click', rollDice);
+			document.getElementById('dice').addEventListener('click', rollDice);
+
+			createBoard();
+			addMessage('¡Bienvenidos a Escalera de los Guardianes de Chingaza! 🌿🐦', 'success');
+			switchPlayer();
+			switchPlayer();
+		</script>
+	</body>
+	</html>

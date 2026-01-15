@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahorcado del Páramo</title>
+	<link rel="icon" type="image/png" sizes="128x128" href="ahorcadoicon.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="ahorcadoicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="ahorcadoicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="ahorcadoicon.png">
+	<link rel="apple-touch-icon" href="ahorcadoicon.png">
+	<meta name="theme-color" content="#16A34A">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .question {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-text {
+            color: #333;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .hangman-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .hangman-drawing {
+            width: 200px;
+            height: 250px;
+            position: relative;
+        }
+
+        .hangman-part {
+            position: absolute;
+            display: none;
+        }
+
+        .base { bottom: 0; left: 0; width: 120px; height: 4px; background: #333; }
+        .pole { bottom: 0; left: 40px; width: 4px; height: 200px; background: #333; }
+        .top { top: 0; left: 40px; width: 100px; height: 4px; background: #333; }
+        .rope { top: 4px; left: 136px; width: 4px; height: 40px; background: #333; }
+        .head { top: 44px; left: 115px; width: 50px; height: 50px; border: 4px solid #333; border-radius: 50%; }
+        .body { top: 94px; left: 136px; width: 4px; height: 60px; background: #333; }
+        .left-arm { top: 110px; left: 115px; width: 25px; height: 4px; background: #333; transform: rotate(-45deg); transform-origin: right; }
+        .right-arm { top: 110px; left: 140px; width: 25px; height: 4px; background: #333; transform: rotate(45deg); transform-origin: left; }
+        .left-leg { top: 150px; left: 115px; width: 30px; height: 4px; background: #333; transform: rotate(-45deg); transform-origin: right; }
+        .right-leg { top: 150px; left: 140px; width: 30px; height: 4px; background: #333; transform: rotate(45deg); transform-origin: left; }
+
+        .word-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .letter-box {
+            width: 40px;
+            height: 50px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            background: white;
+        }
+
+        .letter-box.space {
+            border: none;
+            width: 20px;
+        }
+
+        .keyboard {
+			display: grid;
+			grid-template-columns: repeat(14, 1fr); /* 👈 14 columnas = 2 filas */
+			gap: 6px;
+			margin-bottom: 20px;
+			max-width: 600px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+        .key {
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .key:hover:not(:disabled) {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .key:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .new-game-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .new-game-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .win {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .lose {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .answer-reveal {
+            text-align: center;
+            margin-top: 10px;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+		.logo-title {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 16px;
+			margin-bottom: 10px;
+		}
+
+		.logo-img {
+			width: 100px;          /* tamaño del logo en desktop */
+			height: auto;
+		}
+        @media (max-width: 768px) {
+		.card {
+			padding: 20px;
+		}
+
+		h1 {
+			font-size: 1.8em;
+		}
+
+		.logo-title {
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.logo-img {
+			width: 60px;   /* logo más pequeño en móvil */
+		}
+		@media (max-width: 768px) {
+		.keyboard {
+        grid-template-columns: repeat(9, 1fr); /* 3 filas solo en móvil */
+    }
+}
+		.question {
+			display: none;
+		}
+		.new-game-btn {
+			display: none;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-title">
+				<img src="ahorcado.png" alt="Logo Guardianes del Páramo" class="logo-img">
+				<h1>Ahorcado del páramo</h1>
+			</div>
+        <p class="subtitle">Descubre las palabras sobre conservación de aves</p>
+
+        <div class="question">
+            <p class="question-text" id="question"></p>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">Intentos restantes</div>
+                <div class="stat-value" id="attempts">6</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Letras usadas</div>
+                <div class="stat-value" id="usedCount">0</div>
+            </div>
+        </div>
+
+        <div class="hangman-container">
+            <div class="hangman-drawing">
+                <div class="hangman-part base"></div>
+                <div class="hangman-part pole"></div>
+                <div class="hangman-part top"></div>
+                <div class="hangman-part rope"></div>
+                <div class="hangman-part head"></div>
+                <div class="hangman-part body"></div>
+                <div class="hangman-part left-arm"></div>
+                <div class="hangman-part right-arm"></div>
+                <div class="hangman-part left-leg"></div>
+                <div class="hangman-part right-leg"></div>
+            </div>
+        </div>
+
+        <div class="word-container" id="wordContainer"></div>
+
+        <div id="gameOverMessage"></div>
+
+        <div class="keyboard" id="keyboard"></div>
+
+        <button class="new-game-btn" onclick="newGame()">🔄 Nuevo Juego</button>
+    </div>
+
+    <script>
+        const questionsAndAnswers = [
+            { question: "¿Qué grupo de animales con plumas y alas es el principal enfoque del proyecto Guardianes de Chingaza?", answer: "AVES" },
+            { question: "¿Qué práctica busca proteger las especies y sus hábitats permitiendo un uso responsable del entorno natural?", answer: "CONSERVACIÓN" },
+            { question: "¿Cómo se llama la variedad de especies que habitan un ecosistema como el PNN Chingaza?", answer: "BIODIVERSIDAD" },
+            { question: "¿Qué ecosistema de alta montaña caracteriza al Parque Nacional Natural Chingaza?", answer: "PÁRAMO" },
+            { question: "¿Cómo se denomina el conjunto de seres vivos y el ambiente donde interactúan?", answer: "ECOSISTEMA" },
+            { question: "¿Qué término agrupa a todas las especies de aves que habitan una región específica?", answer: "AVIFAUNA" },
+            { question: "¿Cómo se llama la condición de una especie que solo vive en una región determinada?", answer: "ENDEMISMO" },
+            { question: "¿Cómo se denomina el lugar natural donde vive y se reproduce una especie?", answer: "HÁBITAT" },
+            { question: "¿Qué herramienta permite enseñar a las personas sobre el cuidado de las aves y su entorno natural?", answer: "EDUCACIÓN AMBIENTAL" },
+            { question: "¿Cómo se llama la relación armónica entre las especies y su ambiente?", answer: "EQUILIBRIO ECOLÓGICO" },
+            { question: "¿Qué proceso realizan algunas aves al transportar polen entre flores?", answer: "POLINIZACIÓN" },
+            { question: "¿Qué función cumplen las aves frugívoras al ayudar a regenerar los ecosistemas?", answer: "DISPERSIÓN DE SEMILLAS" },
+            { question: "¿Cómo se denomina el conjunto de animales que viven libres en la naturaleza?", answer: "FAUNA SILVESTRE" },
+            { question: "¿Qué actividad científica permite conocer mejor las aves del PNN Chingaza?", answer: "INVESTIGACIÓN" },
+            { question: "¿Qué acción consiste en observar y registrar el estado de las poblaciones de aves a lo largo del tiempo?", answer: "MONITOREO" },
+            { question: "¿Cómo se llaman los factores que ponen en riesgo la supervivencia de las aves?", answer: "AMENAZAS" },
+            { question: "¿Qué capacidad tienen las aves para ajustarse a los cambios de su entorno?", answer: "ADAPTACIÓN" }
+        ];
+
+        let currentGame = {};
+        const maxAttempts = 6;
+        const hangmanParts = ['base', 'pole', 'top', 'rope', 'head', 'body', 'left-arm', 'right-arm', 'left-leg', 'right-leg'];
+
+        function normalizeText(text) {
+            return text.toUpperCase()
+                .replace(/Á/g, 'A')
+                .replace(/É/g, 'E')
+                .replace(/Í/g, 'I')
+                .replace(/Ó/g, 'O')
+                .replace(/Ú/g, 'U')
+                .replace(/Ñ/g, 'N');
+        }
+
+        function newGame() {
+            const randomIndex = Math.floor(Math.random() * questionsAndAnswers.length);
+            const selected = questionsAndAnswers[randomIndex];
+            
+            currentGame = {
+                question: selected.question,
+                answer: selected.answer.toUpperCase(),
+                normalizedAnswer: normalizeText(selected.answer),
+                guessedLetters: new Set(),
+                attemptsLeft: maxAttempts,
+                gameOver: false
+            };
+
+            document.getElementById('question').textContent = currentGame.question;
+            document.getElementById('attempts').textContent = currentGame.attemptsLeft;
+            document.getElementById('usedCount').textContent = 0;
+            document.getElementById('gameOverMessage').innerHTML = '';
+			document.querySelector('.question').style.display = 'none';
+			document.querySelector('.new-game-btn').style.display = 'none';
+            
+            createKeyboard();
+            displayWord();
+            resetHangman();
+        }
+
+        function createKeyboard() {
+            const keyboard = document.getElementById('keyboard');
+            keyboard.innerHTML = '';
+            
+            const letters = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
+            
+            for (let letter of letters) {
+                const button = document.createElement('button');
+                button.className = 'key';
+                button.textContent = letter;
+                button.onclick = () => guessLetter(letter);
+                keyboard.appendChild(button);
+            }
+        }
+
+        function displayWord() {
+            const container = document.getElementById('wordContainer');
+            container.innerHTML = '';
+            
+            for (let char of currentGame.answer) {
+                const box = document.createElement('div');
+                
+                if (char === ' ') {
+                    box.className = 'letter-box space';
+                } else {
+                    box.className = 'letter-box';
+                    const normalizedChar = normalizeText(char);
+                    if (currentGame.guessedLetters.has(normalizedChar)) {
+                        box.textContent = char;
+                    }
+                }
+                
+                container.appendChild(box);
+            }
+        }
+
+        function guessLetter(letter) {
+            if (currentGame.gameOver) return;
+            
+            currentGame.guessedLetters.add(letter);
+            document.getElementById('usedCount').textContent = currentGame.guessedLetters.size;
+            
+            const button = Array.from(document.querySelectorAll('.key'))
+                .find(btn => btn.textContent === letter);
+            if (button) button.disabled = true;
+            
+            if (!currentGame.normalizedAnswer.includes(letter)) {
+                currentGame.attemptsLeft--;
+                document.getElementById('attempts').textContent = currentGame.attemptsLeft;
+                drawHangmanPart(maxAttempts - currentGame.attemptsLeft - 1);
+				
+				 if (currentGame.attemptsLeft === 3) {
+					document.querySelector('.question').style.display = 'block';
+    }
+                
+                if (currentGame.attemptsLeft === 0) {
+                    endGame(false);
+                    return;
+                }
+            }
+            
+            displayWord();
+            checkWin();
+        }
+
+        function checkWin() {
+            const allLettersGuessed = [...currentGame.normalizedAnswer]
+                .filter(char => char !== ' ')
+                .every(char => currentGame.guessedLetters.has(char));
+            
+            if (allLettersGuessed) {
+                endGame(true);
+            }
+        }
+
+        function endGame(won) {
+            currentGame.gameOver = true;
+            const messageDiv = document.getElementById('gameOverMessage');
+            
+            if (won) {
+                messageDiv.innerHTML = `
+                    <div class="game-over win">
+                        🎉 ¡Felicitaciones! Has ganado 🎉
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="game-over lose">
+                        😔 Game Over
+                        <div class="answer-reveal">La respuesta era: ${currentGame.answer}</div>
+                    </div>
+                `;
+            }
+            
+            document.querySelectorAll('.key').forEach(btn => btn.disabled = true);
+			document.querySelector('.new-game-btn').style.display = 'block';
+        }
+
+        function drawHangmanPart(index) {
+            if (index < hangmanParts.length) {
+                const part = document.querySelector(`.${hangmanParts[index]}`);
+                if (part) part.style.display = 'block';
+            }
+        }
+
+        function resetHangman() {
+            hangmanParts.forEach(part => {
+                const element = document.querySelector(`.${part}`);
+                if (element) element.style.display = 'none';
+            });
+        }
+
+        newGame();
+    </script>
+</body>
+</html>

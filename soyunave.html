@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soy un ave</title>
+	<link rel="icon" type="image/png" sizes="128x128" href="soyunaveicon.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="soyunaveicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="soyunaveicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="soyunaveicon.png">
+	<link rel="apple-touch-icon" href="soyunaveicon.png">
+	<meta name="theme-color" content="#16A34A">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #DBEAFE, #DCFCE7, #BBF7D0);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+
+        .inicio-screen {
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #166534;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6B7280;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: #F0FDF4;
+            border-left: 4px solid #16A34A;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .info-box h2 {
+            color: #166534;
+            margin-bottom: 10px;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            display: flex;
+            align-items: start;
+            gap: 10px;
+        }
+
+        .feature-list li::before {
+            content: "🦜";
+            font-size: 20px;
+        }
+
+        .btn {
+            background: #16A34A;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #15803D;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(22, 163, 74, 0.3);
+        }
+
+        .progress-bar {
+            background: #E5E7EB;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            background: #16A34A;
+            height: 100%;
+            transition: width 0.5s;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #4B5563;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .ave-info {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .ave-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .ave-icon {
+            font-size: 40px;
+        }
+
+        .ave-nombre {
+            color: #166534;
+            font-size: 1.8em;
+            margin: 0;
+        }
+
+        .ave-cientifico {
+            color: #6B7280;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        .situacion-box {
+            background: #EFF6FF;
+            border-left: 4px solid #3B82F6;
+            padding: 20px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .opciones-container {
+            margin-top: 20px;
+        }
+
+        .opcion-btn {
+            width: 100%;
+            text-align: left;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border: 2px solid #D1D5DB;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+
+        .opcion-btn:hover {
+            border-color: #16A34A;
+            background: #F0FDF4;
+        }
+
+        .retroalimentacion {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .retroalimentacion.correcta {
+            background: #F0FDF4;
+            border-left: 4px solid #16A34A;
+        }
+
+        .retroalimentacion.incorrecta {
+            background: #FEF2F2;
+            border-left: 4px solid #EF4444;
+        }
+
+        .retroalimentacion h3 {
+            margin-bottom: 10px;
+        }
+
+        .retroalimentacion.correcta h3 {
+            color: #166534;
+        }
+
+        .retroalimentacion.incorrecta h3 {
+            color: #991B1B;
+        }
+
+        .resultado-final {
+            text-align: center;
+        }
+
+        .resultado-titulo {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .resultado-titulo.guardian {
+            color: #16A34A;
+        }
+
+        .resultado-titulo.aprendiz {
+            color: #CA8A04;
+        }
+
+        .resultado-titulo.principiante {
+            color: #DC2626;
+        }
+
+        .puntaje-grande {
+            font-size: 4em;
+            font-weight: bold;
+            color: #166534;
+            margin: 20px 0;
+        }
+
+        .detalle-aves {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .detalle-aves h3 {
+            color: #1F2937;
+            margin-bottom: 20px;
+        }
+
+        .ave-resultado {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ave-resultado.sobrevive {
+            background: #DCFCE7;
+        }
+
+        .ave-resultado.no-sobrevive {
+            background: #FEE2E2;
+        }
+
+        .ave-resultado-info {
+            flex: 1;
+        }
+
+        .ave-resultado-puntaje {
+            text-align: right;
+        }
+
+        .ave-resultado-puntaje .puntaje {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .ave-resultado-puntaje .estado {
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .ave-resultado.sobrevive .estado {
+            color: #166534;
+        }
+
+        .ave-resultado.no-sobrevive .estado {
+            color: #991B1B;
+        }
+
+        .hidden {
+            display: none;
+        }
+		/* Logo + título */
+		.logo-title {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 16px;
+			margin-bottom: 10px;
+		}
+
+		.logo-img {
+			width: 100px;          /* tamaño del logo en desktop */
+			height: auto;
+		}
+        @media (max-width: 768px) {
+		.card {
+			padding: 20px;
+		}
+
+		h1 {
+			font-size: 1.8em;
+		}
+
+		.logo-title {
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.logo-img {
+			width: 60px;   /* logo más pequeño en móvil */
+		}
+		.ave-imagen {
+			width: 70px;
+			height: 70px;
+		}
+}
+		/* Imagen del ave en la tarjeta */
+		.ave-imagen {
+			width: 90px;          /* tamaño controlado */
+			height: 90px;
+			object-fit: cover;    /* evita deformaciones */
+			border-radius: 10px;
+			flex-shrink: 0;       /* evita que el flex la deforme */
+			box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+		}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Pantalla de Inicio -->
+        <div id="inicio-screen" class="card inicio-screen">
+           <div class="logo-title">
+				<img src="soyunave.png" alt="Logo Guardianes del Páramo" class="logo-img">
+				<h1>Soy un ave</h1>
+			</div>
+            <p class="subtitle">Un viaje educativo por el ecosistema altoandino colombiano</p>
+
+            <div class="info-box">
+                <h2>🎯 Tu misión:</h2>
+                <p>Recorrer 25 estaciones tomando decisiones como diferentes aves del páramo. Cada elección afecta la supervivencia de las especies y el equilibrio del ecosistema.</p>
+            </div>
+
+            <ul class="feature-list">
+                <li><strong>5 aves diferentes</strong> - cada una con sus propios desafíos</li>
+                <li><strong>25 estaciones</strong> - decisiones basadas en ecología real</li>
+                <li><strong>Aprende sobre:</strong> alimentación, hábitat, adaptaciones, aportes ecológicos y amenazas</li>
+            </ul>
+
+            <button class="btn" onclick="iniciarJuego()">🌿 Iniciar la Ruta</button>
+
+            <p style="text-align: center; font-size: 0.8em; color: #6B7280; margin-top: 20px;">
+                Proyecto educativo - Guardianes del Páramo
+            </p>
+        </div>
+
+        <!-- Pantalla de Juego -->
+        <div id="juego-screen" class="hidden">
+            <!-- Barra de progreso -->
+            <div class="card">
+                <div class="progress-info">
+                    <span id="estacion-actual">Estación 1 de 25</span>
+                    <span id="puntos-actuales">Puntos: 0/25</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill" style="width: 4%"></div>
+                </div>
+            </div>
+
+            <!-- Información del ave -->
+            <div class="ave-info">
+                <div class="ave-header">
+					<img id="ave-imagen" class="ave-imagen" src="" alt="Imagen del ave">
+					<div>
+						<h2 class="ave-nombre" id="ave-nombre">Nombre del Ave</h2>
+						<p class="ave-cientifico" id="ave-cientifico">Nombre científico</p>
+					</div>
+				</div>
+                <p id="ave-descripcion">Descripción del ave</p>
+                <div style="margin-top: 10px; font-size: 0.9em; color: #6B7280;">
+                    Puntaje actual con esta ave: <span id="puntaje-ave">0</span>/5
+                </div>
+            </div>
+
+            <!-- Estación -->
+            <div class="card">
+                <div class="situacion-box">
+                    <p id="situacion-texto">Situación de la estación</p>
+                </div>
+
+                <div id="opciones-container" class="opciones-container">
+                    <p style="font-weight: 600; color: #4B5563; margin-bottom: 15px;">¿Qué decides hacer?</p>
+                    <div id="opciones"></div>
+                </div>
+
+                <div id="retroalimentacion-container" class="hidden">
+                    <div id="retroalimentacion" class="retroalimentacion">
+                        <h3 id="retro-titulo">Título</h3>
+                        <p id="retro-texto">Texto de retroalimentación</p>
+                    </div>
+                    <button class="btn" onclick="siguienteEstacion()">
+                        <span id="btn-siguiente-texto">Siguiente estación →</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla de Resultados -->
+        <div id="resultado-screen" class="hidden card resultado-final">
+            <h1 id="resultado-titulo" class="resultado-titulo">Título del resultado</h1>
+            <p id="resultado-mensaje" style="font-size: 1.1em; color: #4B5563; margin-bottom: 20px;"></p>
+            
+            <div class="puntaje-grande" id="puntaje-final">0/25</div>
+            <p style="color: #6B7280;">Puntos totales</p>
+
+            <div class="detalle-aves">
+                <h3>📊 Detalle por especie:</h3>
+                <div id="detalle-aves-container"></div>
+            </div>
+
+            <div style="text-align: center; font-size: 0.9em; color: #6B7280; margin: 20px 0;">
+                <p style="margin-bottom: 10px;">
+                    <strong id="aves-supervivientes">0 de 5 aves</strong> lograron sobrevivir gracias a tus decisiones.
+                </p>
+                <p style="font-style: italic;">
+                    "Ser Guardián del Páramo no es solo conocer sus especies, es decidir correctamente para proteger la vida que sostiene el ecosistema."
+                </p>
+            </div>
+
+            <button class="btn" onclick="reiniciarJuego()">🔄 Jugar nuevamente</button>
+        </div>
+    </div>
+
+    <script>
+        // BANCO DE AVES
+       const AVES_BANCO = [
+    {
+        id: 1,
+        nombre: "Cóndor de los Andes",
+        nombreCientifico: "Vultur gryphus",
+        descripcion: "Ave carroñera emblemática del páramo.",
+        imagen: "img/aves/Condor de los Andes (Vultur gryphus).png"
+    },
+    {
+        id: 2,
+        nombre: "Pato andino",
+        nombreCientifico: "Oxyura jamaicensis",
+        descripcion: "Ave acuática adaptada a lagunas altoandinas.",
+        imagen: "img/aves/Pato turrio (Oxyura jamaicensis).png"
+    },
+    {
+        id: 3,
+        nombre: "Tingua bogotana",
+        nombreCientifico: "Rallus semiplumbeus",
+        descripcion: "Ave endémica de humedales altoandinos.",
+        imagen: "img/aves/Tingua bogotana (Rallus semiplumbeus).png"
+    },
+    {
+        id: 4,
+        nombre: "Perdiz de montaña",
+        nombreCientifico: "Odontophorus strophium",
+        descripcion: "Ave terrestre del sotobosque paramuno.",
+        imagen: "img/aves/Perdiz de montana (Odontophorus strophium).png"
+    },
+    {
+		id: 5,
+		nombre: "Águila crestada",
+		nombreCientifico: "Spizaetus isidori",
+		descripcion: "Depredador tope de bosques altoandinos.",
+		imagen: "img/aves/Aguila crestada (Spizaetus isidori).png"
+	},
+    {
+        id: 6,
+        nombre: "Tororoi de Cundinamarca",
+        nombreCientifico: "Grallaria kaestneri",
+        descripcion: "Ave terrestre tímida, endémica de Colombia.",
+        imagen: "img/aves/Tororoi de Cundinamarca (Grallaria kaestneri).png"
+    },
+    {
+        id: 7,
+        nombre: "Pato paramuno",
+        nombreCientifico: "Anas andium",
+        descripcion: "Pato nativo de lagunas de alta montaña.",
+        imagen: "img/aves/Pato paramuno (Anas andium).png"
+    },
+    {
+        id: 8,
+        nombre: "Pava andina",
+        nombreCientifico: "Penelope montagnii",
+        descripcion: "Ave frugívora clave para la regeneración del bosque.",
+        imagen: "img/aves/Pava andina (Penelope montagnii).png"
+    },
+    {
+        id: 9,
+        nombre: "Caica paramuna",
+        nombreCientifico: "Gallinago nobilis",
+        descripcion: "Ave de humedales y pajonales del páramo.",
+        imagen: "img/aves/Caica paramuna (Gallinago nobilis).png"
+    },
+    {
+        id: 10,
+        nombre: "Periquito aliamarillo",
+        nombreCientifico: "Pyrrhura calliptera",
+        descripcion: "Periquito endémico del altiplano cundiboyacense.",
+        imagen: "img/aves/Periquito aliamarillo (Pyrrhura calliptera).png"
+    },
+    {
+        id: 11,
+        nombre: "Periquito alipunteado",
+        nombreCientifico: "Touit stictopterus",
+        descripcion: "Ave frugívora de bosques montanos.",
+        imagen: "img/aves/Periquito alipunteado (Touit stictopterus).png"
+    },
+    {
+        id: 12,
+        nombre: "Loro aliamarillo",
+        nombreCientifico: "Hapalopsittaca amazonina",
+        descripcion: "Loro altoandino dependiente de bosques maduros.",
+        imagen: "img/aves/Loro aliamarillo (Hapalopsittaca amazonina).png"
+    },
+    {
+        id: 13,
+        nombre: "Loro orejiamarillo",
+        nombreCientifico: "Ognorhynchus icterotis",
+        descripcion: "Loro emblemático asociado a palmas andinas.",
+        imagen: "img/aves/Loro orejiamarillo (Ognorhynchus icterotis).png"
+    },
+    {
+        id: 14,
+        nombre: "Rastrojero de Cundinamarca",
+        nombreCientifico: "Synallaxis subpudica",
+        descripcion: "Ave insectívora de matorrales altoandinos.",
+        imagen: "img/aves/Rastrojero de Cundinamarca (Synallaxis subpudica).png"
+    }
+];
+
+
+        // BASE DE DATOS DE ESTACIONES
+        const ESTACIONES_BASE = {
+            1: [ // Cóndor de los Andes
+                {
+                    situacion: "Vuelas alto sobre el páramo y detectas algo en el valle. Observas un animal muerto cerca de un camino.",
+                    opciones: [
+                        { texto: "Descender inmediatamente a alimentarte", correcta: true, aspecto: "Alimentación" },
+                        { texto: "Cazar un animal vivo cercano", correcta: false, aspecto: "Alimentación" },
+                        { texto: "Buscar frutos en los árboles", correcta: false, aspecto: "Alimentación" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Correcto! El cóndor es carroñero, se alimenta de animales muertos. Su papel es esencial: recicla nutrientes y evita la propagación de enfermedades.",
+                        incorrecta: "El cóndor NO caza animales vivos ni come frutos. Es un ave carroñera especializada en consumir cadáveres, cumpliendo un rol vital como 'limpiador' del ecosistema."
+                    }
+                },
+                {
+                    situacion: "El clima del páramo cambia bruscamente. Vientos fríos y lluvia se aproximan. ¿Dónde buscas refugio?",
+                    opciones: [
+                        { texto: "En riscos y acantilados rocosos protegidos", correcta: true, aspecto: "Hábitat" },
+                        { texto: "En el agua de las lagunas", correcta: false, aspecto: "Hábitat" },
+                        { texto: "En nidos construidos en pajonales bajos", correcta: false, aspecto: "Hábitat" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Excelente! Los cóndores usan riscos y acantilados como refugio y dormideros. Estos lugares elevados les protegen del viento y les permiten despegar fácilmente.",
+                        incorrecta: "Los cóndores necesitan estructuras rocosas elevadas. No nadan ni construyen nidos elaborados. Los acantilados son esenciales para su descanso y reproducción."
+                    }
+                },
+                {
+                    situacion: "Es hora de reproducirse. ¿Qué estrategia sigues para asegurar la supervivencia de tu cría?",
+                    opciones: [
+                        { texto: "Poner un solo huevo y cuidarlo intensamente durante meses", correcta: true, aspecto: "Adaptaciones" },
+                        { texto: "Poner muchos huevos en diferentes nidos", correcta: false, aspecto: "Adaptaciones" },
+                        { texto: "Dejar el huevo solo y regresar ocasionalmente", correcta: false, aspecto: "Adaptaciones" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Perfecto! El cóndor tiene una estrategia reproductiva lenta: un solo huevo cada 2 años, con cuidado parental prolongado. Esto hace que su conservación sea crítica.",
+                        incorrecta: "El cóndor invierte enormes recursos en una sola cría por varios años. Esta baja tasa reproductiva hace que cada individuo sea valioso y vulnerable ante amenazas."
+                    }
+                },
+                {
+                    situacion: "Observas ganado muerto con restos de químicos veterinarios. ¿Qué haces?",
+                    opciones: [
+                        { texto: "Evitar alimentarte, puede estar contaminado", correcta: true, aspecto: "Riesgos" },
+                        { texto: "Alimentarte normalmente, eres resistente", correcta: false, aspecto: "Riesgos" },
+                        { texto: "Llamar a otros cóndores para compartir", correcta: false, aspecto: "Riesgos" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Decisión sabia! Los químicos veterinarios y venenos son la principal amenaza para los cóndores. La contaminación de carroña ha causado muertes masivas.",
+                        incorrecta: "Los cóndores son extremadamente vulnerables a intoxicaciones. Químicos como diclofenaco y venenos intencionales han diezmado poblaciones enteras. Esta es su mayor amenaza actual."
+                    }
+                },
+                {
+                    situacion: "Un ecosistema saludable depende de tu trabajo. ¿Cuál es tu principal aporte al páramo?",
+                    opciones: [
+                        { texto: "Eliminar cadáveres y prevenir enfermedades", correcta: true, aspecto: "Aporte" },
+                        { texto: "Polinizar las flores del páramo", correcta: false, aspecto: "Aporte" },
+                        { texto: "Dispersar semillas de frailejones", correcta: false, aspecto: "Aporte" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Exacto! Como ave carroñera, el cóndor es el 'equipo de limpieza' del ecosistema. Previene epidemias y recicla nutrientes, siendo insustituible para la salud ambiental.",
+                        incorrecta: "El cóndor no poliniza ni dispersa semillas. Su rol es único: eliminar cadáveres rápidamente, controlando patógenos y acelerando el ciclo de nutrientes."
+                    }
+                }
+            ],
+            2: [ // Pato andino
+                {
+                    situacion: "Llegas a una laguna del páramo. ¿Dónde buscas tu alimento?",
+                    opciones: [
+                        { texto: "Sumergiéndote para capturar invertebrados acuáticos", correcta: true, aspecto: "Alimentación" },
+                        { texto: "Cazando pequeños mamíferos en la orilla", correcta: false, aspecto: "Alimentación" },
+                        { texto: "Comiendo carroña flotante", correcta: false, aspecto: "Alimentación" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Correcto! El pato andino se sumerge para alimentarse de invertebrados, larvas y pequeños crustáceos. Su pico especializado filtra el agua para capturar su alimento.",
+                        incorrecta: "Los patos andinos son buceadores especializados en presas acuáticas. No cazan mamíferos ni son carroñeros. Su dieta se basa en la fauna invertebrada de las lagunas."
+                    }
+                },
+                {
+                    situacion: "La temperatura nocturna baja a -5°C. ¿Cómo te adaptas?",
+                    opciones: [
+                        { texto: "Tu denso plumaje impermeable retiene el calor corporal", correcta: true, aspecto: "Adaptaciones" },
+                        { texto: "Migras inmediatamente a zonas más bajas", correcta: false, aspecto: "Adaptaciones" },
+                        { texto: "Entras en hibernación hasta el amanecer", correcta: false, aspecto: "Adaptaciones" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Excelente! El plumaje denso e impermeable del pato andino es una adaptación perfecta al frío extremo del páramo. Puede permanecer en agua helada sin problemas.",
+                        incorrecta: "Los patos andinos están perfectamente adaptados al frío extremo. No migran estacionalmente ni hibernan. Su plumaje especializado es su principal defensa térmica."
+                    }
+                },
+                {
+                    situacion: "Notas que la laguna está contaminada con sedimentos de una construcción cercana. ¿Qué ocurre?",
+                    opciones: [
+                        { texto: "Tu hábitat se degrada, afectando tu alimentación y reproducción", correcta: true, aspecto: "Riesgos" },
+                        { texto: "Te adaptas fácilmente, cambiando tu dieta", correcta: false, aspecto: "Riesgos" },
+                        { texto: "La contaminación no te afecta como ave acuática", correcta: false, aspecto: "Riesgos" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Correcto! La contaminación de humedales es devastadora para aves acuáticas. Los sedimentos destruyen el hábitat de invertebrados y dificultan la alimentación y reproducción.",
+                        incorrecta: "Las aves acuáticas son extremadamente vulnerables a la contaminación. La degradación del agua elimina sus fuentes de alimento y destruye sitios de anidación."
+                    }
+                },
+                {
+                    situacion: "Es temporada de reproducción. ¿Dónde construyes tu nido?",
+                    opciones: [
+                        { texto: "Entre la vegetación densa en la orilla de la laguna", correcta: true, aspecto: "Hábitat" },
+                        { texto: "En acantilados rocosos alejados del agua", correcta: false, aspecto: "Hábitat" },
+                        { texto: "Flotando en el centro de la laguna", correcta: false, aspecto: "Hábitat" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Perfecto! Los patos andinos anidan entre vegetación palustre densa en las orillas. Esto protege huevos y polluelos de depredadores y del clima extremo.",
+                        incorrecta: "Los patos andinos necesitan vegetación acuática para anidar, no rocas ni agua abierta. La vegetación de orilla es esencial para la supervivencia de sus crías."
+                    }
+                },
+                {
+                    situacion: "¿Cuál es tu principal contribución al ecosistema de la laguna?",
+                    opciones: [
+                        { texto: "Controlar poblaciones de invertebrados acuáticos", correcta: true, aspecto: "Aporte" },
+                        { texto: "Dispersar semillas de frailejones", correcta: false, aspecto: "Aporte" },
+                        { texto: "Airear el suelo del páramo", correcta: false, aspecto: "Aporte" }
+                    ],
+                    retroalimentacion: {
+                        correcta: "¡Exacto! Al alimentarse de invertebrados, los patos andinos regulan estas poblaciones, manteniendo el equilibrio del ecosistema acuático y la calidad del agua.",
+                        incorrecta: "El pato andino es una especie acuática, su rol ecológico está en la laguna. Controla poblaciones de invertebrados, no dispersa semillas terrestres ni modifica suelos."
+                    }
+                }
+            ],
+			3: [ // Tingua bogotana
+    {
+        situacion: "Te desplazas entre juncos y vegetación densa en un humedal del páramo. Necesitas alimentarte.",
+        opciones: [
+            { texto: "Buscar insectos y pequeños invertebrados entre el lodo y la vegetación", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar pequeños peces en aguas profundas", correcta: false, aspecto: "Alimentación" },
+            { texto: "Comer frutos de árboles altos", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! La tingua bogotana se alimenta principalmente de insectos, moluscos y pequeños invertebrados que encuentra en humedales y zonas fangosas.",
+            incorrecta: "La tingua bogotana no es pescadora ni frugívora. Su dieta está basada en pequeños invertebrados del suelo y la vegetación baja de los humedales."
+        }
+    },
+    {
+        situacion: "El nivel del agua cambia y debes decidir dónde permanecer para estar a salvo.",
+        opciones: [
+            { texto: "Moverte entre la vegetación densa de la orilla", correcta: true, aspecto: "Hábitat" },
+            { texto: "Volar a zonas abiertas y secas del páramo", correcta: false, aspecto: "Hábitat" },
+            { texto: "Permanecer nadando en aguas profundas", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! La tingua depende de la vegetación densa de los humedales, donde encuentra alimento y protección frente a depredadores.",
+            incorrecta: "La tingua no es buena nadadora ni voladora de largas distancias. Alejarse de la vegetación del humedal la expone a grandes riesgos."
+        }
+    },
+    {
+        situacion: "Llega la noche y la temperatura desciende. ¿Dónde descansas?",
+        opciones: [
+            { texto: "Refugiarte entre juncos y plantas altas del humedal", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en ramas altas de árboles", correcta: false, aspecto: "Refugio" },
+            { texto: "Quedarte en zonas abiertas sin cobertura", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! La tingua se refugia en vegetación densa, donde se protege del frío y de los depredadores.",
+            incorrecta: "Las zonas abiertas o elevadas no son adecuadas para la tingua, ya que aumenta su vulnerabilidad al frío y a los depredadores."
+        }
+    },
+    {
+        situacion: "La presencia humana se acerca al humedal. ¿Qué riesgo enfrentas?",
+        opciones: [
+            { texto: "La destrucción y contaminación de tu hábitat", correcta: true, aspecto: "Riesgos" },
+            { texto: "La falta de oxígeno por la altura", correcta: false, aspecto: "Riesgos" },
+            { texto: "El ataque de grandes depredadores aéreos", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! La principal amenaza para la tingua bogotana es la pérdida y contaminación de los humedales por actividades humanas.",
+            incorrecta: "La tingua está adaptada a la altura. Su mayor riesgo no es natural, sino causado por la degradación de los humedales."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu principal aporte al ecosistema del humedal?",
+        opciones: [
+            { texto: "Controlar poblaciones de insectos e invertebrados", correcta: true, aspecto: "Aporte" },
+            { texto: "Polinizar plantas del páramo", correcta: false, aspecto: "Aporte" },
+            { texto: "Dispersar semillas de árboles grandes", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! La tingua ayuda a regular poblaciones de invertebrados, manteniendo el equilibrio ecológico de los humedales.",
+            incorrecta: "La tingua no es polinizadora ni dispersora de semillas; su función principal está en el control de invertebrados."
+        }
+    }
+	],
+		4: [ // Perdiz de montaña
+    {
+        situacion: "Caminas entre el sotobosque del páramo y necesitas alimentarte.",
+        opciones: [
+            { texto: "Buscar semillas, frutos caídos e insectos del suelo", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar pequeños vertebrados", correcta: false, aspecto: "Alimentación" },
+            { texto: "Alimentarte exclusivamente de hojas", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! La perdiz de montaña es omnívora, se alimenta de semillas, frutos e insectos que encuentra en el suelo del bosque.",
+            incorrecta: "La perdiz no es cazadora ni herbívora estricta. Su dieta es variada y depende del sotobosque."
+        }
+    },
+    {
+        situacion: "Escuchas ruidos cercanos y decides dónde moverte.",
+        opciones: [
+            { texto: "Permanecer entre la vegetación densa del sotobosque", correcta: true, aspecto: "Hábitat" },
+            { texto: "Salir a áreas abiertas del páramo", correcta: false, aspecto: "Hábitat" },
+            { texto: "Volar largas distancias", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! La perdiz depende del sotobosque denso para protegerse y alimentarse.",
+            incorrecta: "Las áreas abiertas y el vuelo prolongado aumentan su vulnerabilidad frente a depredadores."
+        }
+    },
+    {
+        situacion: "La noche se aproxima y la temperatura baja.",
+        opciones: [
+            { texto: "Refugiarte en el suelo cubierto de hojarasca", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en ramas altas", correcta: false, aspecto: "Refugio" },
+            { texto: "Permanecer en zonas descubiertas", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! La perdiz se refugia en el suelo, usando la hojarasca como aislamiento térmico y camuflaje.",
+            incorrecta: "Dormir expuesta o en árboles no corresponde al comportamiento natural de esta especie."
+        }
+    },
+    {
+        situacion: "La tala reduce el bosque donde habitas. ¿Qué ocurre?",
+        opciones: [
+            { texto: "Pierdes refugio y alimento, poniendo en riesgo tu supervivencia", correcta: true, aspecto: "Riesgos" },
+            { texto: "Te adaptas fácilmente a zonas urbanas", correcta: false, aspecto: "Riesgos" },
+            { texto: "No te afecta porque puedes volar lejos", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! La perdiz de montaña es muy sensible a la deforestación. La pérdida del sotobosque afecta directamente su supervivencia.",
+            incorrecta: "Esta especie no se adapta a ambientes urbanos ni vuela largas distancias para escapar de la deforestación."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu aporte principal al ecosistema?",
+        opciones: [
+            { texto: "Dispersar semillas y controlar insectos del suelo", correcta: true, aspecto: "Aporte" },
+            { texto: "Polinizar flores del páramo", correcta: false, aspecto: "Aporte" },
+            { texto: "Eliminar carroña", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! Al alimentarse en el suelo, la perdiz ayuda a dispersar semillas y controlar insectos, contribuyendo a la regeneración del bosque.",
+            incorrecta: "La perdiz no es carroñera ni polinizadora. Su función está ligada al suelo y al sotobosque."
+        }
+    }
+],
+5: [ // Águila crestada
+    {
+        situacion: "Desde una percha elevada observas el bosque y necesitas alimentarte.",
+        opciones: [
+            { texto: "Cazar pequeños mamíferos y aves desde el aire", correcta: true, aspecto: "Alimentación" },
+            { texto: "Buscar frutos maduros en los árboles", correcta: false, aspecto: "Alimentación" },
+            { texto: "Consumir restos de animales muertos", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El águila crestada es un depredador activo que caza aves y pequeños mamíferos, manteniendo el equilibrio de las poblaciones.",
+            incorrecta: "El águila crestada no es frugívora ni carroñera. Su dieta depende de la caza activa."
+        }
+    },
+    {
+        situacion: "Debes elegir el lugar más adecuado para vigilar tu territorio.",
+        opciones: [
+            { texto: "Posarte en árboles altos del bosque", correcta: true, aspecto: "Hábitat" },
+            { texto: "Permanecer en el suelo del páramo", correcta: false, aspecto: "Hábitat" },
+            { texto: "Refugiarte en lagunas", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! Las águilas crestadas utilizan árboles altos como puntos de observación y caza.",
+            incorrecta: "Esta especie depende del bosque; el suelo abierto o ambientes acuáticos no son adecuados."
+        }
+    },
+    {
+        situacion: "La noche se acerca y debes descansar.",
+        opciones: [
+            { texto: "Dormir en ramas altas y seguras", correcta: true, aspecto: "Refugio" },
+            { texto: "Descansar en zonas abiertas del suelo", correcta: false, aspecto: "Refugio" },
+            { texto: "Dormir flotando en el agua", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! Las águilas descansan en perchas elevadas que les brindan seguridad.",
+            incorrecta: "Las zonas abiertas o acuáticas exponen al águila a riesgos innecesarios."
+        }
+    },
+    {
+        situacion: "La fragmentación del bosque afecta tu territorio. ¿Cuál es el principal riesgo?",
+        opciones: [
+            { texto: "Pérdida de presas y sitios de anidación", correcta: true, aspecto: "Riesgos" },
+            { texto: "Falta de oxígeno por la altura", correcta: false, aspecto: "Riesgos" },
+            { texto: "Exceso de humedad del páramo", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! La deforestación reduce las presas disponibles y los árboles necesarios para anidar.",
+            incorrecta: "El mayor problema no es climático, sino la pérdida del bosque por acción humana."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu aporte principal al ecosistema?",
+        opciones: [
+            { texto: "Regular poblaciones de otras especies", correcta: true, aspecto: "Aporte" },
+            { texto: "Polinizar flores del páramo", correcta: false, aspecto: "Aporte" },
+            { texto: "Dispersar semillas en el suelo", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! Como depredador tope, el águila crestada mantiene el equilibrio ecológico.",
+            incorrecta: "El rol del águila no es polinizar ni dispersar semillas, sino regular poblaciones."
+        }
+    }
+],
+6: [ // Tororoi de Cundinamarca
+    {
+        situacion: "Te desplazas silenciosamente por el suelo del bosque y necesitas alimentarte.",
+        opciones: [
+            { texto: "Buscar insectos y artrópodos entre la hojarasca", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar pequeños vertebrados", correcta: false, aspecto: "Alimentación" },
+            { texto: "Alimentarte de frutos en árboles altos", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El tororoi se alimenta principalmente de insectos que encuentra en el suelo del bosque.",
+            incorrecta: "El tororoi no caza vertebrados ni se alimenta en las copas de los árboles."
+        }
+    },
+    {
+        situacion: "Un ruido repentino te alerta. ¿Dónde permaneces?",
+        opciones: [
+            { texto: "Entre la vegetación densa del sotobosque", correcta: true, aspecto: "Hábitat" },
+            { texto: "En áreas abiertas del páramo", correcta: false, aspecto: "Hábitat" },
+            { texto: "Volar largas distancias", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! El tororoi depende del sotobosque denso para protegerse.",
+            incorrecta: "Salir a espacios abiertos aumenta su vulnerabilidad."
+        }
+    },
+    {
+        situacion: "Llega la noche y la temperatura desciende.",
+        opciones: [
+            { texto: "Refugiarte entre raíces, troncos y hojarasca", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en ramas altas", correcta: false, aspecto: "Refugio" },
+            { texto: "Permanecer en zonas abiertas", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El tororoi utiliza refugios cercanos al suelo para conservar calor y evitar depredadores.",
+            incorrecta: "Dormir expuesto o en altura no es propio de esta especie terrestre."
+        }
+    },
+    {
+        situacion: "El bosque se fragmenta por actividades humanas. ¿Qué sucede?",
+        opciones: [
+            { texto: "Pierdes refugio y alimento, reduciendo tu supervivencia", correcta: true, aspecto: "Riesgos" },
+            { texto: "Te adaptas fácilmente a zonas urbanas", correcta: false, aspecto: "Riesgos" },
+            { texto: "Migras largas distancias sin dificultad", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! El tororoi es altamente dependiente de bosques bien conservados.",
+            incorrecta: "Esta especie es muy sensible y no se adapta a ambientes alterados."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu aporte principal al ecosistema?",
+        opciones: [
+            { texto: "Controlar poblaciones de insectos del suelo", correcta: true, aspecto: "Aporte" },
+            { texto: "Polinizar flores del bosque", correcta: false, aspecto: "Aporte" },
+            { texto: "Dispersar semillas grandes", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! El tororoi ayuda a regular poblaciones de insectos, manteniendo el equilibrio del suelo del bosque.",
+            incorrecta: "Su función ecológica está ligada al control de invertebrados, no a la polinización o dispersión."
+        }
+    }
+],
+7: [ // Pato paramuno
+    {
+        situacion: "Te encuentras en una laguna fría del páramo y necesitas alimentarte.",
+        opciones: [
+            { texto: "Buscar plantas acuáticas, semillas y pequeños invertebrados", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar pequeños mamíferos de la orilla", correcta: false, aspecto: "Alimentación" },
+            { texto: "Buscar carroña en tierra firme", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El pato paramuno se alimenta de vegetación acuática, semillas e invertebrados presentes en lagunas altoandinas.",
+            incorrecta: "El pato paramuno no es carnívoro ni carroñero. Su dieta está ligada al ecosistema acuático."
+        }
+    },
+    {
+        situacion: "El clima se vuelve más frío y debes decidir dónde permanecer.",
+        opciones: [
+            { texto: "Mantenerte en la laguna y sus orillas vegetadas", correcta: true, aspecto: "Hábitat" },
+            { texto: "Desplazarte a zonas secas y abiertas del páramo", correcta: false, aspecto: "Hábitat" },
+            { texto: "Buscar refugio en bosques densos alejados del agua", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! El pato paramuno depende de lagunas y humedales para alimentarse y refugiarse.",
+            incorrecta: "Alejarse del agua reduce sus posibilidades de sobrevivir."
+        }
+    },
+    {
+        situacion: "Llega la noche y la temperatura desciende considerablemente.",
+        opciones: [
+            { texto: "Descansar flotando o en la orilla protegida", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en árboles altos", correcta: false, aspecto: "Refugio" },
+            { texto: "Permanecer en zonas abiertas sin cobertura", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El pato paramuno descansa en el agua o en orillas protegidas, usando su plumaje para conservar el calor.",
+            incorrecta: "Dormir expuesto o en altura no corresponde a su comportamiento natural."
+        }
+    },
+    {
+        situacion: "La contaminación llega a la laguna por actividades humanas. ¿Qué ocurre?",
+        opciones: [
+            { texto: "Se reduce tu alimento y afecta tu reproducción", correcta: true, aspecto: "Riesgos" },
+            { texto: "No te afecta gracias a tu adaptación", correcta: false, aspecto: "Riesgos" },
+            { texto: "Mejoran tus condiciones de vida", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! La contaminación de lagunas reduce la disponibilidad de alimento y afecta gravemente a las aves acuáticas.",
+            incorrecta: "Las aves acuáticas son muy sensibles a la degradación de humedales."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu principal aporte al ecosistema del páramo?",
+        opciones: [
+            { texto: "Mantener el equilibrio de los ecosistemas acuáticos", correcta: true, aspecto: "Aporte" },
+            { texto: "Polinizar plantas altoandinas", correcta: false, aspecto: "Aporte" },
+            { texto: "Dispersar semillas de árboles grandes", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! El pato paramuno contribuye al equilibrio ecológico de lagunas y humedales.",
+            incorrecta: "Su rol está ligado al agua, no a la polinización o dispersión forestal."
+        }
+    }
+],
+8: [ // Pava andina
+    {
+        situacion: "Te desplazas por el bosque altoandino y necesitas alimentarte.",
+        opciones: [
+            { texto: "Consumir frutos y semillas de árboles nativos", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar pequeños animales", correcta: false, aspecto: "Alimentación" },
+            { texto: "Alimentarte solo de hojas", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! La pava andina es principalmente frugívora y depende de árboles nativos para su alimentación.",
+            incorrecta: "La pava no es cazadora ni herbívora estricta."
+        }
+    },
+    {
+        situacion: "Debes elegir el lugar adecuado para moverte con seguridad.",
+        opciones: [
+            { texto: "Bosques altoandinos bien conservados", correcta: true, aspecto: "Hábitat" },
+            { texto: "Zonas abiertas del páramo", correcta: false, aspecto: "Hábitat" },
+            { texto: "Áreas urbanas cercanas", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! La pava andina depende de bosques continuos y maduros.",
+            incorrecta: "Las zonas abiertas o urbanas no ofrecen alimento ni refugio adecuados."
+        }
+    },
+    {
+        situacion: "La noche cae y necesitas descansar.",
+        opciones: [
+            { texto: "Dormir en ramas altas de árboles", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en el suelo descubierto", correcta: false, aspecto: "Refugio" },
+            { texto: "Dormir flotando en el agua", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! La pava andina duerme en árboles altos para evitar depredadores.",
+            incorrecta: "Dormir en el suelo o en el agua no es propio de esta especie."
+        }
+    },
+    {
+        situacion: "La caza y la deforestación aumentan en tu territorio. ¿Qué riesgo enfrentas?",
+        opciones: [
+            { texto: "Disminución de la población y pérdida de hábitat", correcta: true, aspecto: "Riesgos" },
+            { texto: "Mejora de tus condiciones de vida", correcta: false, aspecto: "Riesgos" },
+            { texto: "Ningún impacto significativo", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! La pava andina es muy vulnerable a la caza y a la pérdida de bosque.",
+            incorrecta: "Estas amenazas afectan directamente su supervivencia."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu principal aporte al ecosistema?",
+        opciones: [
+            { texto: "Dispersar semillas y favorecer la regeneración del bosque", correcta: true, aspecto: "Aporte" },
+            { texto: "Controlar insectos del suelo", correcta: false, aspecto: "Aporte" },
+            { texto: "Eliminar carroña", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! La pava andina es una dispersora de semillas clave para la regeneración del bosque altoandino.",
+            incorrecta: "Su rol ecológico principal es la dispersión de semillas, no el control de insectos ni la carroña."
+        }
+    }
+],
+9: [ // Caica paramuna
+    {
+        situacion: "Te desplazas por un pajonal húmedo del páramo en busca de alimento.",
+        opciones: [
+            { texto: "Buscar lombrices e invertebrados en el suelo húmedo", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar pequeños roedores", correcta: false, aspecto: "Alimentación" },
+            { texto: "Comer frutos de arbustos altos", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! La caica paramuna se alimenta introduciendo su pico en suelos húmedos para capturar lombrices e invertebrados.",
+            incorrecta: "La caica no es cazadora ni frugívora; depende del suelo blando y húmedo."
+        }
+    },
+    {
+        situacion: "Notas cambios en el nivel de humedad del terreno. ¿Dónde permaneces?",
+        opciones: [
+            { texto: "En humedales y pajonales húmedos", correcta: true, aspecto: "Hábitat" },
+            { texto: "En zonas secas y rocosas", correcta: false, aspecto: "Hábitat" },
+            { texto: "En copas de árboles", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! La caica depende de suelos húmedos para alimentarse y sobrevivir.",
+            incorrecta: "Los suelos secos o las alturas no ofrecen las condiciones necesarias."
+        }
+    },
+    {
+        situacion: "Al caer la noche necesitas refugio.",
+        opciones: [
+            { texto: "Camuflarte entre la vegetación baja del pajonal", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en ramas altas", correcta: false, aspecto: "Refugio" },
+            { texto: "Permanecer en zonas abiertas", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! La caica utiliza el camuflaje y la vegetación baja para protegerse.",
+            incorrecta: "Estar expuesta aumenta el riesgo de depredación."
+        }
+    },
+    {
+        situacion: "El drenaje de humedales comienza en tu territorio. ¿Qué ocurre?",
+        opciones: [
+            { texto: "Pierdes alimento y sitios de refugio", correcta: true, aspecto: "Riesgos" },
+            { texto: "Te adaptas fácilmente a suelos secos", correcta: false, aspecto: "Riesgos" },
+            { texto: "Mejora tu disponibilidad de alimento", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! La pérdida de humedales es una de las mayores amenazas para la caica paramuna.",
+            incorrecta: "Esta especie depende estrictamente de suelos húmedos."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu principal aporte al ecosistema del páramo?",
+        opciones: [
+            { texto: "Regular poblaciones de invertebrados del suelo", correcta: true, aspecto: "Aporte" },
+            { texto: "Polinizar plantas del páramo", correcta: false, aspecto: "Aporte" },
+            { texto: "Dispersar semillas de árboles", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! Al alimentarse de invertebrados, la caica ayuda a mantener el equilibrio del suelo.",
+            incorrecta: "Su función está ligada al control de invertebrados, no a la polinización ni dispersión."
+        }
+    }
+],
+10: [ // Periquito aliamarillo
+    {
+        situacion: "Vuelas en grupo por el bosque altoandino buscando alimento.",
+        opciones: [
+            { texto: "Consumir frutos, semillas y brotes de árboles nativos", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar insectos grandes en el suelo", correcta: false, aspecto: "Alimentación" },
+            { texto: "Alimentarte de carroña", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El periquito aliamarillo se alimenta principalmente de frutos y semillas.",
+            incorrecta: "No es carroñero ni insectívoro terrestre."
+        }
+    },
+    {
+        situacion: "Debes decidir dónde permanecer con tu grupo.",
+        opciones: [
+            { texto: "Bosques y bordes de bosque bien conservados", correcta: true, aspecto: "Hábitat" },
+            { texto: "Zonas abiertas del páramo sin árboles", correcta: false, aspecto: "Hábitat" },
+            { texto: "Áreas urbanas", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! Esta especie depende de bosques altoandinos para alimentarse y anidar.",
+            incorrecta: "Las áreas abiertas o urbanas no ofrecen las condiciones necesarias."
+        }
+    },
+    {
+        situacion: "La noche se aproxima y buscas descanso.",
+        opciones: [
+            { texto: "Dormir en cavidades y ramas de árboles", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en el suelo", correcta: false, aspecto: "Refugio" },
+            { texto: "Permanecer volando toda la noche", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! Los periquitos descansan en árboles, generalmente en grupo.",
+            incorrecta: "Dormir en el suelo o sin refugio aumenta el riesgo."
+        }
+    },
+    {
+        situacion: "La captura ilegal para mascotismo afecta tu población. ¿Qué sucede?",
+        opciones: [
+            { texto: "Disminuye la población y se rompen grupos sociales", correcta: true, aspecto: "Riesgos" },
+            { texto: "No hay impacto significativo", correcta: false, aspecto: "Riesgos" },
+            { texto: "Aumenta tu supervivencia", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! El tráfico ilegal afecta gravemente a esta especie social.",
+            incorrecta: "La captura ilegal es una amenaza crítica para el periquito aliamarillo."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu aporte principal al ecosistema?",
+        opciones: [
+            { texto: "Dispersar semillas y mantener la diversidad vegetal", correcta: true, aspecto: "Aporte" },
+            { texto: "Controlar insectos del suelo", correcta: false, aspecto: "Aporte" },
+            { texto: "Eliminar carroña", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! Al consumir frutos y semillas, el periquito ayuda a la regeneración del bosque.",
+            incorrecta: "Su rol principal es la dispersión de semillas."
+        }
+    }
+],
+11: [ // Periquito alipunteado
+    {
+        situacion: "Te desplazas silenciosamente por el bosque en busca de alimento.",
+        opciones: [
+            { texto: "Consumir frutos pequeños y semillas de árboles nativos", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar insectos grandes en el suelo", correcta: false, aspecto: "Alimentación" },
+            { texto: "Alimentarte de carroña", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El periquito alipunteado es principalmente frugívoro y depende de árboles nativos para su alimentación.",
+            incorrecta: "No es carroñero ni insectívoro terrestre."
+        }
+    },
+    {
+        situacion: "Debes decidir en qué tipo de entorno permanecer.",
+        opciones: [
+            { texto: "Bosques montanos y altoandinos bien conservados", correcta: true, aspecto: "Hábitat" },
+            { texto: "Zonas abiertas del páramo", correcta: false, aspecto: "Hábitat" },
+            { texto: "Áreas urbanas", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! Esta especie depende de bosques continuos con buena cobertura vegetal.",
+            incorrecta: "Las áreas abiertas o urbanas no ofrecen alimento ni refugio adecuados."
+        }
+    },
+    {
+        situacion: "La noche se aproxima y necesitas descansar.",
+        opciones: [
+            { texto: "Dormir en cavidades naturales de árboles", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en el suelo del bosque", correcta: false, aspecto: "Refugio" },
+            { texto: "Permanecer volando durante la noche", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El periquito alipunteado utiliza cavidades y ramas de árboles para descansar.",
+            incorrecta: "Dormir expuesto aumenta el riesgo de depredación."
+        }
+    },
+    {
+        situacion: "La tala reduce la cobertura boscosa de tu territorio. ¿Qué sucede?",
+        opciones: [
+            { texto: "Pierdes alimento y sitios de anidación", correcta: true, aspecto: "Riesgos" },
+            { texto: "Te adaptas fácilmente a zonas abiertas", correcta: false, aspecto: "Riesgos" },
+            { texto: "No se ve afectada tu supervivencia", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! La deforestación afecta directamente a esta especie dependiente del bosque.",
+            incorrecta: "El periquito alipunteado es muy sensible a la pérdida de hábitat."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu principal aporte al ecosistema?",
+        opciones: [
+            { texto: "Dispersar semillas y mantener la diversidad vegetal", correcta: true, aspecto: "Aporte" },
+            { texto: "Controlar insectos del suelo", correcta: false, aspecto: "Aporte" },
+            { texto: "Eliminar carroña", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! Al consumir frutos y semillas, esta especie contribuye a la regeneración del bosque.",
+            incorrecta: "Su función ecológica principal es la dispersión de semillas."
+        }
+    }
+],
+12: [ // Loro aliamarillo
+    {
+        situacion: "Vuelas sobre el bosque altoandino buscando alimento.",
+        opciones: [
+            { texto: "Consumir frutos, semillas y flores de árboles nativos", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar pequeños animales", correcta: false, aspecto: "Alimentación" },
+            { texto: "Alimentarte de restos orgánicos", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El loro aliamarillo se alimenta principalmente de recursos vegetales del bosque.",
+            incorrecta: "No es carnívoro ni carroñero."
+        }
+    },
+    {
+        situacion: "Debes elegir el mejor lugar para permanecer con tu grupo.",
+        opciones: [
+            { texto: "Bosques altoandinos maduros y bien conservados", correcta: true, aspecto: "Hábitat" },
+            { texto: "Zonas abiertas del páramo", correcta: false, aspecto: "Hábitat" },
+            { texto: "Áreas urbanas", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! Esta especie depende de bosques maduros para alimentarse y reproducirse.",
+            incorrecta: "Las áreas abiertas o urbanas no cubren sus necesidades ecológicas."
+        }
+    },
+    {
+        situacion: "La noche llega y buscas un lugar seguro para descansar.",
+        opciones: [
+            { texto: "Dormir en cavidades de árboles grandes", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en el suelo", correcta: false, aspecto: "Refugio" },
+            { texto: "Permanecer volando", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El loro aliamarillo utiliza cavidades naturales para descansar y anidar.",
+            incorrecta: "Dormir sin refugio adecuado aumenta la vulnerabilidad."
+        }
+    },
+    {
+        situacion: "La captura ilegal y la pérdida de bosque aumentan. ¿Qué ocurre?",
+        opciones: [
+            { texto: "Disminuyen las poblaciones y se pierden sitios de anidación", correcta: true, aspecto: "Riesgos" },
+            { texto: "No hay impacto significativo", correcta: false, aspecto: "Riesgos" },
+            { texto: "Mejoran las condiciones de vida", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! El tráfico ilegal y la deforestación son las principales amenazas para esta especie.",
+            incorrecta: "Estas presiones afectan directamente su supervivencia."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu principal aporte al ecosistema?",
+        opciones: [
+            { texto: "Dispersar semillas y mantener la estructura del bosque", correcta: true, aspecto: "Aporte" },
+            { texto: "Controlar insectos del suelo", correcta: false, aspecto: "Aporte" },
+            { texto: "Eliminar carroña", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! El loro aliamarillo cumple un rol clave en la regeneración y mantenimiento del bosque.",
+            incorrecta: "Su aporte principal no está en la carroña ni el control de insectos."
+        }
+    }
+],
+13: [ // Loro orejiamarillo
+    {
+        situacion: "Te desplazas en bandada por el bosque altoandino buscando alimento.",
+        opciones: [
+            { texto: "Consumir frutos, semillas y brotes de palmas andinas", correcta: true, aspecto: "Alimentación" },
+            { texto: "Cazar pequeños animales", correcta: false, aspecto: "Alimentación" },
+            { texto: "Alimentarte de restos orgánicos", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El loro orejiamarillo depende en gran medida de frutos y semillas de palmas andinas.",
+            incorrecta: "No es carnívoro ni carroñero; su dieta es principalmente vegetal."
+        }
+    },
+    {
+        situacion: "Debes decidir dónde permanecer con tu grupo.",
+        opciones: [
+            { texto: "Bosques altoandinos con presencia de palmas de cera", correcta: true, aspecto: "Hábitat" },
+            { texto: "Zonas abiertas del páramo", correcta: false, aspecto: "Hábitat" },
+            { texto: "Áreas urbanas", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! Esta especie está estrechamente ligada a bosques con palmas de cera.",
+            incorrecta: "Sin palmas y bosque, el loro orejiamarillo no puede sobrevivir."
+        }
+    },
+    {
+        situacion: "La noche se aproxima y buscas un lugar seguro para descansar.",
+        opciones: [
+            { texto: "Dormir en cavidades de palmas y árboles altos", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en el suelo", correcta: false, aspecto: "Refugio" },
+            { texto: "Permanecer volando toda la noche", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El loro orejiamarillo utiliza cavidades en palmas para refugiarse y anidar.",
+            incorrecta: "Dormir sin refugio adecuado aumenta el riesgo de depredación."
+        }
+    },
+    {
+        situacion: "La tala de palmas y el tráfico ilegal aumentan. ¿Qué sucede?",
+        opciones: [
+            { texto: "Se pierden sitios de alimentación y reproducción", correcta: true, aspecto: "Riesgos" },
+            { texto: "No ocurre ningún impacto", correcta: false, aspecto: "Riesgos" },
+            { texto: "Mejoran las condiciones del ecosistema", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! La tala de palmas y la captura ilegal han puesto a esta especie en grave peligro.",
+            incorrecta: "Estas amenazas son las principales causas de su disminución poblacional."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu principal aporte al ecosistema?",
+        opciones: [
+            { texto: "Dispersar semillas y favorecer la regeneración del bosque", correcta: true, aspecto: "Aporte" },
+            { texto: "Controlar insectos del suelo", correcta: false, aspecto: "Aporte" },
+            { texto: "Eliminar carroña", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! El loro orejiamarillo es clave para la regeneración del bosque andino.",
+            incorrecta: "Su rol ecológico principal es la dispersión de semillas."
+        }
+    }
+],
+14: [ // Rastrojero de Cundinamarca
+    {
+        situacion: "Te mueves entre matorrales densos buscando alimento.",
+        opciones: [
+            { texto: "Buscar insectos y artrópodos entre ramas y hojas", correcta: true, aspecto: "Alimentación" },
+            { texto: "Consumir frutos grandes de árboles altos", correcta: false, aspecto: "Alimentación" },
+            { texto: "Alimentarte de semillas duras", correcta: false, aspecto: "Alimentación" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El rastrojero se alimenta principalmente de insectos que encuentra en la vegetación baja.",
+            incorrecta: "No es frugívoro ni granívoro; su dieta es insectívora."
+        }
+    },
+    {
+        situacion: "Un cambio en el entorno te obliga a decidir dónde permanecer.",
+        opciones: [
+            { texto: "Matorrales y bordes de bosque altoandino", correcta: true, aspecto: "Hábitat" },
+            { texto: "Zonas abiertas sin vegetación", correcta: false, aspecto: "Hábitat" },
+            { texto: "Lagunas del páramo", correcta: false, aspecto: "Hábitat" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Excelente! El rastrojero depende de matorrales densos para alimentarse y refugiarse.",
+            incorrecta: "Los ambientes sin vegetación no ofrecen protección ni alimento."
+        }
+    },
+    {
+        situacion: "Al caer la noche buscas refugio.",
+        opciones: [
+            { texto: "Ocultarte entre ramas y vegetación cerrada", correcta: true, aspecto: "Refugio" },
+            { texto: "Dormir en el suelo descubierto", correcta: false, aspecto: "Refugio" },
+            { texto: "Dormir en ramas altas sin cobertura", correcta: false, aspecto: "Refugio" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Correcto! El rastrojero utiliza la vegetación densa como refugio.",
+            incorrecta: "Dormir expuesto incrementa el riesgo de depredación."
+        }
+    },
+    {
+        situacion: "La quema y eliminación de matorrales aumenta. ¿Qué ocurre?",
+        opciones: [
+            { texto: "Pierdes hábitat y disminuye tu población", correcta: true, aspecto: "Riesgos" },
+            { texto: "Te adaptas fácilmente a zonas sin vegetación", correcta: false, aspecto: "Riesgos" },
+            { texto: "No hay ningún impacto", correcta: false, aspecto: "Riesgos" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Así es! La pérdida de matorrales afecta directamente al rastrojero de Cundinamarca.",
+            incorrecta: "Esta especie es muy dependiente de la vegetación densa."
+        }
+    },
+    {
+        situacion: "¿Cuál es tu aporte al ecosistema?",
+        opciones: [
+            { texto: "Controlar poblaciones de insectos", correcta: true, aspecto: "Aporte" },
+            { texto: "Dispersar semillas grandes", correcta: false, aspecto: "Aporte" },
+            { texto: "Polinizar flores", correcta: false, aspecto: "Aporte" }
+        ],
+        retroalimentacion: {
+            correcta: "¡Exacto! El rastrojero ayuda a regular poblaciones de insectos en los matorrales.",
+            incorrecta: "Su función ecológica está ligada al control de insectos."
+        }
+    }
+]
+        };
+
+        // VARIABLES DEL JUEGO
+        let avesSeleccionadas = [];
+        let estacionActual = 0;
+        let aveActual = 0;
+        let puntajes = [];
+        let puntajeTotal = 0;
+
+        // FUNCIONES DEL JUEGO
+        function iniciarJuego() {
+            // Seleccionar 5 aves aleatorias
+            avesSeleccionadas = [...AVES_BANCO]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 5);
+            
+            puntajes = [0, 0, 0, 0, 0];
+            estacionActual = 0;
+            aveActual = 0;
+            puntajeTotal = 0;
+
+            // Cambiar pantallas
+            document.getElementById('inicio-screen').classList.add('hidden');
+            document.getElementById('juego-screen').classList.remove('hidden');
+
+            cargarEstacion();
+        }
+		function mezclarOpciones(opciones) {
+			return [...opciones].sort(() => Math.random() - 0.5);
+}
+
+        function cargarEstacion() {
+            const aveInfo = avesSeleccionadas[aveActual];
+            const aveId = aveInfo.id;
+            const estacionDelAve = estacionActual % 5;
+            const estacion = ESTACIONES_BASE[aveId][estacionDelAve];
+
+            // Actualizar barra de progreso
+            document.getElementById('estacion-actual').textContent = `Estación ${estacionActual + 1} de 25`;
+            document.getElementById('puntos-actuales').textContent = `Puntos: ${puntajeTotal}/25`;
+            document.getElementById('progress-fill').style.width = `${((estacionActual + 1) / 25) * 100}%`;
+
+            // Actualizar info del ave
+            document.getElementById('ave-nombre').textContent = aveInfo.nombre;
+            document.getElementById('ave-cientifico').textContent = aveInfo.nombreCientifico;
+            document.getElementById('ave-descripcion').textContent = aveInfo.descripcion;
+            document.getElementById('puntaje-ave').textContent = puntajes[aveActual];
+			document.getElementById('ave-imagen').src = aveInfo.imagen;
+			document.getElementById('ave-imagen').alt = aveInfo.nombre;
+
+            // Cargar situación
+            document.getElementById('situacion-texto').textContent = estacion.situacion;
+
+            // Cargar opciones
+            // Mezclar opciones para evitar patrones
+			const opcionesMezcladas = mezclarOpciones(estacion.opciones);
+
+			// Guardar las opciones mezcladas en la estación actual
+			estacion.opcionesMezcladas = opcionesMezcladas;
+
+			const opcionesHTML = opcionesMezcladas.map((opcion, index) => 
+				`<button class="opcion-btn" onclick="seleccionarRespuesta(${index})">${opcion.texto}</button>`
+			).join('');
+            document.getElementById('opciones').innerHTML = opcionesHTML;
+
+            // Mostrar opciones, ocultar retroalimentación
+            document.getElementById('opciones-container').classList.remove('hidden');
+            document.getElementById('retroalimentacion-container').classList.add('hidden');
+        }
+
+        function seleccionarRespuesta(indice) {
+            const aveInfo = avesSeleccionadas[aveActual];
+            const aveId = aveInfo.id;
+            const estacionDelAve = estacionActual % 5;
+            const estacion = ESTACIONES_BASE[aveId][estacionDelAve];
+			const opcion = estacion.opcionesMezcladas[indice];
+
+            const esCorrecta = opcion.correcta;
+
+            // Actualizar puntajes
+            if (esCorrecta) {
+                puntajes[aveActual]++;
+                puntajeTotal++;
+            }
+
+            // Mostrar retroalimentación
+            const retroDiv = document.getElementById('retroalimentacion');
+            retroDiv.className = `retroalimentacion ${esCorrecta ? 'correcta' : 'incorrecta'}`;
+            
+            document.getElementById('retro-titulo').textContent = esCorrecta ? '✅ ¡Correcto!' : '❌ Incorrecto';
+            document.getElementById('retro-texto').textContent = esCorrecta 
+                ? estacion.retroalimentacion.correcta 
+                : estacion.retroalimentacion.incorrecta;
+
+            // Actualizar botón de siguiente
+            document.getElementById('btn-siguiente-texto').textContent = 
+                estacionActual < 24 ? 'Siguiente estación →' : 'Ver resultados finales';
+
+            // Ocultar opciones, mostrar retroalimentación
+            document.getElementById('opciones-container').classList.add('hidden');
+            document.getElementById('retroalimentacion-container').classList.remove('hidden');
+        }
+
+        function siguienteEstacion() {
+            if (estacionActual < 24) {
+                estacionActual++;
+                
+                // Cambiar de ave cada 5 estaciones
+                if (estacionActual % 5 === 0) {
+                    aveActual++;
+                }
+
+                cargarEstacion();
+            } else {
+                mostrarResultados();
+            }
+        }
+
+        function mostrarResultados() {
+            const avesSupervivientes = puntajes.filter(p => p >= 3).length;
+            
+            let resultado;
+			            if (puntajeTotal >= 18) {
+                resultado = {
+                    titulo: "🏆 ¡Eres un Guardián del Páramo!",
+                    clase: "guardian",
+                    mensaje: "Tus decisiones demostraron un profundo conocimiento del ecosistema y de las aves del páramo. El páramo está en buenas manos."
+                };
+            } else if (puntajeTotal >= 10) {
+                resultado = {
+                    titulo: "🌿 Buen aprendiz ambiental",
+                    clase: "aprendiz",
+                    mensaje: "Vas por buen camino. Con un poco más de conocimiento, podrás proteger aún mejor a las aves del páramo."
+                };
+            } else {
+                resultado = {
+                    titulo: "📘 Aún debes aprender más",
+                    clase: "principiante",
+                    mensaje: "El páramo necesita guardianes informados. Te invitamos a seguir aprendiendo sobre sus aves y su conservación."
+                };
+            }
+
+            // Cambiar pantallas
+            document.getElementById('juego-screen').classList.add('hidden');
+            document.getElementById('resultado-screen').classList.remove('hidden');
+
+            // Mostrar resultado principal
+            const tituloResultado = document.getElementById('resultado-titulo');
+            tituloResultado.textContent = resultado.titulo;
+            tituloResultado.className = `resultado-titulo ${resultado.clase}`;
+
+            document.getElementById('resultado-mensaje').textContent = resultado.mensaje;
+            document.getElementById('puntaje-final').textContent = `${puntajeTotal}/25`;
+            document.getElementById('aves-supervivientes').textContent = `${avesSupervivientes} de 5 aves`;
+
+            // Construir detalle por ave
+            const detalleContainer = document.getElementById('detalle-aves-container');
+            detalleContainer.innerHTML = '';
+
+            avesSeleccionadas.forEach((ave, index) => {
+                const sobrevive = puntajes[index] >= 3;
+
+                const aveHTML = `
+                    <div class="ave-resultado ${sobrevive ? 'sobrevive' : 'no-sobrevive'}">
+                        <div class="ave-resultado-info">
+                            <strong>${ave.nombre}</strong><br>
+                            <span style="font-style: italic; font-size: 0.9em;">${ave.nombreCientifico}</span>
+                        </div>
+                        <div class="ave-resultado-puntaje">
+                            <div class="puntaje">${puntajes[index]}/5</div>
+                            <div class="estado">${sobrevive ? 'Sobrevive' : 'No sobrevive'}</div>
+                        </div>
+                    </div>
+                `;
+                detalleContainer.innerHTML += aveHTML;
+            });
+        }
+
+        function reiniciarJuego() {
+            // Reiniciar variables
+            avesSeleccionadas = [];
+            estacionActual = 0;
+            aveActual = 0;
+            puntajes = [];
+            puntajeTotal = 0;
+
+            // Volver a pantalla inicial
+            document.getElementById('resultado-screen').classList.add('hidden');
+            document.getElementById('inicio-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

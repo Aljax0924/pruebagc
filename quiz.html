@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz del Páramo</title>
+	<link rel="icon" type="image/png" sizes="128x128" href="quizicon.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="quizicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="quizicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="quizicon.png">
+	<link rel="apple-touch-icon" href="quizicon.png">
+	<meta name="theme-color" content="#16A34A">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            color: #764ba2;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .options {
+            display: flex;
+            gap: 12px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            text-align: center;
+            display: none;
+        }
+
+        .score {
+            font-size: 3em;
+            color: #667eea;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .result-message {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+		.logo-title {
+			display: flex;              /* ← clave */
+			align-items: center;        /* centra verticalmente */
+			justify-content: center;    /* centra todo */
+			gap: 12px;                  /* espacio entre logo y texto */
+			margin-bottom: 10px;
+		}
+
+		.logo-img {
+			width: 100px;                /* tamaño del logo */
+			height: auto;
+		}
+		@media (max-width: 480px) {
+		.logo-title {
+        flex-direction: column;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-title">
+				<img src="quiz.png" alt="Logo Guardianes del Páramo" class="logo-img">
+				<h1>Quiz de Páramo</h1>
+			</div>
+        <p class="subtitle">Guardianes de Chingaza</p>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="quizContainer">
+            <div class="question-container">
+                <div class="question-number" id="questionNumber"></div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+            <button class="button" id="nextButton" onclick="nextQuestion()">Siguiente</button>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <h2>¡Quiz Completado! 🎉</h2>
+            <div class="score" id="finalScore"></div>
+            <div class="result-message" id="resultMessage"></div>
+            <button class="button" onclick="restartQuiz()">🔄 Volver a Jugar</button>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [
+            {
+                question: "¿Cuál es una característica clave del páramo de Chingaza para las aves?",
+                options: ["Su clima cálido y seco", "Su vegetación que ofrece alimento y refugio", "Su cercanía a zonas urbanas", "Su baja humedad"],
+                correct: 1
+            },
+            {
+                question: "¿Por qué las aves son importantes para el ecosistema de Chingaza?",
+                options: ["Porque atraen turistas", "Porque controlan insectos y dispersan semillas", "Porque producen oxígeno", "Porque reemplazan a los mamíferos"],
+                correct: 1
+            },
+            {
+                question: "¿Qué tipo de aves se destacan en el PNN Chingaza?",
+                options: ["Aves marinas", "Aves desérticas", "Aves altoandinas y de páramo", "Aves tropicales costeras"],
+                correct: 2
+            },
+            {
+                question: "¿Qué significa que un ave sea endémica?",
+                options: ["Que migra todos los años", "Que vive en varios países", "Que solo habita en una región específica", "Que está en peligro crítico"],
+                correct: 2
+            },
+            {
+                question: "¿Cuál es una amenaza para las aves del PNN Chingaza?",
+                options: ["Observación responsable", "Investigación científica", "Pérdida de hábitat", "Educación ambiental"],
+                correct: 2
+            },
+            {
+                question: "¿Qué ave cumple un rol importante como polinizadora en Chingaza?",
+                options: ["Cóndor de los Andes", "Búho real", "Colibrí", "Águila pescadora"],
+                correct: 2
+            },
+            {
+                question: "¿Qué acción ayuda a la conservación de las aves en Chingaza?",
+                options: ["Alimentarlas con comida humana", "Acercarse a los nidos", "Respetar senderos y normas del parque", "Capturarlas para fotografiarlas"],
+                correct: 2
+            },
+            {
+                question: "¿Por qué algunas aves de Chingaza están en categorías de amenaza?",
+                options: ["Porque no se reproducen", "Porque no vuelan", "Por actividades humanas y cambio del hábitat", "Porque son nocturnas"],
+                correct: 2
+            },
+            {
+                question: "¿Qué tipo de ave ayuda al control natural de plagas?",
+                options: ["Aves nectarívoras", "Aves carroñeras", "Aves insectívoras", "Aves acuáticas"],
+                correct: 2
+            },
+            {
+                question: "¿Cuál es una función clave de las aves frugívoras?",
+                options: ["Controlar roedores", "Dispersar semillas y regenerar bosques", "Limpiar ríos", "Regular la temperatura"],
+                correct: 1
+            },
+            {
+                question: "¿Por qué el PNN Chingaza es importante para la avifauna?",
+                options: ["Porque tiene zonas industriales", "Porque es un área urbana", "Porque protege ecosistemas estratégicos como el páramo", "Porque tiene playas"],
+                correct: 2
+            },
+            {
+                question: "¿Qué se debe hacer si se observa un ave herida en el parque?",
+                options: ["Llevarla a casa", "Intentar curarla", "Informar a las autoridades del parque", "Ignorarla"],
+                correct: 2
+            },
+            {
+                question: "¿Qué grupo de aves es común encontrar en Chingaza?",
+                options: ["Pingüinos", "Flamencos", "Rapaces andinas", "Aves marinas"],
+                correct: 2
+            },
+            {
+                question: "¿Qué significa conservación de aves?",
+                options: ["No permitir ninguna visita humana", "Mantenerlas en cautiverio", "Proteger las especies y su hábitat de forma sostenible", "Eliminar especies invasoras solamente"],
+                correct: 2
+            },
+            {
+                question: "¿Qué tipo de aves se benefician de los cuerpos de agua en Chingaza?",
+                options: ["Aves desérticas", "Aves acuáticas y semiacuáticas", "Aves nocturnas", "Aves urbanas"],
+                correct: 1
+            },
+            {
+                question: "¿Cuál es una buena práctica durante el avistamiento de aves?",
+                options: ["Usar parlantes para atraerlas", "Seguirlas hasta su nido", "Observar a distancia y en silencio", "Alimentarlas"],
+                correct: 2
+            },
+            {
+                question: "¿Por qué es importante educar sobre las aves del PNN Chingaza?",
+                options: ["Para aumentar la caza", "Para entrenar guías turísticos", "Para generar conciencia y protección", "Para controlar su reproducción"],
+                correct: 2
+            },
+            {
+                question: "¿Qué ave es símbolo de los ecosistemas altoandinos?",
+                options: ["Loro amazónico", "Tucán", "Cóndor de los Andes", "Guacamaya"],
+                correct: 2
+            },
+            {
+                question: "¿Qué sucede si se altera el hábitat de las aves?",
+                options: ["Nada cambia", "Aumenta la población", "Se reduce su supervivencia", "Se vuelven domésticas"],
+                correct: 2
+            },
+            {
+                question: "¿Cuál es el objetivo de 'Guardianes de Chingaza'?",
+                options: ["Promover la caza controlada", "Vender aves", "Divulgar y apoyar la conservación de la avifauna", "Reemplazar autoridades ambientales"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function startQuiz() {
+            currentQuestions = shuffleArray(allQuestions).slice(0, 5);
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedAnswer = null;
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('resultContainer').style.display = 'none';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            document.getElementById('questionNumber').textContent = `Pregunta ${currentQuestionIndex + 1} de 5`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            document.getElementById('nextButton').disabled = true;
+            updateProgress();
+        }
+
+        function selectOption(index) {
+            if (selectedAnswer !== null) return;
+            
+            selectedAnswer = index;
+            const question = currentQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            options[index].classList.add('selected');
+            
+            setTimeout(() => {
+                options[question.correct].classList.add('correct');
+                if (index !== question.correct) {
+                    options[index].classList.remove('selected');
+                    options[index].classList.add('incorrect');
+                } else {
+                    score++;
+                }
+                document.getElementById('nextButton').disabled = false;
+            }, 300);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            selectedAnswer = null;
+            
+            if (currentQuestionIndex < currentQuestions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function showResults() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('resultContainer').style.display = 'block';
+            document.getElementById('finalScore').textContent = `${score} / 5`;
+            
+            let message = '';
+            if (score === 5) {
+                message = '¡Excelente! Eres un verdadero Guardián de Chingaza 🏆';
+            } else if (score >= 3) {
+                message = '¡Muy bien! Conoces bastante sobre las aves de Chingaza 🌟';
+            } else {
+                message = 'Sigue aprendiendo sobre nuestras aves. ¡Tú puedes! 💪';
+            }
+            document.getElementById('resultMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+
+        startQuiz();
+    </script>
+</body>
+</html>

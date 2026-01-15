@@ -1,0 +1,2246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="manifest" href="manifest.json">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Guardianes del Páramo</title>
+	<link rel="icon" type="image/png" sizes="128x128" href="logoicon.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="logoicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="logoicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="logoicon.png">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="apple-touch-icon" href="logoicon.png">
+	<meta name="theme-color" content="#16A34A">
+<style>
+    /* =========================================
+       1. CONFIGURACIÓN GLOBAL (RESET)
+       ========================================= */
+    :root {
+        --primary: #1e3c72;
+        --secondary: #2a5298;
+        --accent: #16a34a;
+        --text-dark: #333;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #333;
+        line-height: 1.6;
+        min-height: 100vh;
+        /* Variable para tamaño de fuente (Accesibilidad) */
+        font-size: var(--font-scale, 1rem); 
+        transition: font-size 0.2s ease;
+    }
+
+    /* =========================================
+       2. HEADER (TU CÓDIGO ORIGINAL)
+       ========================================= */
+    header {
+        background: rgba(30, 60, 114, 0.95);
+        color: white;
+        position: sticky; /* Como lo tenías originalmente */
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        display: flex;
+        align-items: center;
+        padding: 0.6rem 1rem;
+        border-radius: 14px; /* Tu borde redondeado original */
+    }
+    
+    header.hide { transform: translateY(-100%); }
+
+    .header-main {
+        display: flex; align-items: center; gap: 0.6rem; flex-grow: 1;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        color: white;
+    }
+
+    .logo { width: 80px; height: auto; transition: transform 0.3s; }
+    .logo:hover { transform: scale(1.05); }
+
+    /* Botón Menú */
+    .menu-toggle {
+        background: transparent;
+        border: 2px solid white;
+        color: white;
+        padding: 0.3rem 0.8rem;
+        font-size: 1.4rem;
+        border-radius: 12px;
+        cursor: pointer;
+    }
+
+    /* =========================================
+       3. MENÚ LATERAL
+       ========================================= */
+    #sideMenu {
+        position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+        background: #0f1f3d; padding: 1.5rem;
+        transform: translateX(-100%); transition: transform 0.35s ease;
+        z-index: 1900; box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+    }
+    #sideMenu.open { transform: translateX(0); }
+    #sideMenu ul { list-style: none; margin-top: 2rem; }
+    #sideMenu button {
+        width: 100%; background: none; border: none; color: white;
+        padding: 1rem; text-align: left; font-size: 1.1rem; cursor: pointer;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    #sideMenu button:hover { background: rgba(255,255,255,0.1); padding-left: 1.5rem; transition: 0.3s; }
+    .close-side { float: right; background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; }
+	/* Aseguramos que el menú lateral sea un contenedor flexible */
+	#sideMenu {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between; /* Empuja el contenido a los extremos */
+	}
+
+		/* Contenedor al final del menú */
+	.side-menu-footer {
+		padding: 25px;
+		text-align: center;
+		margin-top: auto; /* Empuja hacia abajo */
+		background: transparent; /* CLAVE: Sin color de fondo */
+		border-top: 1px solid rgba(0,0,0,0.05); /* Opcional: una línea muy sutil */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	/* Imagen del logo */
+	.side-logo-bottom {
+		max-width: 130px; /* Tamaño ajustable */
+		height: auto;
+		background: transparent; /* Asegura que no tenga fondo propio */
+		display: block;
+		mix-blend-mode: multiply; /* Opcional: Ayuda a integrar si el logo tiene un blanco muy leve de fondo */
+		filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); /* Le da un poco de relieve sin quitar transparencia */
+	}
+
+	.side-logo-bottom:hover {
+		opacity: 1;
+	}
+
+    /* =========================================
+       4. CONTENIDO GENERAL
+       ========================================= */
+    .container {
+        max-width: 1200px; margin: 2rem auto; padding: 2rem;
+        background: white; border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .section { display: none; animation: fadeIn 0.5s ease; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+
+    h2 { color: #1e3c72; font-size: 2rem; border-bottom: 3px solid #2a5298; margin-bottom: 1.5rem; }
+    h3 { color: #2a5298; font-size: 1.5rem; margin: 1.5rem 0 1rem; }
+    p { margin-bottom: 1rem; text-align: justify; }
+
+    /* =========================================
+       5. JUEGOS (ESTRUCTURA ORIGINAL DE 3 COLUMNAS)
+       ========================================= */
+    .games-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 por línea EXACTOS */
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .game-card {
+        background: white;
+        border-radius: 18px;
+        padding: 1rem;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.15);
+        cursor: pointer;
+        aspect-ratio: 1 / 1;
+        transition: transform 0.25s ease;
+    }
+    .game-card:hover { transform: translateY(-6px) scale(1.05); }
+    .game-card img { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
+
+    /* Banner Próximamente (Estilo tarjeta pero sin click) */
+    .game-coming {
+        background: #f0f9ff;
+        border: 2px dashed #2a5298;
+        border-radius: 18px;
+        display: flex; align-items: center; justify-content: center;
+        aspect-ratio: 1 / 1;
+        cursor: default;
+    }
+    .game-coming img { width: 100%; height: 100%; object-fit: contain; }
+
+    /* Media Queries originales de Juegos */
+    @media (max-width: 768px) {
+        .games-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+        .games-grid { grid-template-columns: 1fr; }
+    }
+
+    /* =========================================
+       6. FOOTER (TU CÓDIGO ORIGINAL)
+       ========================================= */
+    .footer {
+        background: #0f172a;
+        color: #ffffff;
+        padding: 2rem 1.5rem;
+        margin-top: 3rem;
+    }
+
+    .footer-content {
+        max-width: 1100px; margin: 0 auto;
+        display: flex; align-items: center; gap: 1.2rem;
+    }
+
+    .footer-logo {
+        width: 350px; /* Tamaño original grande */
+        height: auto; flex-shrink: 0;
+    }
+
+    .footer-text p { margin: 0.4rem 0; font-size: 0.9rem; opacity: 0.9; }
+
+    .footer-social { display: flex; gap: 0.7rem; margin: 0.8rem 0; align-items: center; }
+    .footer-social a {
+        display: inline-flex; width: 34px; height: 34px;
+        align-items: center; justify-content: center;
+        border-radius: 50%; background: rgba(255,255,255,0.08);
+        transition: 0.2s;
+    }
+    .footer-social a:hover { transform: scale(1.15); background: rgba(255,255,255,0.2); }
+    
+    .footer-feedback { margin-top: 0.8rem; }
+    .feedback-btn {
+        background: transparent; color: white; border: 1px solid rgba(255,255,255,0.5);
+        padding: 0.4rem 0.9rem; border-radius: 20px; cursor: pointer;
+    }
+
+    /* Responsive Footer Original */
+    @media (max-width: 600px) {
+        .footer-content { flex-direction: column; text-align: center; }
+        .footer-logo { width: 150px; margin-bottom: 0.8rem; } /* Ajuste lógico para móvil */
+        .footer-social { justify-content: center; }
+    }
+
+    /* =========================================
+       7. BIRD CARDS (ESTILO ORIGINAL)
+       ========================================= */
+    .bird-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem; margin-top: 2rem;
+    }
+    .bird-card {
+        background: linear-gradient(135deg, #667eea 0%, #4b4fa2 100%);
+        color: white; padding: 1.5rem; border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease; cursor: pointer;
+    }
+    .bird-card:hover { transform: translateY(-5px) scale(1.03); }
+    .bird-card h4 { font-size: 1.3rem; margin-bottom: 0.5rem; color: white; }
+    .scientific-name { font-style: italic; opacity: 0.9; margin-bottom: 1rem; color: #e0e7ff; }
+
+    /* Estados */
+    .status {
+        display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px;
+        font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem;
+        background: rgba(0,0,0,0.2);
+    }
+    .status.critical { background: #dc2626 !important; }
+    .status.endangered { background: #ea580c !important; }
+    .status.vulnerable { background: #f59e0b !important; }
+    .status.endemic { background: #7c3aed !important; }
+    .status.important { background: #0ea5e9 !important; }
+
+    /* =========================================
+       8. OTROS ELEMENTOS (Mapa, Modal, Hero)
+       ========================================= */
+    /* Hero Banner */
+    .hero-banner {
+        width: 100%; height: 200px;
+        background: linear-gradient(135deg, rgba(13, 58, 95, 0.7), rgba(30, 144, 255, 0.7)),
+                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 500"><rect fill="%232d6a4f" width="1400" height="500"/><path fill="%231b4332" opacity="0.3" d="M0,300 Q350,200 700,300 T1400,300 L1400,500 L0,500 Z"/></svg>');
+        background-size: cover; border-radius: 15px;
+        display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .hero-text { color: white; font-size: 2rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); z-index: 2; text-align: center; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .stat-box { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 10px; text-align: center; }
+    .stat-box .number { font-size: 2.5rem; font-weight: bold; display: block; }
+
+    /* Mapa */
+    .map-section { display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; margin-top: 2rem; }
+    .map-container { position: relative; border-radius: 15px; overflow: hidden; }
+    .map-container img { width: 100%; display: block; }
+    .map-point {
+        position: absolute; width: 34px; height: 34px; background: #dc2626; color: white;
+        border: 2px solid white; border-radius: 50%; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+    }
+    .info-box { background: #f0f9ff; padding: 1.5rem; border-left: 4px solid #2a5298; border-radius: 5px; }
+
+	/* =========================================
+       MODAL CORREGIDO (SIN SCROLL INTERNO + COMPACTO)
+       ========================================= */
+
+    /* 1. EL FONDO (OVERLAY) */
+    .modal-overlay {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(4px);
+        z-index: 2000;
+        
+        /* Ajuste clave para evitar scroll interno: */
+        overflow-y: auto; /* El scroll está aquí, en toda la pantalla */
+        padding: 20px 10px; /* Margen para móviles */
+        align-items: flex-start; /* Alineamos arriba para que si crece no se corte */
+    }
+
+    /* 2. LA TARJETA (MODAL) */
+    .modal {
+        background: #ffffff;
+        width: 100%; max-width: 550px; /* Ancho ideal de lectura */
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        overflow: hidden;
+        position: relative;
+        margin: 2rem auto; /* Centrado con margen arriba/abajo */
+        
+        /* Dejamos que crezca según el texto */
+        height: auto; 
+        display: flex; flex-direction: column;
+        
+        animation: slideDown 0.4s ease;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* 3. CABECERA (TÍTULO) */
+    .modal-header {
+        background: white;
+        padding: 1.5rem 2rem 0.5rem;
+        text-align: center; /* SOLUCIÓN: Título centrado, no esquineado */
+    }
+
+    .modal-header h2 {
+        font-size: 1.8rem; 
+        color: #1e3c72; 
+        margin: 0; 
+        line-height: 1.2;
+    }
+
+    .scientific {
+        font-family: 'Georgia', serif;
+        font-style: italic; 
+        color: #64748b; 
+        font-size: 1rem; 
+        margin-top: 0.3rem;
+        display: block;
+    }
+
+    /* Botón Cerrar */
+    .modal-close {
+        position: absolute; top: 15px; right: 15px;
+        width: 32px; height: 32px;
+        background: #f1f5f9; color: #64748b;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem; cursor: pointer;
+        transition: 0.2s;
+    }
+    .modal-close:hover { background: #fee2e2; color: #dc2626; }
+
+    /* 4. IMAGEN (COMPLETA Y PEQUEÑA) */
+	
+/* =========================================
+       AJUSTE: IMAGEN MÁS PEQUEÑA Y CONTENIDA
+       ========================================= */
+
+    .modal-image-container {
+        width: 100%;
+        height: 140px; /* REDUCIDO: Antes era 180px o 250px. Esto la hace pequeña. */
+        background: radial-gradient(circle, #f8fafc 0%, #e2e8f0 100%);
+        
+        /* Centrado perfecto */
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+        
+        position: relative;
+        overflow: hidden;
+        cursor: zoom-in;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .modal-image-container img {
+        height: 100%;       /* Ocupa toda la altura disponible (los 140px) */
+        width: auto;        /* El ancho se calcula solo para no deformarse */
+        max-width: 100%;    /* Límite de ancho */
+        object-fit: contain; /* CLAVE: Muestra la foto entera sin recortes */
+        
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); /* Sombra suave a la silueta */
+        transition: transform 0.3s ease;
+    }
+
+    /* Efecto Zoom al pasar mouse */
+    .modal-image-container:hover img {
+        transform: scale(1.1);
+    }
+
+    /* Créditos y Botón "Ver completa" (Ajustados para el tamaño pequeño) */
+    .image-credit {
+        position: absolute; bottom: 0; left: 0; width: 100%;
+        background: rgba(0,0,0,0.8); color: white;
+        font-size: 0.7rem; padding: 4px; text-align: center;
+        opacity: 0; transition: 0.3s; pointer-events: none;
+    }
+    
+    .modal-image-container:hover .image-credit { opacity: 1; }
+
+    /* Etiqueta de lupa más pequeña */
+    .modal-image-container::after {
+        content: "🔍";
+        position: absolute; top: 10px; right: 10px;
+        background: rgba(255,255,255,0.9); padding: 4px;
+        border-radius: 50%; font-size: 0.8rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        pointer-events: none;
+    }
+
+    /* 5. CUERPO (TEXTO) */
+    .modal-body {
+        padding: 1.5rem 2rem 2rem;
+        background: #fff;
+        /* Quitamos overflow para que no haya scroll interno */
+    }
+
+    /* Fila Superior: Estado + QR */
+    .modal-top-row {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 1.2rem; 
+        padding-bottom: 0.8rem; 
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .modal-status {
+        padding: 0.3rem 1rem; border-radius: 20px;
+        font-weight: bold; font-size: 0.75rem; text-transform: uppercase;
+        color: white; background: #64748b;
+    }
+
+/* =========================================
+       ESTILO QR (INTERACTIVO)
+       ========================================= */
+    .modal-qr-inline img {
+        width: 45px; 
+        height: 45px; 
+        padding: 3px; 
+        border: 1px solid #e2e8f0; 
+        border-radius: 6px;
+        
+        /* Indicadores de interactividad */
+        cursor: zoom-in; 
+        transition: transform 0.2s ease, border-color 0.2s;
+        background: white;
+    }
+
+    .modal-qr-inline img:hover {
+        transform: scale(1.2); /* Crece un poco al pasar el mouse */
+        border-color: #94a3b8;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    #modalInfo { 
+        font-size: 1rem; 
+        line-height: 1.6; 
+        color: #334155; 
+        margin-bottom: 1.5rem; 
+        text-align: justify; /* Texto justificado se ve mejor centrado */
+    }
+
+    /* Cajitas Extra */
+    .modal-extra {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.8rem;
+    }
+    .modal-extra div {
+        background: #f8fafc; border: 1px solid #e2e8f0;
+        padding: 0.6rem; border-radius: 8px; font-size: 0.85rem;
+    }
+
+    /* 6. VISOR PANTALLA COMPLETA */
+    .image-viewer {
+        display: none; position: fixed; inset: 0; z-index: 9999;
+        background: rgba(0,0,0,0.95);
+        justify-content: center; align-items: center; cursor: zoom-out;
+    }
+    .image-viewer img {
+        max-width: 95vw; max-height: 95vh;
+        border-radius: 4px; animation: popIn 0.3s;
+    }
+    @keyframes popIn { from{transform:scale(0.8); opacity:0;} to{transform:scale(1);opacity:1;} }
+
+    /* Panel Accesibilidad */
+    .accessibility-panel { position: fixed; top: 80px; right: 10px; display: flex; flex-direction: column; gap: 8px; z-index: 2100; }
+    .accessibility-panel button { width: 38px; height: 38px; border-radius: 50%; background: #1e3c72; color: white; border: 1px solid white; cursor: pointer; }
+
+    /* Layout Imagen Lateral */
+    .side-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; margin: 2rem 0; align-items: start; }
+    .side-layout.reverse { direction: rtl; } .side-layout.reverse > * { direction: ltr; }
+    .side-image img { width: 100%; border-radius: 15px; }
+
+    /* Responsive General */
+    @media (max-width: 768px) {
+        .container { padding: 1rem; width: 95%; margin: 1rem auto; }
+        .map-section, .side-layout, .side-layout.reverse { grid-template-columns: 1fr; direction: ltr; }
+        h1 { font-size: 1.4rem; }
+    }
+    
+    /* Alto Contraste */
+    body.high-contrast { background: #000; color: #fff; }
+    body.high-contrast .container, body.high-contrast .modal { background: #000; border: 1px solid #fff; }
+	
+	/* =========================================
+       MEJORA VISUAL: CONTROLES DE LECTURA (TTS)
+       ========================================= */
+    
+    /* Estilo base del botón (Píldora moderna) */
+    .read-btn {
+        /* Degradado llamativo (Azul a Turquesa) */
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.4rem;
+        border-radius: 50px; /* Bordes totalmente redondos */
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        
+        /* Flexbox para alinear texto e icono */
+        display: inline-flex; 
+        align-items: center; 
+        gap: 8px;
+        
+        /* Sombra suave */
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.25);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Rebote suave */
+        margin-bottom: 1.5rem;
+        margin-right: 0.5rem;
+    }
+
+    /* Agregamos iconos automáticamente con CSS */
+    .read-btn:not(.stop)::before {
+        content: "🔊"; /* Icono de altavoz */
+        font-size: 1.1rem;
+    }
+
+    /* Efecto Hover (Al pasar el mouse) */
+    .read-btn:hover {
+        transform: translateY(-3px) scale(1.02);
+        background: linear-gradient(135deg, #2a5298 0%, #00f2fe 100%); /* Se ilumina */
+        box-shadow: 0 8px 20px rgba(0, 242, 254, 0.4);
+    }
+
+    /* Efecto Click */
+    .read-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* --- Botón DETENER (Estilo Alerta) --- */
+    .read-btn.stop {
+        background: #fff; /* Fondo blanco */
+        color: #dc2626;   /* Texto rojo */
+        border: 2px solid #dc2626;
+        box-shadow: none;
+    }
+
+    .read-btn.stop::before {
+        content: "⏹"; /* Icono de stop */
+        font-size: 1.1rem;
+    }
+
+    .read-btn.stop:hover {
+        background: #dc2626;
+        color: white;
+        box-shadow: 0 6px 15px rgba(220, 38, 38, 0.3);
+        border-color: #dc2626;
+    }
+
+    /* =========================================
+       MEJORA VISUAL: PANEL DE ACCESIBILIDAD
+       ========================================= */
+    .accessibility-panel {
+        position: fixed;
+        top: 90px;
+        right: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 2100;
+        
+        /* Fondo de cristal (Glassmorphism) */
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        padding: 8px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .accessibility-panel button {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        
+        /* Estilo base de los botones redondos */
+        background: white;
+        color: #1e3c72;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .accessibility-panel button:hover {
+        background: #1e3c72;
+        color: white;
+        transform: scale(1.15);
+        box-shadow: 0 4px 10px rgba(30, 60, 114, 0.4);
+    }
+	/* =========================================
+       CORRECCIÓN: MENÚ DE IDIOMAS (VERTICAL Y DESPLEGABLE)
+       ========================================= */
+    
+    /* Contenedor del botón planeta */
+    .lang-accessibility {
+        position: relative; /* Necesario para posicionar el menú flotante */
+    }
+
+    /* El menú desplegable (oculto por defecto) */
+    .lang-options {
+        display: none; /* OCULTO INICIALMENTE */
+        
+        position: absolute;
+        right: 55px; /* Se despliega a la IZQUIERDA del botón */
+        top: 0;
+        
+        /* Diseño vertical */
+        flex-direction: column;
+        min-width: 140px;
+        background: rgba(30, 60, 114, 0.95); /* Fondo oscuro semitransparente */
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 8px;
+        border: 1px solid rgba(255,255,255,0.2);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 2200;
+    }
+
+    /* Ajuste para que el JS lo muestre correctamente */
+    /* Cuando el JS pone 'display: block', nosotros forzamos flex vertical */
+    .lang-options[style*="display: block"] {
+        display: flex !important;
+        gap: 5px; /* Espacio entre idiomas */
+    }
+
+    /* Estilo de los botones DENTRO del menú (Rectangulares, no redondos) */
+    .lang-options button {
+        width: 100%;           /* Ocupa todo el ancho */
+        height: auto;          /* Altura automática */
+        border-radius: 8px;    /* Bordes suaves */
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        text-align: left;      /* Texto alineado a la izquierda */
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        color: white;
+        display: block;
+    }
+
+    /* Hover específico para la lista */
+    .lang-options button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px); /* Pequeño movimiento a la derecha */
+        color: #fff;
+    }
+		/* Contenedor de la imagen en el diseño lateral */
+	.side-image {
+		position: relative; /* Esencial para que el texto se ubique encima */
+		overflow: hidden;
+		border-radius: 12px;
+	}
+
+	/* El panel transparente de los créditos */
+	.image-credit {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background: rgba(0, 0, 0, 0.7); /* Fondo negro transparente */
+		color: #fff;
+		padding: 8px 12px;
+		font-size: 0.75rem;
+		text-align: center;
+		
+		/* Efecto: oculto por defecto */
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.3s ease-in-out;
+		pointer-events: none; /* No interfiere con clics */
+	}
+
+	/* Mostrar al pasar el mouse sobre la imagen */
+	.side-image:hover .image-credit {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	/* --- CORRECCIÓN PARA EL MODAL --- */
+
+	/* 1. Aseguramos que el contenedor de la imagen del modal tenga posición relativa */
+	.modal-image-container {
+		position: relative; /* OBLIGATORIO: para que el crédito se posicione respecto a esta caja */
+		overflow: hidden;   /* Para que el crédito no se salga de las esquinas */
+		/* Aquí puedes mantener tus otros estilos de tamaño si los tienes */
+	}
+
+	/* 2. Reutilizamos el estilo base del crédito (esto ya lo tienes, pero asegúrate que aplique) */
+	.image-credit {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background: rgba(0, 0, 0, 0.7);
+		color: #fff;
+		padding: 8px 12px;
+		font-size: 0.75rem;
+		text-align: center;
+		
+		/* Estado inicial: invisible y desplazado hacia abajo */
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.3s ease-in-out;
+		pointer-events: none;
+	}
+
+	/* 3. LA SOLUCIÓN: Hacemos que al pasar el mouse sobre .modal-image-container aparezca el crédito */
+	.modal-image-container:hover .image-credit {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* (Opcional) Si quieres mantener el efecto también para .side-image fuera del modal, déjalo así: */
+	.side-image:hover .image-credit {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	/* =========================================
+	   ESTILOS DE BOTONES SOCIALES
+	   ========================================= */
+
+	.social-links {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 15px;
+		margin-top: 15px;
+		margin-bottom: 15px;
+	}
+
+	/* ESTILO BASE (Para fondo BLANCO) */
+	.social-btn {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		text-decoration: none;
+		font-size: 1.3rem;
+		transition: all 0.3s ease;
+		box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+		/* --- CAMBIOS PARA FONDO BLANCO --- */
+		background-color: #f0f0f0;      /* Gris muy clarito de fondo */
+		border: 1px solid #d1d1d1;      /* Borde gris suave */
+		color: #444444;                 /* Icono gris oscuro (casi negro) */
+	}
+
+	/* EFECTO HOVER (Al pasar el mouse) */
+	.social-btn:hover {
+		transform: translateY(-5px);
+		color: #ffffff;                 /* El icono se vuelve BLANCO al pasar el mouse */
+		border-color: transparent;
+		box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+	}
+
+	/* =========================================
+	   COLORES DE MARCA (FONDO AL PASAR MOUSE)
+	   ========================================= */
+
+	.social-btn.youtube:hover { background-color: #FF0000; }
+	.social-btn.facebook:hover { background-color: #1877F2; }
+	.social-btn.instagram:hover { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+	.social-btn.tiktok:hover { background-color: #000000; border: 1px solid #00f2ea; text-shadow: 2px 2px 0px #ff0050; }
+	.social-btn.telegram:hover { background-color: #0088cc; }
+	.social-btn.link:hover, .social-btn.allmylinks:hover { background-color: #38b2a6; }
+
+	/* =========================================
+	   COLORES DE MARCA (HOVER)
+	   ========================================= */
+
+	/* YouTube (Rojo) */
+	.social-btn.youtube:hover {
+		background-color: #FF0000;
+	}
+
+	/* Facebook (Azul) */
+	.social-btn.facebook:hover {
+		background-color: #1877F2;
+	}
+
+	/* Instagram (Degradado) */
+	.social-btn.instagram:hover {
+		background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+	}
+
+	/* TikTok (Negro con borde neón) */
+	.social-btn.tiktok:hover {
+		background-color: #000000;
+		border: 1px solid #00f2ea;
+		text-shadow: 2px 2px 0px #ff0050; /* Efecto glitch */
+	}
+
+	/* Telegram (Azul Cielo) */
+	.social-btn.telegram:hover {
+		background-color: #0088cc;
+	}
+
+	/* AllMyLinks (Verde Azulado / Teal) */
+	.social-btn.link:hover, 
+	.social-btn.allmylinks:hover { /* Soporta ambos nombres de clase */
+		background-color: #38b2a6;
+	}
+
+</style>
+</head>
+<body>
+<button id="installBtn" style="display:none;" class="read-btn">📲 Install App</button>
+
+<div class="accessibility-panel" role="toolbar" aria-label="Accessibility Tools">
+    <button onclick="toggleContrast()" aria-label="High Contrast" title="High Contrast">HC</button>
+    <button onclick="decreaseText()" aria-label="Decrease Text" title="Decrease Text">A−</button>
+    <button onclick="resetText()" aria-label="Normal Text" title="Normal Text">A</button>
+    <button onclick="increaseText()" aria-label="Increase Text" title="Increase Text">A+</button>
+    
+    <div class="lang-accessibility">
+        <button id="langToggle" class="lang-toggle" aria-expanded="false" title="Change Language">
+            🌐
+        </button>
+        <div id="langMenu" class="lang-options" role="menu">
+            <button type="button" onclick="selectLanguage('es')">Español</button>
+            <button type="button" onclick="selectLanguage('en')">English</button>
+            <button type="button" onclick="selectLanguage('pt')">Português</button>
+        </div>
+    </div>
+</div>
+
+<header class="header" id="mainHeader">
+    <button class="menu-toggle" onclick="openSideMenu()" aria-label="Open menu">☰</button>
+    <div class="header-main">
+        <h1> · Guardians of the Páramo</h1>
+        <img src="logo.png" alt="Guardians of the Páramo Logo" class="logo">
+    </div>
+</header>
+
+<aside id="sideMenu" aria-label="Side menu">
+    <button class="close-side" aria-label="Close menu">X</button>
+    <ul>
+        <li><button data-i18n="menu_home" onclick="navigate('inicio')">Home</button></li>
+        <li><button data-i18n="menu_historia" onclick="navigate('historia')">History</button></li>
+        <li><button data-i18n="menu_aves" onclick="navigate('aves')">Birds</button></li>
+        <li><button data-i18n="menu_conservacion" onclick="navigate('conservacion')">Conservation</button></li>
+        <li><button data-i18n="menu_enfasis" onclick="navigate('unete')">Join Us</button></li>
+        <li><button onclick="navigate('enlaces')">External Links</button></li>
+    </ul>
+    <div class="side-menu-footer">
+        <img src="logot.png" alt="Guardians of the Páramo Logo" class="side-logo-bottom">
+    </div>
+</aside>
+
+<div class="container">
+
+    <div id="inicio" class="section active">
+        <button class="read-btn" onclick="readThisSection(this)">Read this section</button>
+        <button class="read-btn stop" onclick="stopReading()">Stop</button>
+
+        <div class="hero-banner">
+            <div class="hero-text">
+                Chingaza National Natural Park<br>
+                <span style="font-size: 1.2rem;">A Biodiversity Sanctuary</span>
+            </div>
+        </div>
+        
+        <h2>Welcome to Chingaza National Natural Park</h2>
+        
+        <div class="side-layout reverse">
+            <div class="side-image medium">
+                <img src="https://paramosdecolombia.com/wp-content/uploads/2020/01/parque-nacional-chingaza.jpg" alt="Chingaza National Natural Park">
+                <div class="image-credit">
+                    Image: Chingaza National Natural Park - original source: paramosdecolombia.com
+                </div>
+            </div>
+            <div class="side-text">
+                <p>
+                    Chingaza National Natural Park is one of Colombia's most important protected areas, recognized for its ecological and cultural value. Located in the Eastern Ranges of the Andes, northeast of Bogotá, it protects a vast diversity of Andean ecosystems. The park covers a total area of 76,600 hectares and spans 11 municipalities: seven in the Cundinamarca department (Fómeque, Choachí, La Calera, Guasca, Junín, Gachalá, and Medina) and four in the Meta department (San Juanito, El Calvario, Restrepo, and Cumaral). [1]
+                </p>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box"><span class="number">531</span><span>Bird Species</span></div>
+            <div class="stat-box"><span class="number">76,600</span><span>Protected Hectares</span></div>
+            <div class="stat-box"><span class="number">6</span><span>Endemic Species</span></div>
+            <div class="stat-box"><span class="number">80%</span><span>Water for Bogotá</span></div>
+        </div>
+
+        <h3>Unique Ecosystems</h3>
+        <div class="side-layout">
+            <div class="side-text">
+                <p>
+                    Chingaza National Natural Park is home to a wide variety of ecosystems, including high-Andean and sub-Andean forests, as well as extensive páramos (moorlands). This is due to its wide altitudinal range, approximately from 800 to 4,000 meters above sea level. This altitudinal gradation creates diverse and complex environments, from humid forests to páramos with specialized vegetation.
+                    Additionally, within the park, there are high-Andean wetland complexes that support rich biodiversity and possess great biological, scenic, and cultural value for local ancestral communities, such as the Muisca and Chibcha cultures. [1]
+                </p>
+            </div>
+            <div class="side-image medium">
+                <img src="https://www.parquesnacionales.gov.co/wp-content/uploads/2020/09/chingaza-lagunas-de-siecha-scaled.jpg" alt="Siecha Lagoons">
+                <div class="image-credit">
+                    Image: Chingaza National Natural Park – Siecha Lagoons. Source: National Natural Parks of Colombia.    
+                </div>
+            </div>
+        </div>
+
+        <h3>International Importance</h3>
+        <div class="side-layout">
+            <div class="side-text">
+                <p>
+                    Chingaza National Natural Park has received significant international recognition for its ecological value:
+                    In 2008, it was designated as an Important Bird and Biodiversity Area (IBA) by BirdLife International due to its crucial role in protecting bird species, considered critical and irreplaceable sites.
+                    That same year, the Chingaza Lake System was included in the Ramsar List of Wetlands of International Importance, protecting approximately 4,058 hectares of wetlands essential for aquatic species and biological systems. [2]
+                </p>
+            </div>
+            <div class="side-image medium">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkEVYmHSCunbuSDgUUdbQjVX1I3y7LKfERDQ&s" alt="International Recognition">
+            </div>
+        </div>
+
+        <h2>Interactive Map of PNN Chingaza</h2>
+        <div class="map-section">
+            <div id="map-info" class="info-box">
+                <strong>Select a zone on the map</strong>
+            </div>
+            <div class="map-container">
+                <img src="mapa-chingaza.webp" alt="Map of Chingaza National Natural Park">
+                <button class="map-point" style="top:10%; left:5%;" onclick="showZone('calera1')">P</button>
+                <button class="map-point" style="top:20%; left:17%;" onclick="showZone('calera2')">P</button>
+                <button class="map-point" style="top:70%; left:45%;" onclick="showZone('juanito')">P</button>
+                <button class="map-point" style="top:3%; left:14%;" onclick="showZone('guasca')">P</button>
+                <button class="map-point" style="top:45%; left:12%;" onclick="showZone('choachi')">P</button>
+                <button class="map-point" style="top:50%; left:13%;" onclick="showZone('ubaque')">P</button>
+                <button class="map-point" style="top:80%; left:30%;" onclick="showZone('calvario')">P</button>
+                <button class="map-point" style="top:90%; left:55%;" onclick="showZone('restrepo')">P</button>
+                <button class="map-point" style="top:85%; left:80%;" onclick="showZone('cumaral')">P</button>
+                <button class="map-point" style="top:60%; left:85%;" onclick="showZone('medina')">P</button>
+                <button class="map-point" style="top:35%; left:70%;" onclick="showZone('gachala')">P</button>
+                <button class="map-point" style="top:28%; left:68%;" onclick="showZone('ubala')">P</button>
+                <button class="map-point" style="top:30%; left:50%;" onclick="showZone('gama')">P</button>
+                <button class="map-point" style="top:15%; left:35%;" onclick="showZone('junin')">P</button>
+                <button class="map-point" style="top:12%; left:42%;" onclick="showZone('gacheta')">P</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="historia" class="section">
+        <button class="read-btn" onclick="readThisSection(this)">Read this section</button>
+        <button class="read-btn stop" onclick="stopReading()">Stop</button>
+        
+        <h2>History and Cultural Significance</h2>
+        
+        <h3>Origin of the Name</h3>
+        <p>
+            The name Chingaza comes from a Muisca word, associated with the indigenous culture that inhabited this region before the arrival of Europeans. In anthropological and cultural contexts, the word is recorded to mean "Serranía of the God of Night," referring to the spiritual importance this territory held for ancestral indigenous peoples who venerated its lagoons and mountains. [3][4]
+        </p>
+
+        <h3>Muisca Legacy</h3>
+        <p>
+            The Muisca people historically occupied the area that corresponds today to the Chingaza National Natural Park, considering sites like lakes, páramos, and water sources as sacred spaces connected to their ritual practices and cosmology. Although there are no established indigenous communities within the park today, the Muisca cultural and spiritual legacy remains relevant to the historical understanding of the territory. [5]
+        </p>
+
+        <h3>Declaration as a National Park</h3>
+        <p>
+            Chingaza was declared a National Natural Park in 1977 by Decree, with the purpose of protecting its unique ecosystems and biodiversity, especially for its value as a water source, biodiversity hub, and provider of environmental services for Colombia. [4]
+        </p>
+
+        <h3>The Water Factory</h3>
+        <p>
+            Chingaza is known as a "water factory" because it is one of Colombia's main areas for water regulation. Thanks to its páramos and high-Andean forests, the park is fundamental for water supply; it is estimated to provide approximately 80% of the water consumed by the city of Bogotá through systems like the Chuza Reservoir and the associated water network, benefiting millions of people. [6]
+        </p>
+
+        <h3>Current Population</h3>
+        <p>
+            The region surrounding Chingaza is inhabited primarily by peasant (campesino) communities, who have developed cultural, economic, and social relationships with the territory, seeking to balance their productive activities with the conservation of the high-mountain ecosystem. Park management includes cooperation with these communities to support the sustainable management of the protected area. [4]
+        </p>
+    </div>
+
+    <div id="aves" class="section">
+        <button class="read-btn" onclick="readThisSection(this)">Read this section</button>
+        <button class="read-btn stop" onclick="stopReading()">Stop</button>
+        
+<section id="aves-chingaza">
+    <h2>Birds of Chingaza: Conservation and Biodiversity [7]</h2>
+    <p>
+        Chingaza National Natural Park hosts one of the highest bird diversities in the country. Below are threatened, endemic, and emblematic species key to the ecological balance of the páramo and Andean forests.
+    </p>
+
+    <div class="stats">
+        <div class="stat-box critical"><span class="number">1</span><span>Critically Endangered</span></div>
+        <div class="stat-box endangered"><span class="number">5</span><span>Endangered</span></div>
+        <div class="stat-box vulnerable"><span class="number">8</span><span>Vulnerable</span></div>
+        <div class="stat-box endemic"><span class="number">10</span><span>Endemic</span></div>
+        <div class="stat-box important"><span class="number">19</span><span>Emblematic</span></div>
+    </div>
+
+    <h3>Critically Endangered</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+             <h4>Andean Condor</h4>
+            <div class="scientific-name">Vultur gryphus</div>
+            <div class="status critical">CRITICALLY ENDANGERED</div>
+            <p>Colombia's emblematic bird.</p>
+        </div>
+    </div>
+
+    <h3>Endangered</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Andean Duck (Ruddy Duck)</h4>
+            <div class="scientific-name">Oxyura jamaicensis</div>
+            <div class="status endangered">ENDANGERED</div>
+            <p>Aquatic species dependent on high-Andean wetlands.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Bogota Rail</h4>
+            <div class="scientific-name">Rallus semiplumbeus</div>
+            <div class="status endangered">ENDANGERED · ENDEMIC</div>
+            <p>Bird endemic to the wetlands of the Bogotá Savannah.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Gorgeted Wood-Quail</h4>
+            <div class="scientific-name">Odontophorus strophium</div>
+            <div class="status endangered">ENDANGERED · ENDEMIC</div>
+            <p>Inhabits dense Andean forests.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Black-and-chestnut Eagle</h4>
+            <div class="scientific-name">Spizaetus isidori</div>
+            <div class="status endangered">ENDANGERED</div>
+            <p>Large raptor of montane forests.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Cundinamarca Antpitta</h4>
+            <div class="scientific-name">Grallaria kaestneri</div>
+            <div class="status endangered">ENDANGERED · ENDEMIC</div>
+            <p>Terrestrial bird, elusive and exclusive.</p>
+        </div>
+    </div>
+
+    <h3>Vulnerable</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Andean Teal</h4>
+            <div class="scientific-name">Anas andium</div>
+            <div class="status vulnerable">VULNERABLE</div>
+            <p>Inhabits high-Andean lagoons.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Andean Guan</h4>
+            <div class="scientific-name">Penelope montagnii</div>
+            <div class="status vulnerable">VULNERABLE</div>
+            <p>Key for seed dispersal.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Noble Snipe</h4>
+            <div class="scientific-name">Gallinago nobilis</div>
+            <div class="status vulnerable">VULNERABLE</div>
+            <p>Páramo bird dependent on wet soils.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Brown-breasted Parakeet</h4>
+            <div class="scientific-name">Pyrrhura calliptera</div>
+            <div class="status vulnerable">VULNERABLE · ENDEMIC</div>
+            <p>Distribution restricted to the Colombian Andes.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Spot-winged Parrotlet</h4>
+            <div class="scientific-name">Touit stictopterus</div>
+            <div class="status vulnerable">VULNERABLE</div>
+            <p>Threatened by illegal trade and habitat loss.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Rusty-faced Parrot</h4>
+            <div class="scientific-name">Hapalopsittaca amazonina</div>
+            <div class="status vulnerable">VULNERABLE</div>
+            <p>Dependent on mature Andean forests.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Yellow-eared Parrot</h4>
+            <div class="scientific-name">Ognorhynchus icterotis</div>
+            <div class="status vulnerable">VULNERABLE</div>
+            <p>Related to the wax palm.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Silvery-throated Spinetail</h4>
+            <div class="scientific-name">Synallaxis subpudica</div>
+            <div class="status vulnerable">VULNERABLE · ENDEMIC</div>
+            <p>Bird of high-Andean scrub.</p>
+        </div>
+    </div>
+
+    <h3>Endemic</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Green-bearded Helmetcrest</h4>
+            <div class="scientific-name">Oxypogon guerinii</div>
+            <div class="status endemic">ENDEMIC</div>
+            <p>Hummingbird exclusive to Colombian páramos.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Tawny Antpitta</h4>
+            <div class="scientific-name">Grallaria quitensis</div>
+            <div class="status endemic">ENDEMIC</div>
+            <p>Inhabitant of the cold Andean undergrowth.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Many-striped Canastero</h4>
+            <div class="scientific-name">Asthenes flammulata</div>
+            <div class="status endemic">ENDEMIC</div>
+            <p>Builds nests among grasslands.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Plumbeous Sierra Finch</h4>
+            <div class="scientific-name">Phrygilus unicolor</div>
+            <div class="status endemic">ENDEMIC</div>
+            <p>Adapted to extreme high-altitude climates.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Sword-billed Hummingbird</h4>
+            <div class="scientific-name">Ensifera ensifera</div>
+            <div class="status endemic">NEAR-ENDEMIC</div>
+            <p>Possesses the longest beak in proportion to its body.</p>
+        </div>
+    </div>
+
+    <h3>Emblematic Birds</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Black-chested Buzzard-Eagle</h4>
+            <div class="scientific-name">Geranoaetus melanoleucus</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Dominant raptor of open areas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Turkey Vulture</h4>
+            <div class="scientific-name">Cathartes aura</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Scavenger key for cleaning.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Black Vulture</h4>
+            <div class="scientific-name">Coragyps atratus</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Frequent at forest edges.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Black-billed Mountain-Toucan</h4>
+            <div class="scientific-name">Andigena nigrirostris</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Seed disperser of Andean forests.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Crimson-mantled Woodpecker</h4>
+            <div class="scientific-name">Colaptes rivolii</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Trunk excavator.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Hooded Mountain-Tanager</h4>
+            <div class="scientific-name">Buthraupis montana</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Colorful bird typical of montane forests.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Great Thrush</h4>
+            <div class="scientific-name">Turdus fuscater</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>One of the most visible birds.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Band-tailed Pigeon</h4>
+            <div class="scientific-name">Patagioenas fasciata</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Inhabitant of high forests.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Great Sapphirewing</h4>
+            <div class="scientific-name">Pterophanes cyanopterus</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Large hummingbird adapted to the cold.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Bronze-tailed Thornbill</h4>
+            <div class="scientific-name">Chalcostigma heteropogon</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Specialist in high mountain flowers.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Sedge Wren</h4>
+            <div class="scientific-name">Cistothorus platensis</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Small singer of grasslands.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>White-chinned Thistletail</h4>
+            <div class="scientific-name">Asthenes fuliginosa</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Discreet bird of the high páramo.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>American Coot</h4>
+            <div class="scientific-name">Fulica americana</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Frequent inhabitant of lagoons.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Solitary Sandpiper</h4>
+            <div class="scientific-name">Tringa solitaria</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Migratory bird that uses wetlands.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Southern Lapwing</h4>
+            <div class="scientific-name">Vanellus chilensis</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Watchful bird of open areas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Andean Pygmy-Owl</h4>
+            <div class="scientific-name">Glaucidium jardinii</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Small nocturnal raptor.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>White-throated Screech-Owl</h4>
+            <div class="scientific-name">Megascops albogularis</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Typical owl of Andean forests.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Band-winged Nightjar</h4>
+            <div class="scientific-name">Systellura longirostris</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Nocturnal, camouflages in open ground.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Oilbird</h4>
+            <div class="scientific-name">Steatornis caripensis</div>
+            <div class="status important">EMBLEMATIC</div>
+            <p>Nocturnal fruit-eating bird of caves.</p>
+        </div>
+    </div>
+</section>
+    </div>
+
+    <div id="conservacion" class="section">
+        <button class="read-btn" onclick="readThisSection(this)">Read this section</button>
+        <button class="read-btn stop" onclick="stopReading()">Stop</button>
+
+        <h2>Conservation in Chingaza National Natural Park [8]</h2>
+        
+        <h3>International Conservation Recognition</h3>
+        <p>
+            On September 18, 2020, Chingaza National Natural Park was included in the IUCN Green List of Protected and Conserved Areas, a recognition certifying that the park meets advanced standards for governance, planning, management, and conservation results.
+        </p>
+
+        <h3>Monitoring and Surveillance Program</h3>
+        <p>
+            As part of the park's conservation actions, National Natural Parks of Colombia conducts continuous ecological monitoring to evaluate the status of species and high-mountain ecosystems present in the protected area. This tracking is part of actions designed to ensure the permanence of biodiversity and ecosystem services provided by Chingaza.
+        </p>
+
+        <h3>Scientific Research Applied to Conservation</h3>
+        <p>
+            Scientific research is fundamental for Chingaza's conservation. The exceptional diversity of species recorded in the park has been studied by researchers across multiple disciplines, and the area is considered conducive to scientific activities that generate new knowledge about wildlife and high-Andean ecological processes.
+        </p>
+
+        <h3>Environmental Education as a Conservation Strategy</h3>
+        <p>
+            The park is a space that promotes environmental education as a key tool for biodiversity conservation and raising awareness about the importance of páramos and high-Andean forests. Through natural heritage interpretation activities, visitors, local communities, and students can connect with nature and learn about practices that favor conservation.
+        </p>
+
+        <h3>Importance of the Ramsar Site for Conservation</h3>
+        <p>
+            Within the park lies the Chingaza Lake System, designated as a Ramsar Site of International Importance, with approximately 4,058 hectares of high-Andean wetlands. This area plays a crucial role as a habitat for aquatic birds and other species, contributing to biodiversity conservation and the region's hydrological balance.
+        </p>
+
+        <h3>Community Conservation Actions</h3>
+        <ul>
+            <p>
+            Peasant communities surrounding the park have been active participants in conservation strategies, collaborating with initiatives that foster the protection of natural resources, high-mountain fauna and flora, and promoting sustainable practices compatible with the preservation of Chingaza's ecosystems.
+            </p>
+        </ul>
+    </div>
+
+    <div id="unete" class="section">
+        <button class="read-btn" onclick="readThisSection(this)">Read this section</button>
+        <button class="read-btn stop" onclick="stopReading()">Stop</button>
+        
+		<div class="social-banner">
+			<h3>Follow us on our networks</h3> <div class="social-links">
+				<a href="https://www.instagram.com/guardianesdelparamoch/" target="_blank" class="social-btn instagram" aria-label="Instagram">
+					<i class="fab fa-instagram"></i>
+				</a>
+				<a href="https://www.youtube.com/channel/UCgNuF1w4iL8VQjGNa8_ei9w" target="_blank" class="social-btn youtube" aria-label="YouTube">
+					<i class="fab fa-youtube"></i>
+				</a>
+				<a href="https://www.facebook.com/profile.php?id=61586604059288" target="_blank" class="social-btn facebook" aria-label="Facebook">
+					<i class="fab fa-facebook-f"></i>
+				</a>
+				<a href="https://www.tiktok.com/@guardianesdelparamoch" target="_blank" class="social-btn tiktok" aria-label="TikTok">
+					<i class="fab fa-tiktok"></i>
+				</a>
+
+				<a href="https://t.me/guardianesdelparamoch" target="_blank" class="social-btn telegram" aria-label="Telegram">
+					<i class="fab fa-telegram"></i>
+				</a>
+				<a href="https://allmylinks.com/guardianesdelparamoch" target="_blank" class="social-btn link" aria-label="AllMyLinks">
+					<i class="fas fa-link"></i>
+				</a>
+			</div>
+		</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+    
+    <iframe src="https://allmylinks.com/widget/profile/guardianesdelparamoch.html?dark=0&big=1" 
+            width="395" 
+            height="286" 
+            style="max-width:100%; border:none; overflow:hidden;" 
+            scrolling="no" 
+            frameborder="0" 
+            allowtransparency="true" 
+            allow="encrypted-media">
+    </iframe>
+
+    <iframe src="https://allmylinks.com/widget/profile/guardianesdelparamoch.html?dark=0&big=0" 
+            width="395" 
+            height="317" 
+            style="max-width:100%; border:none; overflow:hidden;" 
+            scrolling="no" 
+            frameborder="0" 
+            allowtransparency="true" 
+            allow="encrypted-media">
+    </iframe>
+
+</div>
+        <h2>Join as a Guardian of the Páramo</h2>
+        
+        <h3>Why are Birds Key Indicators?</h3>
+        <p>
+            Birds are excellent bioindicators of ecosystem health. Their presence, abundance, and behavior allow us to evaluate environmental quality and detect habitat changes. The diversity of 531 bird species in Chingaza reflects the integrity of its ecosystems.
+        </p>
+
+        <h3>Main Threats</h3>
+        <ul>
+            <li><strong>Habitat Loss:</strong> Deforestation and fragmentation of Andean forests reduce available space for species requiring large territories.</li>
+            <li><strong>Climate Change:</strong> Alterations in temperature and precipitation affect food availability and reproductive cycles.</li>
+            <li><strong>Pollution:</strong> Contamination of water bodies especially threatens aquatic species like the Bogota Rail.</li>
+            <li><strong>Illegal Trade:</strong> Several parrot and parakeet species are illegally captured for the pet trade.</li>
+            <li><strong>Hunting:</strong> Although prohibited, illegal hunting continues to affect species like the Andean Condor.</li>
+        </ul>
+
+        <h3>Importance of Migratory Birds</h3>
+        <p>
+            Chingaza hosts 37 species of migratory birds (34 boreal and 3 austral), representing more than 26% of the migratory birds recorded for Colombia. These species connect ecosystems throughout the American continent, making Chingaza a vital link in hemispheric migratory routes.
+        </p>
+
+        <h3>The Future of Chingaza is in Your Hands</h3>
+        <p>
+            The successful conservation of Chingaza's birds depends on a collective commitment. Each species we protect represents not only a conservation achievement but also the preservation of essential ecological processes, unique genetic heritage, and natural beauty for future generations.
+        </p>
+        
+        <div class="info-box">
+            <strong>Guardian's Message:</strong> Every bird that flies over the páramos of Chingaza is a reminder of our responsibility as guardians of nature. Their survival depends on our actions today. Together we can ensure these species continue to inhabit these skies for generations to come. <br><br>
+            <strong>"We do not inherit the Earth from our ancestors; we borrow it from our children."</strong>
+        </div>
+        
+        <div class="games-section">
+            <h3>Play and learn with us</h3>
+            <p>
+                Explore our educational games designed to learn about birds,
+                ecosystems, and the importance of Chingaza National Natural Park in a fun way.
+            </p>
+
+            <div class="games-grid">
+                <div class="game-card" onclick="openGame('soyunave.html')" title="I am a bird">
+                    <img src="soyunave.png" class="game-icon-img" alt="I am a bird">
+                </div>
+                <div class="game-card" onclick="openGame('decisiones.html')" title="Decision Making">
+                    <img src="decisiones.png" class="game-icon-img" alt="Decision Making">
+                </div>
+                <div class="game-card" onclick="openGame('escalera.html')" title="Conservation Ladder">
+                    <img src="escalera.png" class="game-icon-img" alt="Conservation Ladder">
+                </div>
+                <div class="game-card" onclick="openGame('memoria.html')" title="Memory of the Páramo">
+                    <img src="memoria.png" class="game-icon-img" alt="Memory of the Páramo">
+                </div>
+                <div class="game-card" onclick="openGame('parejas.html')" title="Match Pairs">
+                    <img src="parejas.png" class="game-icon-img" alt="Match Pairs">
+                </div>
+                <div class="game-card" onclick="openGame('quiz.html')" title="Bird Quiz">
+                    <img src="quiz.png" class="game-icon-img" alt="Bird Quiz">
+                </div>
+                <div class="game-card" onclick="openGame('ahorcado.html')" title="Environmental Hangman">
+                    <img src="ahorcado.png" class="game-icon-img" alt="Environmental Hangman">
+                </div>
+                <div class="game-card" onclick="openGame('verdaderofalso.html')" title="How much do you know?">
+                    <img src="verdaderofalso.png" class="game-icon-img" alt="How much do you know?">
+                </div>
+
+                <div class="game-coming" title="More games coming soon">
+                    <img src="proximamente.png" class="game-icon-img" alt="More games coming soon">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="enlaces" class="section">
+        <h2>External Links</h2>
+        
+        <h3>Home</h3>
+        <ul>
+            <li><strong>[1] </strong> <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-chingaza/" target="_blank" rel="noopener"> National Parks </a></li>
+            <li><strong>[2] </strong> <a href="https://old.parquesnacionales.gov.co/portal/es/" target="_blank" rel="noopener"> National Parks (Old) </a></li>
+        </ul>
+        
+        <h3>History</h3>
+        <ul>
+            <li><strong>[3] </strong> <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-chingaza/" target="_blank" rel="noopener"> National Parks </a></li>
+            <li><strong>[4] </strong> <a href="https://accedacris.ulpgc.es/jspui/bitstream/10553/77226/2/0769081_00000_0000.pdf" target="_blank" rel="noopener"> Accedacris </a></li>
+            <li><strong>[5] </strong> <a href="https://colombiapais.com/viajes-a-colombia-guia-de-turismo-y-destinos-imperdibles/parques-nacionales-de-colombia-mas-que-paisajes-un-tesoro-por-descubrir/parques-nacionales-alta-montana/chingaza-parque-nacional-natural/" target="_blank" rel="noopener"> Colombia Pais </a></li>
+            <li><strong>[6] </strong> <a href="https://old.parquesnacionales.gov.co/portal/es/" target="_blank" rel="noopener"> National Parks (Old) </a></li>
+        </ul>
+        
+        <h3>Birds</h3>
+        <ul>
+            <li><strong>[7] </strong> <a href="https://old.parquesnacionales.gov.co/portal/wp-content/uploads/2017/12/La-magia-de-las-aves-de-chingaza-digital.pdf/" target="_blank" rel="noopener"> National Parks (Old) - The Magic of Chingaza's Birds </a></li>
+        </ul>
+        
+        <h3>Conservation</h3>
+        <ul>
+            <li><strong>[8] </strong> <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-chingaza/" target="_blank" rel="noopener"> National Parks </a></li>
+        </ul>
+    </div>
+
+</div> <footer class="footer">
+    <div class="footer-content">
+        <img src="logotesis.png" alt="Thesis Logo Guardians of the Páramo" class="footer-logo">
+
+        <div class="footer-text">
+            <p>
+                Academic project developed as part of the degree thesis of
+                <strong>Angie Tatiana Rojas Rincón</strong>,
+                Bachelor's in Biology – National Pedagogical University.
+            </p>
+
+            <p>
+                Web page development:
+                <strong>Alvaro Mendoza</strong>.
+            </p>
+            <p style="font-size:0.8rem; opacity:0.7;">
+                Educational dissemination channels of the project.
+            </p>
+            
+			<div class="footer-social">
+				<a href="https://www.youtube.com/channel/UCgNuF1w4iL8VQjGNa8_ei9w" class="social-btn youtube" target="_blank" aria-label="YouTube">
+					<i class="fab fa-youtube"></i>
+				</a>
+				<a href="https://www.facebook.com/profile.php?id=61586604059288" class="social-btn facebook" target="_blank" aria-label="Facebook">
+					<i class="fab fa-facebook-f"></i>
+				</a>
+				<a href="https://www.instagram.com/guardianesdelparamoch/" class="social-btn instagram" target="_blank" aria-label="Instagram">
+					<i class="fab fa-instagram"></i>
+				</a>
+				<a href="https://www.tiktok.com/@guardianesdelparamoch" class="social-btn tiktok" target="_blank" aria-label="TikTok">
+					<i class="fab fa-tiktok"></i>
+				</a>
+				<a href="https://t.me/guardianesdelparamoch" class="social-btn telegram" target="_blank" aria-label="Telegram">
+					<i class="fab fa-telegram"></i>
+				</a>
+				<a href="https://allmylinks.com/guardianesdelparamoch" class="social-btn link" target="_blank" aria-label="AllMyLinks">
+					<i class="fas fa-link"></i>
+				</a>
+			</div>
+
+
+            <div class="footer-feedback">
+				<button class="feedback-btn" onclick="window.location.href='mailto:guardianesdelparamoch@gmail.com?subject=Feedback%20Guardianes%20del%20Páramo'">
+					💬 Send feedback
+				</button>
+                <p style="font-size:0.75rem; opacity:0.7;">
+                    Space for academic and educational feedback.
+                </p>
+            </div>
+            
+            <p>© 2025 · Guardians of the Páramo website; conservation 2.0: biological strategies and digital tools for the dissemination and conservation of the avifauna of Chingaza National Natural Park</p>
+        </div>
+    </div>
+</footer>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <div id="modalContent">
+            <div class="modal-header">
+                <span class="modal-close" id="closeModal">&times;</span>
+                <h2 id="modalTitle"></h2>
+                <div class="scientific" id="modalScientific"></div>
+            </div>
+
+            <div class="modal-image-container">
+                <img id="modalImage" onclick="openFullImage()">
+                <div class="image-credit">
+                    Note: Original image obtained from Wikipedia.org; adapted, cropped, and digitally retouched using ChatGPT and other photo editing programs.
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-top-row">
+                    <span id="modalStatus" class="modal-status"></span>
+                    <div class="modal-qr-inline" id="modalQR">
+                        <img id="modalQRImage" alt="Bird QR Code" onclick="openViewer(this.src)" style="cursor: zoom-in;">
+                    </div>
+                </div>
+
+                <p id="modalInfo"></p>
+                <div id="modalExtra" class="modal-extra"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="image-viewer" id="imageViewer" onclick="closeViewer()">
+    <img id="viewerImage">
+</div>
+
+<script>
+/* =========================================
+   1. BIRD DATA (English Keys to match HTML <h4>)
+   ========================================= */
+const birdExtraData = {
+  "Andean Condor": {
+    image: "img/aves/Condor de los Andes (Vultur gryphus).png",
+    qr: "img/qr/1a.png",
+    info: "National emblem of Colombia and a key species for ecosystem balance.",
+    habitat: "Andean mountain ranges and páramos",
+    diet: "Carrion",
+    altitude: "3,000 - 5,000 masl"
+  },
+  "Andean Duck (Ruddy Duck)": {
+    image: "img/aves/Pato turrio (Oxyura jamaicensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Aquatic bird dependent on high-Andean wetlands.",
+    habitat: "High-Andean lagoons and wetlands",
+    diet: "Aquatic invertebrates",
+    altitude: "2,500 - 4,000 masl"
+  },
+  "Bogota Rail": {
+    image: "img/aves/Tingua bogotana (Rallus semiplumbeus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Endemic bird of the Bogotá Savannah.",
+    habitat: "Wetlands",
+    diet: "Insects and aquatic vegetation",
+    altitude: "2,600 masl"
+  },
+  "Gorgeted Wood-Quail": {
+    image: "img/aves/Perdiz de montana (Odontophorus strophium).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Endemic species of the Colombian Andes.",
+    habitat: "Dense montane forests",
+    diet: "Seeds and fruits",
+    altitude: "1,800 - 3,000 masl"
+  },
+  "Black-and-chestnut Eagle": {
+    image: "img/aves/Aguila crestada (Spizaetus isidori).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Large raptor of Andean forests.",
+    habitat: "Andean and sub-Andean forests",
+    diet: "Mammals and birds",
+    altitude: "1,500 - 3,500 masl"
+  },
+  "Cundinamarca Antpitta": {
+    image: "img/aves/Tororoi de Cundinamarca (Grallaria kaestneri).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Terrestrial and elusive bird.",
+    habitat: "Humid Andean forests",
+    diet: "Invertebrates",
+    altitude: "1,800 - 2,800 masl"
+  },
+  "Andean Teal": {
+    image: "img/aves/Pato paramuno (Anas andium).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Duck specialized in páramo ecosystems.",
+    habitat: "Páramo lagoons",
+    diet: "Aquatic plants",
+    altitude: "3,000 - 4,500 masl"
+  },
+  "Andean Guan": {
+    image: "img/aves/Pava andina (Penelope montagnii).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Frugivorous bird key for forest regeneration.",
+    habitat: "Montane forests",
+    diet: "Fruits",
+    altitude: "1,500 - 3,000 masl"
+  },
+  "Noble Snipe": {
+    image: "img/aves/Caica paramuna (Gallinago nobilis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Typical páramo bird.",
+    habitat: "Páramos",
+    diet: "Invertebrates",
+    altitude: "3,000 - 4,000 masl"
+  },
+  "Brown-breasted Parakeet": {
+    image: "img/aves/Periquito aliamarillo (Pyrrhura calliptera).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Endemic parakeet of the Colombian Andes.",
+    habitat: "Andean forests",
+    diet: "Fruits and seeds",
+    altitude: "1,800 - 3,000 masl"
+  },
+  "Spot-winged Parrotlet": {
+    image: "img/aves/Periquito alipunteado (Touit stictopterus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Threatened by illegal trade.",
+    habitat: "Montane forests",
+    diet: "Seeds",
+    altitude: "1,200 - 2,800 masl"
+  },
+  "Rusty-faced Parrot": {
+    image: "img/aves/Loro aliamarillo (Hapalopsittaca amazonina).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Dependent on mature forests.",
+    habitat: "High-Andean forests",
+    diet: "Fruits",
+    altitude: "2,000 - 3,200 masl"
+  },
+  "Yellow-eared Parrot": {
+    image: "img/aves/Loro orejiamarillo (Ognorhynchus icterotis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Emblematic species associated with the wax palm.",
+    habitat: "High-Andean forests",
+    diet: "Palm fruits",
+    altitude: "2,000 - 3,000 masl"
+  },
+  "Silvery-throated Spinetail": {
+    image: "img/aves/Rastrojero de Cundinamarca (Synallaxis subpudica).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Endemic bird of high-Andean scrub.",
+    habitat: "Scrublands and forest edges",
+    diet: "Insects",
+    altitude: "2,500 - 3,400 masl"
+  },
+  "Green-bearded Helmetcrest": {
+    image: "img/aves/Barbudito paramuno (Oxypogon guerinii).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Hummingbird exclusive to páramos.",
+    habitat: "Páramos",
+    diet: "Nectar",
+    altitude: "3,200 - 4,300 masl"
+  },
+  "Tawny Antpitta": {
+    image: "img/aves/Tororoi paramuno (Grallaria quitensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Inhabitant of the cold undergrowth.",
+    habitat: "High-Andean forests",
+    diet: "Invertebrates",
+    altitude: "2,800 - 3,600 masl"
+  },
+  "Many-striped Canastero": {
+    image: "img/aves/Canastero paramuno (Asthenes flammulata).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Builds nests in grasslands.",
+    habitat: "Páramos",
+    diet: "Insects",
+    altitude: "3,000 - 4,000 masl"
+  },
+  "Plumbeous Sierra Finch": {
+    image: "img/aves/Gorrion paramuno (Phrygilus unicolor).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Adapted to extreme climates.",
+    habitat: "Páramos",
+    diet: "Seeds",
+    altitude: "3,000 - 4,500 masl"
+  },
+  "Sword-billed Hummingbird": {
+    image: "img/aves/Colibri pico de espada (Ensifera ensifera).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Specialized in deep flowers.",
+    habitat: "Forests and páramos",
+    diet: "Nectar",
+    altitude: "2,500 - 4,000 masl"
+  },
+  "Black-chested Buzzard-Eagle": {
+    image: "img/aves/Aguila paramuna (Geranoaetus melanoleucus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Dominant raptor of the páramo.",
+    habitat: "Páramos",
+    diet: "Small mammals",
+    altitude: "2,000 - 4,000 masl"
+  },
+  "Turkey Vulture": {
+    image: "img/aves/Guala comun (Cathartes aura).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Key scavenger.",
+    habitat: "Open areas",
+    diet: "Carrion",
+    altitude: "0 - 4,000 masl"
+  },
+  "Black Vulture": {
+    image: "img/aves/Gallinazo comun (Coragyps atratus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Frequent in urban areas.",
+    habitat: "Open areas",
+    diet: "Carrion",
+    altitude: "0 - 3,000 masl"
+  },
+  "Black-billed Mountain-Toucan": {
+    image: "img/aves/Tucan celeste (Andigena nigrirostris).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Seed disperser.",
+    habitat: "Montane forests",
+    diet: "Fruits",
+    altitude: "1,500 - 2,800 masl"
+  },
+  "Hooded Mountain-Tanager": {
+    image: "img/aves/Azulejo real (Buthraupis montana).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Colorful bird of the Andean forest.",
+    habitat: "Andean forests",
+    diet: "Fruits",
+    altitude: "1,800 - 3,500 masl"
+  },
+  "Great Thrush": {
+    image: "img/aves/Mirla comun (Turdus fuscater).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Very visible in gardens.",
+    habitat: "Forests and open areas",
+    diet: "Fruits",
+    altitude: "2,000 - 3,500 masl"
+  },
+  "Band-tailed Pigeon": {
+    image: "img/aves/Torcaza collareja (Patagioenas fasciata).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Inhabitant of high forests.",
+    habitat: "Montane forests",
+    diet: "Seeds",
+    altitude: "1,500 - 3,500 masl"
+  },
+  "Great Sapphirewing": {
+    image: "img/aves/Ala de zafiro (Pterophanes cyanopterus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Large hummingbird of the páramo.",
+    habitat: "Páramos",
+    diet: "Nectar",
+    altitude: "3,000 - 4,500 masl"
+  },
+  "Bronze-tailed Thornbill": {
+    image: "img/aves/Pico de tuna broncineo (Chalcostigma heteropogon).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Specialist in high-Andean flowers.",
+    habitat: "Páramos",
+    diet: "Nectar",
+    altitude: "3,200 - 4,500 masl"
+  },
+  "Sedge Wren": {
+    image: "img/aves/Cucarachero paramuno (Cistothorus platensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Singer of the grasslands.",
+    habitat: "Páramos",
+    diet: "Insects",
+    altitude: "3,000 - 4,200 masl"
+  },
+  "White-chinned Thistletail": {
+    image: "img/aves/Canastero oscuro (Asthenes fuliginosa).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Discreet bird of the high páramo.",
+    habitat: "Páramos",
+    diet: "Insects",
+    altitude: "3,000 - 4,500 masl"
+  },
+  "American Coot": {
+    image: "img/aves/Focha comun (Fulica americana).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Common aquatic bird.",
+    habitat: "Wetlands",
+    diet: "Aquatic plants",
+    altitude: "0 - 4,000 masl"
+  },
+  "Solitary Sandpiper": {
+    image: "img/aves/Andarrios solitario (Tringa solitaria).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Migratory bird.",
+    habitat: "Wetlands",
+    diet: "Invertebrates",
+    altitude: "0 - 4,000 masl"
+  },
+  "Southern Lapwing": {
+    image: "img/aves/Alcaravan (Vanellus chilensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Watchful bird.",
+    habitat: "Grasslands",
+    diet: "Insects",
+    altitude: "0 - 3,000 masl"
+  },
+  "Oilbird": {
+    image: "img/aves/Guacharo (Steatornis caripensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Nocturnal fruit-eating bird.",
+    habitat: "Caves",
+    diet: "Fruits",
+    altitude: "0 - 2,500 masl"
+  },
+  "Andean Pygmy-Owl": {
+    image: "img/aves/Buhito andino (Glaucidium jardinii).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Small nocturnal raptor.",
+    habitat: "Andean forests",
+    diet: "Insects",
+    altitude: "1,500 - 3,500 masl"
+  },
+  "White-throated Screech-Owl": {
+    image: "img/aves/Currucutu gorgiblanco (Megascops albogularis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Owl of humid forests.",
+    habitat: "Montane forests",
+    diet: "Small vertebrates",
+    altitude: "1,200 - 3,200 masl"
+  },
+  "Band-winged Nightjar": {
+    image: "img/aves/Guardacaminos andino (Systellura longirostris).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Camouflaged nocturnal bird.",
+    habitat: "Open zones",
+    diet: "Insects",
+    altitude: "1,500 - 4,000 masl"
+  },
+  "Crimson-mantled Woodpecker": {
+    image: "img/aves/Carpintero carmesi (Colaptes rivolii).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Colorful diurnal bird.",
+    habitat: "Andean and high-Andean forests",
+    diet: "Mainly insectivorous",
+    altitude: "1,800 - 3,800 masl"
+  }
+};
+
+/* =========================================
+   2. NAVIGATION & MENU LOGIC
+   ========================================= */
+const sideMenu = document.getElementById("sideMenu");
+const closeSideBtn = document.querySelector(".close-side");
+const mainHeader = document.getElementById("mainHeader");
+
+// Function to open menu
+function openSideMenu() {
+    if (sideMenu) {
+        sideMenu.classList.add("open");
+        const toggleBtn = document.querySelector('.menu-toggle');
+        if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "true");
+    }
+}
+
+// Function to close menu
+function closeSideMenu() {
+    if (sideMenu) {
+        sideMenu.classList.remove("open");
+        const toggleBtn = document.querySelector('.menu-toggle');
+        if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+    }
+}
+
+// Event: Close "X" button inside menu
+if (closeSideBtn) {
+    closeSideBtn.onclick = closeSideMenu;
+}
+
+// Event: Navigate between sections
+function navigate(sectionId) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(sectionId);
+    if (target) {
+        target.classList.add('active');
+    }
+    closeSideMenu();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Event: Close menu if clicked outside
+document.addEventListener("click", (e) => {
+    const toggleBtn = document.querySelector('.menu-toggle');
+    if (sideMenu && sideMenu.classList.contains('open')) {
+        if (!sideMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+            closeSideMenu();
+        }
+    }
+});
+
+/* =========================================
+  3. ACCESSIBILITY LOGIC (A+, A-, HC)
+   ========================================= */
+
+let currentScale = 1; 
+
+function updateTextSize() {
+    document.body.style.setProperty('--font-scale', currentScale + 'rem');
+    localStorage.setItem("userFontScale", currentScale);
+}
+
+// Button A+
+function increaseText() {
+    if (currentScale < 1.5) { 
+        currentScale += 0.1;
+        updateTextSize();
+    }
+}
+
+// Button A-
+function decreaseText() {
+    if (currentScale > 0.8) { 
+        currentScale -= 0.1;
+        updateTextSize();
+    }
+}
+
+// Button A
+function resetText() {
+    currentScale = 1;
+    updateTextSize();
+}
+
+// Button HC
+function toggleContrast() {
+    document.body.classList.toggle("high-contrast");
+    const isContrast = document.body.classList.contains("high-contrast");
+    localStorage.setItem("contrast", isContrast ? "on" : "off");
+}
+
+/* =========================================
+   4. LANGUAGE SYSTEM
+   ========================================= */
+const langToggle = document.getElementById("langToggle");
+const langMenu = document.getElementById("langMenu");
+
+if (langToggle && langMenu) {
+    langToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isHidden = (langMenu.style.display === "none" || langMenu.style.display === "");
+        langMenu.style.display = isHidden ? "block" : "none";
+        langToggle.setAttribute("aria-expanded", isHidden);
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!langMenu.contains(e.target) && !langToggle.contains(e.target)) {
+            langMenu.style.display = "none";
+            langToggle.setAttribute("aria-expanded", "false");
+        }
+    });
+}
+
+/* =========================================
+   SISTEMA DE IDIOMAS (REDIRECCIÓN)
+   ========================================= */
+function selectLanguage(lang) {
+    // 1. Guardamos la preferencia (opcional, pero útil)
+    localStorage.setItem("language", lang);
+
+    // 2. Redireccionamos al archivo correspondiente
+    if (lang === 'es') {
+        window.location.href = 'index.html';
+    } else if (lang === 'en') {
+        window.location.href = 'index_ing.html';
+    } else if (lang === 'pt') {
+        window.location.href = 'index_por.html';
+    }
+}
+
+/* =========================================
+   5. MODAL LOGIC (BIRDS)
+   ========================================= */
+const modal = document.getElementById("modal");
+const closeModalBtn = document.getElementById("closeModal");
+
+function openModal(card) {
+    // 1. Get name from <h4>
+    const birdName = card.querySelector('h4').innerText.trim();
+    
+    // 2. Search in database
+    const data = birdExtraData[birdName];
+
+    if (!data) {
+        console.warn("Information not found for bird: '" + birdName + "'. Check that it matches exactly with the birdExtraData object.");
+        return; 
+    }
+
+    // 3. Fill the Modal
+    document.getElementById('modalTitle').innerText = birdName;
+    document.getElementById('modalScientific').innerText = card.querySelector('.scientific-name').innerText;
+    document.getElementById('modalImage').src = data.image;
+    document.getElementById('modalInfo').innerText = data.info;
+
+    // Status (color and text)
+    const statusCard = card.querySelector('.status');
+    const modalStatus = document.getElementById('modalStatus');
+    modalStatus.innerText = statusCard.innerText;
+    modalStatus.className = 'modal-status ' + statusCard.className.replace('status', '').trim();
+
+    // QR
+    const qrImg = document.getElementById('modalQRImage');
+    if (data.qr) {
+        qrImg.src = data.qr;
+        document.getElementById('modalQR').style.display = 'block';
+    } else {
+        document.getElementById('modalQR').style.display = 'none';
+    }
+
+    // Extra Data (Habitat, Diet, Altitude) - TRANSLATED
+    const extraContainer = document.getElementById('modalExtra');
+    if (extraContainer) {
+        extraContainer.innerHTML = `
+            <div><strong>Habitat:</strong><br>${data.habitat || 'N/A'}</div>
+            <div><strong>Diet:</strong><br>${data.diet || 'N/A'}</div>
+            <div><strong>Altitude:</strong><br>${data.altitude || 'N/A'}</div>
+        `;
+    }
+
+    // 4. Show
+    document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+    if(modal) modal.style.display = "none";
+}
+
+if(closeModalBtn) closeModalBtn.onclick = closeModal;
+
+// Close with Escape
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal();
+});
+// Close click outside
+if(modal) {
+    modal.onclick = function (e) {
+        if (e.target.id === "modal") closeModal();
+    };
+}
+
+/* =========================================
+   6. IMAGE VIEWER (ZOOM)
+   ========================================= */
+function openViewer(src) {
+    const viewer = document.getElementById('imageViewer');
+    const viewerImg = document.getElementById('viewerImage');
+    if (viewer && viewerImg) {
+        viewerImg.src = src;
+        viewer.style.display = 'flex';
+    }
+}
+
+function openFullImage() {
+    const src = document.getElementById("modalImage").src;
+    openViewer(src);
+}
+
+function closeViewer() {
+    document.getElementById("imageViewer").style.display = "none";
+}
+
+/* =========================================
+   7. TEXT TO SPEECH (TTS)
+   ========================================= */
+function readThisSection(button) {
+    stopReading();
+    const section = button.closest(".section");
+    if (!section) return;
+
+    let text = "";
+    section.querySelectorAll("h2, h3, p, h4").forEach(el => {
+        text += el.textContent.trim() + ". ";
+    });
+
+    if (!text.trim()) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US"; // Changed to English
+    utterance.rate = 0.95;
+    speechSynthesis.speak(utterance);
+}
+
+function stopReading() {
+    speechSynthesis.cancel();
+}
+
+/* =========================================
+   8. INTERACTIVE MAP
+   ========================================= */
+function showZone(zone) {
+    // TRANSLATED CONTENT
+    const info = {
+        calera1: `<h3>La Calera</h3><p>La Portada Sector - Cundinamarca</p>`,
+        calera2: `<h3>La Calera</h3><p>Mundo Nuevo Sector - Cundinamarca</p>`,
+        juanito: `<h3>San Juanito</h3><p>Meta</p>`,
+        guasca: `<h3>Guasca</h3><p>Cundinamarca</p>`,
+        choachi: `<h3>Choachí</h3><p>Cundinamarca</p>`,
+        restrepo: `<h3>Restrepo</h3><p>Meta</p>`,
+        ubaque: `<h3>Ubaque</h3><p>Cundinamarca</p>`,
+        cumaral: `<h3>Cumaral</h3><p>Meta</p>`,
+        medina: `<h3>Medina</h3><p>Meta</p>`,
+        gachala: `<h3>Gachala</h3><p>Cundinamarca</p>`,
+        ubala: `<h3>Ubala</h3><p>Cundinamarca</p>`,
+        gama: `<h3>Gama</h3><p>Cundinamarca</p>`,
+        junin: `<h3>Junín</h3><p>Cundinamarca</p>`,
+        gacheta: `<h3>Gachetá</h3><p>Cundinamarca</p>`,
+        calvario: `<h3>El Calvario</h3><p>Meta</p>`
+    };
+    const mapInfo = document.getElementById("map-info");
+    if(mapInfo && info[zone]) {
+        mapInfo.innerHTML = info[zone];
+    }
+}
+
+/* =========================================
+   9. HEADER & GAMES
+   ========================================= */
+let lastScroll = 0;
+window.addEventListener("scroll", () => {
+    const currentScroll = window.scrollY;
+    if (mainHeader) {
+        if (currentScroll > lastScroll && currentScroll > 120) {
+            mainHeader.classList.add("hide");
+        } else {
+            mainHeader.classList.remove("hide");
+        }
+    }
+    lastScroll = currentScroll;
+});
+
+function openGame(url) {
+    window.open(url, "_blank");
+}
+
+/* =========================================
+   10. INITIAL LOAD (PREFS & ANIMATIONS)
+   ========================================= */
+window.addEventListener("load", () => {
+    console.log("Page loaded. Starting scripts...");
+
+    // 1. RECOVER PREFS
+    const savedScale = localStorage.getItem("userFontScale");
+    if (savedScale) {
+        currentScale = parseFloat(savedScale);
+        updateTextSize();
+    }
+    if (localStorage.getItem("contrast") === "on") document.body.classList.add("high-contrast");
+    if (localStorage.getItem("classroomMode") === "on") document.body.classList.add("classroom-mode");
+
+    // 2. Service Worker
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+
+    // 3. ACTIVATE SCROLL ANIMATIONS
+    const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Select elements to animate
+    const animatedElements = document.querySelectorAll('.bird-card, .stat-box, .info-box');
+    animatedElements.forEach(el => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(30px)";
+        el.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out";
+        observer.observe(el);
+    });
+});
+</script>
+</body>
+</html>

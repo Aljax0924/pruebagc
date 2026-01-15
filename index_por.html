@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="manifest" href="manifest.json">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Guardianes del Páramo</title>
+	<link rel="icon" type="image/png" sizes="128x128" href="logoicon.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="logoicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="logoicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="logoicon.png">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="apple-touch-icon" href="logoicon.png">
+	<meta name="theme-color" content="#16A34A">
+<style>
+    /* =========================================
+       1. CONFIGURACIÓN GLOBAL (RESET)
+       ========================================= */
+    :root {
+        --primary: #1e3c72;
+        --secondary: #2a5298;
+        --accent: #16a34a;
+        --text-dark: #333;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #333;
+        line-height: 1.6;
+        min-height: 100vh;
+        /* Variable para tamaño de fuente (Accesibilidad) */
+        font-size: var(--font-scale, 1rem); 
+        transition: font-size 0.2s ease;
+    }
+
+    /* =========================================
+       2. HEADER (TU CÓDIGO ORIGINAL)
+       ========================================= */
+    header {
+        background: rgba(30, 60, 114, 0.95);
+        color: white;
+        position: sticky; /* Como lo tenías originalmente */
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        display: flex;
+        align-items: center;
+        padding: 0.6rem 1rem;
+        border-radius: 14px; /* Tu borde redondeado original */
+    }
+    
+    header.hide { transform: translateY(-100%); }
+
+    .header-main {
+        display: flex; align-items: center; gap: 0.6rem; flex-grow: 1;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        color: white;
+    }
+
+    .logo { width: 80px; height: auto; transition: transform 0.3s; }
+    .logo:hover { transform: scale(1.05); }
+
+    /* Botón Menú */
+    .menu-toggle {
+        background: transparent;
+        border: 2px solid white;
+        color: white;
+        padding: 0.3rem 0.8rem;
+        font-size: 1.4rem;
+        border-radius: 12px;
+        cursor: pointer;
+    }
+
+    /* =========================================
+       3. MENÚ LATERAL
+       ========================================= */
+    #sideMenu {
+        position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+        background: #0f1f3d; padding: 1.5rem;
+        transform: translateX(-100%); transition: transform 0.35s ease;
+        z-index: 1900; box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+    }
+    #sideMenu.open { transform: translateX(0); }
+    #sideMenu ul { list-style: none; margin-top: 2rem; }
+    #sideMenu button {
+        width: 100%; background: none; border: none; color: white;
+        padding: 1rem; text-align: left; font-size: 1.1rem; cursor: pointer;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    #sideMenu button:hover { background: rgba(255,255,255,0.1); padding-left: 1.5rem; transition: 0.3s; }
+    .close-side { float: right; background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; }
+	/* Aseguramos que el menú lateral sea un contenedor flexible */
+	#sideMenu {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between; /* Empuja el contenido a los extremos */
+	}
+
+		/* Contenedor al final del menú */
+	.side-menu-footer {
+		padding: 25px;
+		text-align: center;
+		margin-top: auto; /* Empuja hacia abajo */
+		background: transparent; /* CLAVE: Sin color de fondo */
+		border-top: 1px solid rgba(0,0,0,0.05); /* Opcional: una línea muy sutil */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	/* Imagen del logo */
+	.side-logo-bottom {
+		max-width: 130px; /* Tamaño ajustable */
+		height: auto;
+		background: transparent; /* Asegura que no tenga fondo propio */
+		display: block;
+		mix-blend-mode: multiply; /* Opcional: Ayuda a integrar si el logo tiene un blanco muy leve de fondo */
+		filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); /* Le da un poco de relieve sin quitar transparencia */
+	}
+
+	.side-logo-bottom:hover {
+		opacity: 1;
+	}
+
+    /* =========================================
+       4. CONTENIDO GENERAL
+       ========================================= */
+    .container {
+        max-width: 1200px; margin: 2rem auto; padding: 2rem;
+        background: white; border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .section { display: none; animation: fadeIn 0.5s ease; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+
+    h2 { color: #1e3c72; font-size: 2rem; border-bottom: 3px solid #2a5298; margin-bottom: 1.5rem; }
+    h3 { color: #2a5298; font-size: 1.5rem; margin: 1.5rem 0 1rem; }
+    p { margin-bottom: 1rem; text-align: justify; }
+
+    /* =========================================
+       5. JUEGOS (ESTRUCTURA ORIGINAL DE 3 COLUMNAS)
+       ========================================= */
+    .games-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 por línea EXACTOS */
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .game-card {
+        background: white;
+        border-radius: 18px;
+        padding: 1rem;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.15);
+        cursor: pointer;
+        aspect-ratio: 1 / 1;
+        transition: transform 0.25s ease;
+    }
+    .game-card:hover { transform: translateY(-6px) scale(1.05); }
+    .game-card img { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
+
+    /* Banner Próximamente (Estilo tarjeta pero sin click) */
+    .game-coming {
+        background: #f0f9ff;
+        border: 2px dashed #2a5298;
+        border-radius: 18px;
+        display: flex; align-items: center; justify-content: center;
+        aspect-ratio: 1 / 1;
+        cursor: default;
+    }
+    .game-coming img { width: 100%; height: 100%; object-fit: contain; }
+
+    /* Media Queries originales de Juegos */
+    @media (max-width: 768px) {
+        .games-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+        .games-grid { grid-template-columns: 1fr; }
+    }
+
+    /* =========================================
+       6. FOOTER (TU CÓDIGO ORIGINAL)
+       ========================================= */
+    .footer {
+        background: #0f172a;
+        color: #ffffff;
+        padding: 2rem 1.5rem;
+        margin-top: 3rem;
+    }
+
+    .footer-content {
+        max-width: 1100px; margin: 0 auto;
+        display: flex; align-items: center; gap: 1.2rem;
+    }
+
+    .footer-logo {
+        width: 350px; /* Tamaño original grande */
+        height: auto; flex-shrink: 0;
+    }
+
+    .footer-text p { margin: 0.4rem 0; font-size: 0.9rem; opacity: 0.9; }
+
+    .footer-social { display: flex; gap: 0.7rem; margin: 0.8rem 0; align-items: center; }
+    .footer-social a {
+        display: inline-flex; width: 34px; height: 34px;
+        align-items: center; justify-content: center;
+        border-radius: 50%; background: rgba(255,255,255,0.08);
+        transition: 0.2s;
+    }
+    .footer-social a:hover { transform: scale(1.15); background: rgba(255,255,255,0.2); }
+    
+    .footer-feedback { margin-top: 0.8rem; }
+    .feedback-btn {
+        background: transparent; color: white; border: 1px solid rgba(255,255,255,0.5);
+        padding: 0.4rem 0.9rem; border-radius: 20px; cursor: pointer;
+    }
+
+    /* Responsive Footer Original */
+    @media (max-width: 600px) {
+        .footer-content { flex-direction: column; text-align: center; }
+        .footer-logo { width: 150px; margin-bottom: 0.8rem; } /* Ajuste lógico para móvil */
+        .footer-social { justify-content: center; }
+    }
+
+    /* =========================================
+       7. BIRD CARDS (ESTILO ORIGINAL)
+       ========================================= */
+    .bird-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem; margin-top: 2rem;
+    }
+    .bird-card {
+        background: linear-gradient(135deg, #667eea 0%, #4b4fa2 100%);
+        color: white; padding: 1.5rem; border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease; cursor: pointer;
+    }
+    .bird-card:hover { transform: translateY(-5px) scale(1.03); }
+    .bird-card h4 { font-size: 1.3rem; margin-bottom: 0.5rem; color: white; }
+    .scientific-name { font-style: italic; opacity: 0.9; margin-bottom: 1rem; color: #e0e7ff; }
+
+    /* Estados */
+    .status {
+        display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px;
+        font-size: 0.85rem; font-weight: bold; margin-bottom: 1rem;
+        background: rgba(0,0,0,0.2);
+    }
+    .status.critical { background: #dc2626 !important; }
+    .status.endangered { background: #ea580c !important; }
+    .status.vulnerable { background: #f59e0b !important; }
+    .status.endemic { background: #7c3aed !important; }
+    .status.important { background: #0ea5e9 !important; }
+
+    /* =========================================
+       8. OTROS ELEMENTOS (Mapa, Modal, Hero)
+       ========================================= */
+    /* Hero Banner */
+    .hero-banner {
+        width: 100%; height: 200px;
+        background: linear-gradient(135deg, rgba(13, 58, 95, 0.7), rgba(30, 144, 255, 0.7)),
+                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 500"><rect fill="%232d6a4f" width="1400" height="500"/><path fill="%231b4332" opacity="0.3" d="M0,300 Q350,200 700,300 T1400,300 L1400,500 L0,500 Z"/></svg>');
+        background-size: cover; border-radius: 15px;
+        display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .hero-text { color: white; font-size: 2rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); z-index: 2; text-align: center; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .stat-box { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 10px; text-align: center; }
+    .stat-box .number { font-size: 2.5rem; font-weight: bold; display: block; }
+
+    /* Mapa */
+    .map-section { display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; margin-top: 2rem; }
+    .map-container { position: relative; border-radius: 15px; overflow: hidden; }
+    .map-container img { width: 100%; display: block; }
+    .map-point {
+        position: absolute; width: 34px; height: 34px; background: #dc2626; color: white;
+        border: 2px solid white; border-radius: 50%; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+    }
+    .info-box { background: #f0f9ff; padding: 1.5rem; border-left: 4px solid #2a5298; border-radius: 5px; }
+
+	/* =========================================
+       MODAL CORREGIDO (SIN SCROLL INTERNO + COMPACTO)
+       ========================================= */
+
+    /* 1. EL FONDO (OVERLAY) */
+    .modal-overlay {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(4px);
+        z-index: 2000;
+        
+        /* Ajuste clave para evitar scroll interno: */
+        overflow-y: auto; /* El scroll está aquí, en toda la pantalla */
+        padding: 20px 10px; /* Margen para móviles */
+        align-items: flex-start; /* Alineamos arriba para que si crece no se corte */
+    }
+
+    /* 2. LA TARJETA (MODAL) */
+    .modal {
+        background: #ffffff;
+        width: 100%; max-width: 550px; /* Ancho ideal de lectura */
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        overflow: hidden;
+        position: relative;
+        margin: 2rem auto; /* Centrado con margen arriba/abajo */
+        
+        /* Dejamos que crezca según el texto */
+        height: auto; 
+        display: flex; flex-direction: column;
+        
+        animation: slideDown 0.4s ease;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* 3. CABECERA (TÍTULO) */
+    .modal-header {
+        background: white;
+        padding: 1.5rem 2rem 0.5rem;
+        text-align: center; /* SOLUCIÓN: Título centrado, no esquineado */
+    }
+
+    .modal-header h2 {
+        font-size: 1.8rem; 
+        color: #1e3c72; 
+        margin: 0; 
+        line-height: 1.2;
+    }
+
+    .scientific {
+        font-family: 'Georgia', serif;
+        font-style: italic; 
+        color: #64748b; 
+        font-size: 1rem; 
+        margin-top: 0.3rem;
+        display: block;
+    }
+
+    /* Botón Cerrar */
+    .modal-close {
+        position: absolute; top: 15px; right: 15px;
+        width: 32px; height: 32px;
+        background: #f1f5f9; color: #64748b;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem; cursor: pointer;
+        transition: 0.2s;
+    }
+    .modal-close:hover { background: #fee2e2; color: #dc2626; }
+
+    /* 4. IMAGEN (COMPLETA Y PEQUEÑA) */
+	
+/* =========================================
+       AJUSTE: IMAGEN MÁS PEQUEÑA Y CONTENIDA
+       ========================================= */
+
+    .modal-image-container {
+        width: 100%;
+        height: 140px; /* REDUCIDO: Antes era 180px o 250px. Esto la hace pequeña. */
+        background: radial-gradient(circle, #f8fafc 0%, #e2e8f0 100%);
+        
+        /* Centrado perfecto */
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+        
+        position: relative;
+        overflow: hidden;
+        cursor: zoom-in;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .modal-image-container img {
+        height: 100%;       /* Ocupa toda la altura disponible (los 140px) */
+        width: auto;        /* El ancho se calcula solo para no deformarse */
+        max-width: 100%;    /* Límite de ancho */
+        object-fit: contain; /* CLAVE: Muestra la foto entera sin recortes */
+        
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); /* Sombra suave a la silueta */
+        transition: transform 0.3s ease;
+    }
+
+    /* Efecto Zoom al pasar mouse */
+    .modal-image-container:hover img {
+        transform: scale(1.1);
+    }
+
+    /* Créditos y Botón "Ver completa" (Ajustados para el tamaño pequeño) */
+    .image-credit {
+        position: absolute; bottom: 0; left: 0; width: 100%;
+        background: rgba(0,0,0,0.8); color: white;
+        font-size: 0.7rem; padding: 4px; text-align: center;
+        opacity: 0; transition: 0.3s; pointer-events: none;
+    }
+    
+    .modal-image-container:hover .image-credit { opacity: 1; }
+
+    /* Etiqueta de lupa más pequeña */
+    .modal-image-container::after {
+        content: "🔍";
+        position: absolute; top: 10px; right: 10px;
+        background: rgba(255,255,255,0.9); padding: 4px;
+        border-radius: 50%; font-size: 0.8rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        pointer-events: none;
+    }
+
+    /* 5. CUERPO (TEXTO) */
+    .modal-body {
+        padding: 1.5rem 2rem 2rem;
+        background: #fff;
+        /* Quitamos overflow para que no haya scroll interno */
+    }
+
+    /* Fila Superior: Estado + QR */
+    .modal-top-row {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 1.2rem; 
+        padding-bottom: 0.8rem; 
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .modal-status {
+        padding: 0.3rem 1rem; border-radius: 20px;
+        font-weight: bold; font-size: 0.75rem; text-transform: uppercase;
+        color: white; background: #64748b;
+    }
+
+/* =========================================
+       ESTILO QR (INTERACTIVO)
+       ========================================= */
+    .modal-qr-inline img {
+        width: 45px; 
+        height: 45px; 
+        padding: 3px; 
+        border: 1px solid #e2e8f0; 
+        border-radius: 6px;
+        
+        /* Indicadores de interactividad */
+        cursor: zoom-in; 
+        transition: transform 0.2s ease, border-color 0.2s;
+        background: white;
+    }
+
+    .modal-qr-inline img:hover {
+        transform: scale(1.2); /* Crece un poco al pasar el mouse */
+        border-color: #94a3b8;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    #modalInfo { 
+        font-size: 1rem; 
+        line-height: 1.6; 
+        color: #334155; 
+        margin-bottom: 1.5rem; 
+        text-align: justify; /* Texto justificado se ve mejor centrado */
+    }
+
+    /* Cajitas Extra */
+    .modal-extra {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.8rem;
+    }
+    .modal-extra div {
+        background: #f8fafc; border: 1px solid #e2e8f0;
+        padding: 0.6rem; border-radius: 8px; font-size: 0.85rem;
+    }
+
+    /* 6. VISOR PANTALLA COMPLETA */
+    .image-viewer {
+        display: none; position: fixed; inset: 0; z-index: 9999;
+        background: rgba(0,0,0,0.95);
+        justify-content: center; align-items: center; cursor: zoom-out;
+    }
+    .image-viewer img {
+        max-width: 95vw; max-height: 95vh;
+        border-radius: 4px; animation: popIn 0.3s;
+    }
+    @keyframes popIn { from{transform:scale(0.8); opacity:0;} to{transform:scale(1);opacity:1;} }
+
+    /* Panel Accesibilidad */
+    .accessibility-panel { position: fixed; top: 80px; right: 10px; display: flex; flex-direction: column; gap: 8px; z-index: 2100; }
+    .accessibility-panel button { width: 38px; height: 38px; border-radius: 50%; background: #1e3c72; color: white; border: 1px solid white; cursor: pointer; }
+
+    /* Layout Imagen Lateral */
+    .side-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; margin: 2rem 0; align-items: start; }
+    .side-layout.reverse { direction: rtl; } .side-layout.reverse > * { direction: ltr; }
+    .side-image img { width: 100%; border-radius: 15px; }
+
+    /* Responsive General */
+    @media (max-width: 768px) {
+        .container { padding: 1rem; width: 95%; margin: 1rem auto; }
+        .map-section, .side-layout, .side-layout.reverse { grid-template-columns: 1fr; direction: ltr; }
+        h1 { font-size: 1.4rem; }
+    }
+    
+    /* Alto Contraste */
+    body.high-contrast { background: #000; color: #fff; }
+    body.high-contrast .container, body.high-contrast .modal { background: #000; border: 1px solid #fff; }
+	
+	/* =========================================
+       MEJORA VISUAL: CONTROLES DE LECTURA (TTS)
+       ========================================= */
+    
+    /* Estilo base del botón (Píldora moderna) */
+    .read-btn {
+        /* Degradado llamativo (Azul a Turquesa) */
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.4rem;
+        border-radius: 50px; /* Bordes totalmente redondos */
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        
+        /* Flexbox para alinear texto e icono */
+        display: inline-flex; 
+        align-items: center; 
+        gap: 8px;
+        
+        /* Sombra suave */
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.25);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Rebote suave */
+        margin-bottom: 1.5rem;
+        margin-right: 0.5rem;
+    }
+
+    /* Agregamos iconos automáticamente con CSS */
+    .read-btn:not(.stop)::before {
+        content: "🔊"; /* Icono de altavoz */
+        font-size: 1.1rem;
+    }
+
+    /* Efecto Hover (Al pasar el mouse) */
+    .read-btn:hover {
+        transform: translateY(-3px) scale(1.02);
+        background: linear-gradient(135deg, #2a5298 0%, #00f2fe 100%); /* Se ilumina */
+        box-shadow: 0 8px 20px rgba(0, 242, 254, 0.4);
+    }
+
+    /* Efecto Click */
+    .read-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* --- Botón DETENER (Estilo Alerta) --- */
+    .read-btn.stop {
+        background: #fff; /* Fondo blanco */
+        color: #dc2626;   /* Texto rojo */
+        border: 2px solid #dc2626;
+        box-shadow: none;
+    }
+
+    .read-btn.stop::before {
+        content: "⏹"; /* Icono de stop */
+        font-size: 1.1rem;
+    }
+
+    .read-btn.stop:hover {
+        background: #dc2626;
+        color: white;
+        box-shadow: 0 6px 15px rgba(220, 38, 38, 0.3);
+        border-color: #dc2626;
+    }
+
+    /* =========================================
+       MEJORA VISUAL: PANEL DE ACCESIBILIDAD
+       ========================================= */
+    .accessibility-panel {
+        position: fixed;
+        top: 90px;
+        right: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 2100;
+        
+        /* Fondo de cristal (Glassmorphism) */
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        padding: 8px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .accessibility-panel button {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        
+        /* Estilo base de los botones redondos */
+        background: white;
+        color: #1e3c72;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .accessibility-panel button:hover {
+        background: #1e3c72;
+        color: white;
+        transform: scale(1.15);
+        box-shadow: 0 4px 10px rgba(30, 60, 114, 0.4);
+    }
+	/* =========================================
+       CORRECCIÓN: MENÚ DE IDIOMAS (VERTICAL Y DESPLEGABLE)
+       ========================================= */
+    
+    /* Contenedor del botón planeta */
+    .lang-accessibility {
+        position: relative; /* Necesario para posicionar el menú flotante */
+    }
+
+    /* El menú desplegable (oculto por defecto) */
+    .lang-options {
+        display: none; /* OCULTO INICIALMENTE */
+        
+        position: absolute;
+        right: 55px; /* Se despliega a la IZQUIERDA del botón */
+        top: 0;
+        
+        /* Diseño vertical */
+        flex-direction: column;
+        min-width: 140px;
+        background: rgba(30, 60, 114, 0.95); /* Fondo oscuro semitransparente */
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 8px;
+        border: 1px solid rgba(255,255,255,0.2);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 2200;
+    }
+
+    /* Ajuste para que el JS lo muestre correctamente */
+    /* Cuando el JS pone 'display: block', nosotros forzamos flex vertical */
+    .lang-options[style*="display: block"] {
+        display: flex !important;
+        gap: 5px; /* Espacio entre idiomas */
+    }
+
+    /* Estilo de los botones DENTRO del menú (Rectangulares, no redondos) */
+    .lang-options button {
+        width: 100%;           /* Ocupa todo el ancho */
+        height: auto;          /* Altura automática */
+        border-radius: 8px;    /* Bordes suaves */
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        text-align: left;      /* Texto alineado a la izquierda */
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        color: white;
+        display: block;
+    }
+
+    /* Hover específico para la lista */
+    .lang-options button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px); /* Pequeño movimiento a la derecha */
+        color: #fff;
+    }
+		/* Contenedor de la imagen en el diseño lateral */
+	.side-image {
+		position: relative; /* Esencial para que el texto se ubique encima */
+		overflow: hidden;
+		border-radius: 12px;
+	}
+
+	/* El panel transparente de los créditos */
+	.image-credit {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background: rgba(0, 0, 0, 0.7); /* Fondo negro transparente */
+		color: #fff;
+		padding: 8px 12px;
+		font-size: 0.75rem;
+		text-align: center;
+		
+		/* Efecto: oculto por defecto */
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.3s ease-in-out;
+		pointer-events: none; /* No interfiere con clics */
+	}
+
+	/* Mostrar al pasar el mouse sobre la imagen */
+	.side-image:hover .image-credit {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	/* --- CORRECCIÓN PARA EL MODAL --- */
+
+	/* 1. Aseguramos que el contenedor de la imagen del modal tenga posición relativa */
+	.modal-image-container {
+		position: relative; /* OBLIGATORIO: para que el crédito se posicione respecto a esta caja */
+		overflow: hidden;   /* Para que el crédito no se salga de las esquinas */
+		/* Aquí puedes mantener tus otros estilos de tamaño si los tienes */
+	}
+
+	/* 2. Reutilizamos el estilo base del crédito (esto ya lo tienes, pero asegúrate que aplique) */
+	.image-credit {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background: rgba(0, 0, 0, 0.7);
+		color: #fff;
+		padding: 8px 12px;
+		font-size: 0.75rem;
+		text-align: center;
+		
+		/* Estado inicial: invisible y desplazado hacia abajo */
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.3s ease-in-out;
+		pointer-events: none;
+	}
+
+	/* 3. LA SOLUCIÓN: Hacemos que al pasar el mouse sobre .modal-image-container aparezca el crédito */
+	.modal-image-container:hover .image-credit {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* (Opcional) Si quieres mantener el efecto también para .side-image fuera del modal, déjalo así: */
+	.side-image:hover .image-credit {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	/* =========================================
+	   ESTILOS DE BOTONES SOCIALES
+	   ========================================= */
+
+	.social-links {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 15px;
+		margin-top: 15px;
+		margin-bottom: 15px;
+	}
+
+	/* ESTILO BASE (Para fondo BLANCO) */
+	.social-btn {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		text-decoration: none;
+		font-size: 1.3rem;
+		transition: all 0.3s ease;
+		box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+		/* --- CAMBIOS PARA FONDO BLANCO --- */
+		background-color: #f0f0f0;      /* Gris muy clarito de fondo */
+		border: 1px solid #d1d1d1;      /* Borde gris suave */
+		color: #444444;                 /* Icono gris oscuro (casi negro) */
+	}
+
+	/* EFECTO HOVER (Al pasar el mouse) */
+	.social-btn:hover {
+		transform: translateY(-5px);
+		color: #ffffff;                 /* El icono se vuelve BLANCO al pasar el mouse */
+		border-color: transparent;
+		box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+	}
+
+	/* =========================================
+	   COLORES DE MARCA (FONDO AL PASAR MOUSE)
+	   ========================================= */
+
+	.social-btn.youtube:hover { background-color: #FF0000; }
+	.social-btn.facebook:hover { background-color: #1877F2; }
+	.social-btn.instagram:hover { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+	.social-btn.tiktok:hover { background-color: #000000; border: 1px solid #00f2ea; text-shadow: 2px 2px 0px #ff0050; }
+	.social-btn.telegram:hover { background-color: #0088cc; }
+	.social-btn.link:hover, .social-btn.allmylinks:hover { background-color: #38b2a6; }
+
+	/* =========================================
+	   COLORES DE MARCA (HOVER)
+	   ========================================= */
+
+	/* YouTube (Rojo) */
+	.social-btn.youtube:hover {
+		background-color: #FF0000;
+	}
+
+	/* Facebook (Azul) */
+	.social-btn.facebook:hover {
+		background-color: #1877F2;
+	}
+
+	/* Instagram (Degradado) */
+	.social-btn.instagram:hover {
+		background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+	}
+
+	/* TikTok (Negro con borde neón) */
+	.social-btn.tiktok:hover {
+		background-color: #000000;
+		border: 1px solid #00f2ea;
+		text-shadow: 2px 2px 0px #ff0050; /* Efecto glitch */
+	}
+
+	/* Telegram (Azul Cielo) */
+	.social-btn.telegram:hover {
+		background-color: #0088cc;
+	}
+
+	/* AllMyLinks (Verde Azulado / Teal) */
+	.social-btn.link:hover, 
+	.social-btn.allmylinks:hover { /* Soporta ambos nombres de clase */
+		background-color: #38b2a6;
+	}
+</style>
+</head>
+<body>
+<button id="installBtn" style="display:none;" class="read-btn">📲 Instalar aplicativo</button>
+
+<div class="accessibility-panel" role="toolbar" aria-label="Ferramentas de acessibilidade">
+    <button onclick="toggleContrast()" aria-label="Alto contraste" title="Alto Contraste">HC</button>
+    <button onclick="decreaseText()" aria-label="Diminuir texto" title="Diminuir Texto">A−</button>
+    <button onclick="resetText()" aria-label="Texto normal" title="Texto Normal">A</button>
+    <button onclick="increaseText()" aria-label="Aumentar texto" title="Aumentar Texto">A+</button>
+    
+    <div class="lang-accessibility">
+        <button id="langToggle" class="lang-toggle" aria-expanded="false" title="Mudar Idioma">
+            🌐
+        </button>
+        <div id="langMenu" class="lang-options" role="menu">
+            <button type="button" onclick="selectLanguage('es')">Español</button>
+            <button type="button" onclick="selectLanguage('en')">English</button>
+            <button type="button" onclick="selectLanguage('pt')">Português</button>
+        </div>
+    </div>
+</div>
+
+<header class="header" id="mainHeader">
+    <button class="menu-toggle" onclick="openSideMenu()" aria-label="Abrir menu">☰</button>
+    <div class="header-main">
+        <h1> · Guardiões do Páramo</h1>
+        <img src="logo.png" alt="Logo Guardiões do Páramo" class="logo">
+    </div>
+</header>
+
+<aside id="sideMenu" aria-label="Menu lateral">
+    <button class="close-side" aria-label="Fechar menu">X</button>
+    <ul>
+        <li><button data-i18n="menu_home" onclick="navigate('inicio')">Início</button></li>
+        <li><button data-i18n="menu_historia" onclick="navigate('historia')">História</button></li>
+        <li><button data-i18n="menu_aves" onclick="navigate('aves')">Aves</button></li>
+        <li><button data-i18n="menu_conservacion" onclick="navigate('conservacion')">Conservação</button></li>
+        <li><button data-i18n="menu_enfasis" onclick="navigate('unete')">Junte-se</button></li>
+        <li><button onclick="navigate('enlaces')">Links Externos</button></li>
+    </ul>
+    <div class="side-menu-footer">
+        <img src="logot.png" alt="Logo Guardiões do Páramo" class="side-logo-bottom">
+    </div>
+</aside>
+
+<div class="container">
+
+    <div id="inicio" class="section active">
+        <button class="read-btn" onclick="readThisSection(this)">Ler esta seção</button>
+        <button class="read-btn stop" onclick="stopReading()">Parar</button>
+
+        <div class="hero-banner">
+            <div class="hero-text">
+                Parque Nacional Natural Chingaza<br>
+                <span style="font-size: 1.2rem;">Um Santuário de Biodiversidade</span>
+            </div>
+        </div>
+        
+        <h2>Bem-vindos ao Parque Nacional Natural Chingaza</h2>
+        
+        <div class="side-layout reverse">
+            <div class="side-image medium">
+                <img src="https://paramosdecolombia.com/wp-content/uploads/2020/01/parque-nacional-chingaza.jpg" alt="Parque Nacional Natural Chingaza">
+                <div class="image-credit">
+                    Imagem: Parque Nacional Natural Chingaza - fonte original: paramosdecolombia.com
+                </div>
+            </div>
+            <div class="side-text">
+                <p>
+                    O Parque Nacional Natural Chingaza é uma das áreas protegidas mais importantes da Colômbia, reconhecido pelo seu valor ecológico e cultural. Está localizado na Cordilheira Oriental dos Andes, a nordeste de Bogotá, e protege uma grande diversidade de ecossistemas andinos. O parque tem uma extensão total de 76.600 hectares e é integrado por 11 municípios, dos quais sete pertencem ao departamento de Cundinamarca: Fómeque, Choachí, La Calera, Guasca, Junín, Gachalá e Medina, e quatro pertencem ao departamento de Meta: San Juanito, El Calvario, Restrepo e Cumaral. [1]
+                </p>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box"><span class="number">531</span><span>Espécies de Aves</span></div>
+            <div class="stat-box"><span class="number">76.600</span><span>Hectares Protegidos</span></div>
+            <div class="stat-box"><span class="number">6</span><span>Espécies Endêmicas</span></div>
+            <div class="stat-box"><span class="number">80%</span><span>Água para Bogotá</span></div>
+        </div>
+
+        <h3>Ecossistemas Únicos</h3>
+        <div class="side-layout">
+            <div class="side-text">
+                <p>
+                    O Parque Nacional Natural Chingaza abriga uma grande variedade de ecossistemas, que incluem florestas altoandinas e subandinas, bem como extensos páramos, devido à sua ampla faixa de altitude que vai aproximadamente de 800 a 4.000 metros acima do nível do mar - essa gradação altitudinal gera ambientes diversos e complexos, desde florestas úmidas até páramos com vegetação especializada.
+                    Além disso, dentro do parque existem complexos de áreas úmidas altoandinas que sustentam uma rica biodiversidade e apresentam grande valor biológico, cênico e cultural para as comunidades ancestrais locais, como as das culturas Muisca e Chibcha. [1]
+                </p>
+            </div>
+            <div class="side-image medium">
+                <img src="https://www.parquesnacionales.gov.co/wp-content/uploads/2020/09/chingaza-lagunas-de-siecha-scaled.jpg" alt="Lagoas de Siecha">
+                <div class="image-credit">
+                    Imagem: Parque Nacional Natural Chingaza – Lagoas de Siecha. Fonte: Parques Nacionais Naturais da Colômbia.    
+                </div>
+            </div>
+        </div>
+
+        <h3>Importância Internacional</h3>
+        <div class="side-layout">
+            <div class="side-text">
+                <p>
+                    O Parque Nacional Natural Chingaza recebeu importantes reconhecimentos internacionais pelo seu valor ecológico:
+                    Em 2008 foi designado como Área Importante para a Preservação de Aves (IBA) pela BirdLife International, devido ao seu papel crucial para a proteção de espécies de aves, consideradas locais críticos e insubstituíveis.
+                    Nesse mesmo ano, o Sistema Lacustre de Chingaza foi incluído na Lista de Zonas Úmidas de Importância Internacional sob a Convenção Ramsar, protegendo aproximadamente 4.058 hectares de áreas úmidas essenciais para espécies aquáticas e sistemas biológicos. [2]
+                </p>
+            </div>
+            <div class="side-image medium">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkEVYmHSCunbuSDgUUdbQjVX1I3y7LKfERDQ&s" alt="Reconhecimento Internacional">
+            </div>
+        </div>
+
+        <h2>Mapa Interativo do PNN Chingaza</h2>
+        <div class="map-section">
+            <div id="map-info" class="info-box">
+                <strong>Selecione uma zona no mapa</strong>
+            </div>
+            <div class="map-container">
+                <img src="mapa-chingaza.webp" alt="Mapa do Parque Nacional Natural Chingaza">
+                <button class="map-point" style="top:10%; left:5%;" onclick="showZone('calera1')">P</button>
+                <button class="map-point" style="top:20%; left:17%;" onclick="showZone('calera2')">P</button>
+                <button class="map-point" style="top:70%; left:45%;" onclick="showZone('juanito')">P</button>
+                <button class="map-point" style="top:3%; left:14%;" onclick="showZone('guasca')">P</button>
+                <button class="map-point" style="top:45%; left:12%;" onclick="showZone('choachi')">P</button>
+                <button class="map-point" style="top:50%; left:13%;" onclick="showZone('ubaque')">P</button>
+                <button class="map-point" style="top:80%; left:30%;" onclick="showZone('calvario')">P</button>
+                <button class="map-point" style="top:90%; left:55%;" onclick="showZone('restrepo')">P</button>
+                <button class="map-point" style="top:85%; left:80%;" onclick="showZone('cumaral')">P</button>
+                <button class="map-point" style="top:60%; left:85%;" onclick="showZone('medina')">P</button>
+                <button class="map-point" style="top:35%; left:70%;" onclick="showZone('gachala')">P</button>
+                <button class="map-point" style="top:28%; left:68%;" onclick="showZone('ubala')">P</button>
+                <button class="map-point" style="top:30%; left:50%;" onclick="showZone('gama')">P</button>
+                <button class="map-point" style="top:15%; left:35%;" onclick="showZone('junin')">P</button>
+                <button class="map-point" style="top:12%; left:42%;" onclick="showZone('gacheta')">P</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="historia" class="section">
+        <button class="read-btn" onclick="readThisSection(this)">Ler esta seção</button>
+        <button class="read-btn stop" onclick="stopReading()">Parar</button>
+        
+        <h2>História e Significado Cultural</h2>
+        
+        <h3>Origem do Nome</h3>
+        <p>
+            O nome Chingaza provém de um vocábulo Muisca, associado à cultura indígena que habitou esta região antes da chegada dos europeus. Em contextos antropológicos e culturais, registra-se que a palavra significa "serrania do deus da noite", em referência à importância espiritual que este território tinha para os povos indígenas ancestrais que veneravam suas lagoas e montanhas. [3][4]
+        </p>
+
+        <h3>Legado Muisca</h3>
+        <p>
+            Os povos Muiscas ocuparam historicamente a zona que hoje corresponde ao Parque Nacional Natural Chingaza, e consideravam locais como os lagos, páramos e fontes de água como espaços sagrados, conectados com suas práticas rituais e cosmologia. Embora hoje não existam comunidades indígenas estabelecidas dentro do parque, o legado cultural e espiritual dos Muiscas continua sendo relevante na compreensão histórica do território. [5]
+        </p>
+
+        <h3>Declaração como Parque Nacional</h3>
+        <p>
+            O Parque Nacional Natural Chingaza foi declarado Parque Nacional Natural em 1977 mediante Decreto, com o propósito de proteger seus ecossistemas únicos e biodiversidade, especialmente pelo seu valor como fonte de água, biodiversidade e serviços ambientais para a Colômbia. [4]
+        </p>
+
+        <h3>A Fábrica de Água</h3>
+        <p>
+            Chingaza é conhecida como uma "fábrica de água", por ser uma das principais áreas de regulação hídrica da Colômbia. Graças aos seus páramos e florestas altoandinas, o parque é fundamental para o abastecimento de água; estima-se que forneça aproximadamente 80% da água consumida pela cidade de Bogotá, através de sistemas como a represa de Chuza e a rede hídrica associada, beneficiando milhões de pessoas. [6]
+        </p>
+
+        <h3>População Atual</h3>
+        <p>
+            A região ao redor de Chingaza é habitada principalmente por comunidades camponesas, que desenvolveram relações culturais, econômicas e sociais com o território, buscando equilibrar suas atividades produtivas com a conservação do ecossistema de alta montanha. A gestão do parque inclui cooperação com essas comunidades para apoiar o manejo sustentável da área protegida. [4]
+        </p>
+    </div>
+
+    <div id="aves" class="section">
+        <button class="read-btn" onclick="readThisSection(this)">Ler esta seção</button>
+        <button class="read-btn stop" onclick="stopReading()">Parar</button>
+        
+<section id="aves-chingaza">
+    <h2>Aves de Chingaza: Conservação e Biodiversidade [7]</h2>
+    <p>
+        O Parque Nacional Natural Chingaza abriga uma das maiores diversidades de aves do país. Abaixo, apresentam-se espécies ameaçadas, endêmicas e aves emblemáticas chave para o equilíbrio ecológico do páramo e das florestas andinas.
+    </p>
+
+    <div class="stats">
+        <div class="stat-box critical"><span class="number">1</span><span>Perigo Crítico</span></div>
+        <div class="stat-box endangered"><span class="number">5</span><span>Em Perigo</span></div>
+        <div class="stat-box vulnerable"><span class="number">8</span><span>Vulneráveis</span></div>
+        <div class="stat-box endemic"><span class="number">10</span><span>Endêmicas</span></div>
+        <div class="stat-box important"><span class="number">19</span><span>Emblemáticas</span></div>
+    </div>
+
+    <h3>Em Perigo Crítico</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+             <h4>Condor-dos-Andes</h4>
+            <div class="scientific-name">Vultur gryphus</div>
+            <div class="status critical">PERIGO CRÍTICO</div>
+            <p>Ave emblemática da Colômbia.</p>
+        </div>
+    </div>
+
+    <h3>Em Perigo</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Pato-andino</h4>
+            <div class="scientific-name">Oxyura jamaicensis</div>
+            <div class="status endangered">EM PERIGO</div>
+            <p>Espécie aquática dependente de áreas úmidas altoandinas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Frango-d'água-de-bogotá</h4>
+            <div class="scientific-name">Rallus semiplumbeus</div>
+            <div class="status endangered">EM PERIGO · ENDÊMICA</div>
+            <p>Ave endêmica das áreas úmidas da Savana de Bogotá.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Perdiz-da-montanha</h4>
+            <div class="scientific-name">Odontophorus strophium</div>
+            <div class="status endangered">EM PERIGO · ENDÊMICA</div>
+            <p>Habita florestas densas andinas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Águia-cristada</h4>
+            <div class="scientific-name">Spizaetus isidori</div>
+            <div class="status endangered">EM PERIGO</div>
+            <p>Grande ave de rapina de florestas montanas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Tororoi-de-cundinamarca</h4>
+            <div class="scientific-name">Grallaria kaestneri</div>
+            <div class="status endangered">EM PERIGO · ENDÊMICA</div>
+            <p>Ave terrestre, esquiva e exclusiva.</p>
+        </div>
+    </div>
+
+    <h3>Vulneráveis</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Marreca-andina</h4>
+            <div class="scientific-name">Anas andium</div>
+            <div class="status vulnerable">VULNERÁVEL</div>
+            <p>Habita lagoas altoandinas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Jacu-andino</h4>
+            <div class="scientific-name">Penelope montagnii</div>
+            <div class="status vulnerable">VULNERÁVEL</div>
+            <p>Chave para a dispersão de sementes.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Narceja-paramuna</h4>
+            <div class="scientific-name">Gallinago nobilis</div>
+            <div class="status vulnerable">VULNERÁVEL</div>
+            <p>Ave de páramo dependente de solos úmidos.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Periquito-de-asa-amarela</h4>
+            <div class="scientific-name">Pyrrhura calliptera</div>
+            <div class="status vulnerable">VULNERÁVEL · ENDÊMICA</div>
+            <p>Distribuição restrita aos Andes colombianos.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Periquito-de-asa-pintada</h4>
+            <div class="scientific-name">Touit stictopterus</div>
+            <div class="status vulnerable">VULNERÁVEL</div>
+            <p>Ameaçado pelo comércio ilegal e perda de habitat.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Papagaio-de-cara-enferrujada</h4>
+            <div class="scientific-name">Hapalopsittaca amazonina</div>
+            <div class="status vulnerable">VULNERÁVEL</div>
+            <p>Dependente de florestas maduras andinas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Papagaio-de-orelha-amarela</h4>
+            <div class="scientific-name">Ognorhynchus icterotis</div>
+            <div class="status vulnerable">VULNERÁVEL</div>
+            <p>Relacionado com a palmeira-de-cera.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>João-de-barro-de-cundinamarca</h4>
+            <div class="scientific-name">Synallaxis subpudica</div>
+            <div class="status vulnerable">VULNERÁVEL · ENDÊMICA</div>
+            <p>Ave de matagais altoandinos.</p>
+        </div>
+    </div>
+
+    <h3>Endêmicas</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Barbudinho-do-páramo</h4>
+            <div class="scientific-name">Oxypogon guerinii</div>
+            <div class="status endemic">ENDÊMICA</div>
+            <p>Colibri exclusivo de páramos colombianos.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Tororoi-do-páramo</h4>
+            <div class="scientific-name">Grallaria quitensis</div>
+            <div class="status endemic">ENDÊMICA</div>
+            <p>Habitante do sub-bosque frio andino.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Cochicho-do-páramo</h4>
+            <div class="scientific-name">Asthenes flammulata</div>
+            <div class="status endemic">ENDÊMICA</div>
+            <p>Constrói ninhos entre capinzais.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Yal-plúmbeo</h4>
+            <div class="scientific-name">Phrygilus unicolor</div>
+            <div class="status endemic">ENDÊMICA</div>
+            <p>Adaptado a climas extremos de altitude.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Colibri-bico-de-espada</h4>
+            <div class="scientific-name">Ensifera ensifera</div>
+            <div class="status endemic">QUASE ENDÊMICA</div>
+            <p>Possui o bico mais longo em proporção ao seu corpo.</p>
+        </div>
+    </div>
+
+    <h3>Aves Emblemáticas</h3>
+    <div class="bird-grid">
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Águia-chilena</h4>
+            <div class="scientific-name">Geranoaetus melanoleucus</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Ave de rapina dominante de zonas abertas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Urubu-de-cabeça-vermelha</h4>
+            <div class="scientific-name">Cathartes aura</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Necrófaga chave para a limpeza.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Urubu-preto</h4>
+            <div class="scientific-name">Coragyps atratus</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Frequente em bordas de floresta.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Tucano-celeste</h4>
+            <div class="scientific-name">Andigena nigrirostris</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Dispersor de sementes de florestas andinas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Pica-pau-carmesim</h4>
+            <div class="scientific-name">Colaptes rivolii</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Escavador de troncos.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Sanhaço-real</h4>
+            <div class="scientific-name">Buthraupis montana</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Ave colorida típica de florestas montanas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Melro-grande</h4>
+            <div class="scientific-name">Turdus fuscater</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Uma das aves mais visíveis.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Pomba-de-coleira</h4>
+            <div class="scientific-name">Patagioenas fasciata</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Habitante de florestas altas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Asa-de-safira</h4>
+            <div class="scientific-name">Pterophanes cyanopterus</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Colibri grande adaptado ao frio.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Bico-de-espinho-bronzeado</h4>
+            <div class="scientific-name">Chalcostigma heteropogon</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Especialista em flores de alta montanha.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Corruíra-do-campo</h4>
+            <div class="scientific-name">Cistothorus platensis</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Pequeno cantor de capinzais.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Cochicho-escuro</h4>
+            <div class="scientific-name">Asthenes fuliginosa</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Ave discreta do páramo alto.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Carqueja-americana</h4>
+            <div class="scientific-name">Fulica americana</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Habitante frequente de lagoas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Maçarico-solitário</h4>
+            <div class="scientific-name">Tringa solitaria</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Migratória que usa áreas úmidas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Quero-quero</h4>
+            <div class="scientific-name">Vanellus chilensis</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Ave vigilante de áreas abertas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Caburé-andino</h4>
+            <div class="scientific-name">Glaucidium jardinii</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Pequena ave de rapina noturna.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Corujinha-de-garganta-branca</h4>
+            <div class="scientific-name">Megascops albogularis</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Coruja típica de florestas andinas.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Bacurau-andino</h4>
+            <div class="scientific-name">Systellura longirostris</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Noturno, camufla-se em solos abertos.</p>
+        </div>
+
+        <div class="bird-card" onclick="openModal(this)">
+            <h4>Guácharo</h4>
+            <div class="scientific-name">Steatornis caripensis</div>
+            <div class="status important">EMBLEMÁTICA</div>
+            <p>Ave noturna frugívora de cavernas.</p>
+        </div>
+    </div>
+</section>
+    </div>
+
+    <div id="conservacion" class="section">
+        <button class="read-btn" onclick="readThisSection(this)">Ler esta seção</button>
+        <button class="read-btn stop" onclick="stopReading()">Parar</button>
+
+        <h2>Conservação no Parque Nacional Natural Chingaza [8]</h2>
+        
+        <h3>Reconhecimentos Internacionais por Conservação</h3>
+        <p>
+            O Parque Nacional Natural Chingaza foi incluído em 18 de setembro de 2020 na Lista Verde de Áreas Protegidas e Conservadas da União Internacional para a Conservação da Natureza (UICN), um reconhecimento que certifica que o parque cumpre com padrões avançados de governança, planejamento, manejo e resultados de conservação.
+        </p>
+
+        <h3>Programa de Monitoramento e Vigilância</h3>
+        <p>
+            Como parte das ações de conservação do parque, Parques Nacionais Naturais da Colômbia realiza monitoramentos ecológicos contínuos para avaliar o estado das espécies e os ecossistemas de alta montanha presentes na área protegida. Este acompanhamento faz parte das ações destinadas a garantir a permanência da biodiversidade e os serviços ecossistêmicos que Chingaza presta.
+        </p>
+
+        <h3>Pesquisa Científica Aplicada à Conservação</h3>
+        <p>
+            A pesquisa científica é fundamental para a conservação de Chingaza. A excepcional diversidade de espécies registrada no parque tem sido estudada por pesquisadores em múltiplas disciplinas, e a área é considerada propícia para atividades científicas que geram novos conhecimentos sobre a vida selvagem e os processos ecológicos altoandinos.
+        </p>
+
+        <h3>Educação Ambiental como Estratégia de Conservação</h3>
+        <p>
+            O parque é um espaço onde se promove a educação ambiental como ferramenta chave para a conservação da biodiversidade e a sensibilização sobre a importância dos páramos e florestas altoandinas. Através de atividades de interpretação do patrimônio natural, visitantes, comunidades locais e estudantes podem se conectar com a natureza e aprender sobre práticas que favorecem a conservação.
+        </p>
+
+        <h3>Importância do Sítio Ramsar para a Conservação</h3>
+        <p>
+            Dentro do parque encontra-se o Sistema Lacustre de Chingaza, designado como Sítio Ramsar de Importância Internacional, com aproximadamente 4.058 hectares de áreas úmidas altoandinas. Esta área cumpre um papel crucial como habitat para aves aquáticas e outras espécies, contribuindo para a conservação da biodiversidade e o equilíbrio hidrológico da região.
+        </p>
+
+        <h3>Ações Comunitárias de Conservação</h3>
+        <ul>
+            <p>
+            As comunidades camponesas vizinhas ao parque têm sido parte ativa em estratégias de conservação, colaborando com iniciativas que fomentam a proteção dos recursos naturais, a fauna e a flora de alta montanha, e promovendo práticas sustentáveis compatíveis com a preservação dos ecossistemas de Chingaza.
+            </p>
+        </ul>
+    </div>
+    <div id="unete" class="section">
+        <button class="read-btn" onclick="readThisSection(this)">Ler esta seção</button>
+        <button class="read-btn stop" onclick="stopReading()">Parar</button>
+		
+		<div class="social-banner">
+			<h3>Siga-nos em nossas redes</h3> <div class="social-links">		
+				<a href="https://www.instagram.com/guardianesdelparamoch/" target="_blank" class="social-btn instagram" aria-label="Instagram">
+					<i class="fab fa-instagram"></i>
+				</a>
+				<a href="https://www.youtube.com/channel/UCgNuF1w4iL8VQjGNa8_ei9w" target="_blank" class="social-btn youtube" aria-label="YouTube">
+					<i class="fab fa-youtube"></i>
+				</a>
+				<a href="https://www.facebook.com/profile.php?id=61586604059288" target="_blank" class="social-btn facebook" aria-label="Facebook">
+					<i class="fab fa-facebook-f"></i>
+				</a>
+				<a href="https://www.tiktok.com/@guardianesdelparamoch" target="_blank" class="social-btn tiktok" aria-label="TikTok">
+					<i class="fab fa-tiktok"></i>
+				</a>
+				<a href="https://t.me/guardianesdelparamoch" target="_blank" class="social-btn telegram" aria-label="Telegram">
+					<i class="fab fa-telegram"></i>
+				</a>
+				<a href="https://allmylinks.com/guardianesdelparamoch" target="_blank" class="social-btn link" aria-label="AllMyLinks">
+					<i class="fas fa-link"></i>
+				</a>
+			</div>
+		</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+    
+    <iframe src="https://allmylinks.com/widget/profile/guardianesdelparamoch.html?dark=0&big=1" 
+            width="395" 
+            height="286" 
+            style="max-width:100%; border:none; overflow:hidden;" 
+            scrolling="no" 
+            frameborder="0" 
+            allowtransparency="true" 
+            allow="encrypted-media">
+    </iframe>
+
+    <iframe src="https://allmylinks.com/widget/profile/guardianesdelparamoch.html?dark=0&big=0" 
+            width="395" 
+            height="317" 
+            style="max-width:100%; border:none; overflow:hidden;" 
+            scrolling="no" 
+            frameborder="0" 
+            allowtransparency="true" 
+            allow="encrypted-media">
+    </iframe>
+
+</div>
+        <h2>Junte-se como Guardião do Páramo</h2>
+        
+        <h3>Por que as Aves são Indicadores-Chave?</h3>
+        <p>
+            As aves são excelentes bioindicadores do estado de saúde dos ecossistemas. Sua presença, abundância e comportamento nos permitem avaliar a qualidade ambiental e detectar mudanças no habitat. A diversidade de 531 espécies de aves em Chingaza reflete a integridade de seus ecossistemas.
+        </p>
+
+        <h3>Principais Ameaças</h3>
+        <ul>
+            <li><strong>Perda de Habitat:</strong> O desmatamento e fragmentação de florestas andinas reduz o espaço disponível para espécies que requerem grandes territórios.</li>
+            <li><strong>Mudanças Climáticas:</strong> As alterações na temperatura e precipitação afetam a disponibilidade de alimento e os ciclos reprodutivos.</li>
+            <li><strong>Poluição:</strong> A contaminação de corpos d'água ameaça especialmente as espécies aquáticas como o Frango-d'água-de-bogotá.</li>
+            <li><strong>Comércio Ilegal:</strong> Várias espécies de papagaios e periquitos são capturadas ilegalmente para o comércio de animais de estimação.</li>
+            <li><strong>Caça:</strong> Embora proibida, a caça ilegal continua afetando espécies como o Condor-dos-Andes.</li>
+        </ul>
+
+        <h3>Importância das Aves Migratórias</h3>
+        <p>
+            Chingaza abriga 37 espécies de aves migratórias (34 boreais e 3 austrais), representando mais de 26% das aves migratórias registradas para a Colômbia. Estas espécies conectam ecossistemas de todo o continente americano, tornando Chingaza um elo vital nas rotas migratórias hemisféricas.
+        </p>
+
+        <h3>O Futuro de Chingaza está em suas Mãos</h3>
+        <p>
+            A conservação bem-sucedida das aves de Chingaza depende de um compromisso coletivo. Cada espécie que protegemos representa não apenas uma conquista de conservação, mas também a preservação de processos ecológicos essenciais, patrimônio genético único e beleza natural para as futuras gerações.
+        </p>
+        
+        <div class="info-box">
+            <strong>Mensagem dos Guardiões:</strong> Cada ave que voa sobre os páramos de Chingaza é um lembrete da nossa responsabilidade como guardiões da natureza. Sua sobrevivência depende de nossas ações hoje. Juntos podemos garantir que essas espécies continuem habitando estes céus por gerações vindouras. <br><br>
+            <strong>"Não herdamos a Terra de nossos ancestrais, a tomamos emprestada de nossos filhos"</strong>
+        </div>
+        
+        <div class="games-section">
+            <h3>Jogue e aprenda conosco</h3>
+            <p>
+                Explore nossos jogos educativos desenhados para aprender sobre as aves,
+                os ecossistemas e a importância do Parque Nacional Natural Chingaza de uma forma divertida.
+            </p>
+
+            <div class="games-grid">
+                <div class="game-card" onclick="openGame('soyunave.html')" title="Sou uma ave">
+                    <img src="soyunave.png" class="game-icon-img" alt="Sou uma ave">
+                </div>
+                <div class="game-card" onclick="openGame('decisiones.html')" title="Tomada de Decisões">
+                    <img src="decisiones.png" class="game-icon-img" alt="Tomada de Decisões">
+                </div>
+                <div class="game-card" onclick="openGame('escalera.html')" title="Escada da Conservação">
+                    <img src="escalera.png" class="game-icon-img" alt="Escada da Conservação">
+                </div>
+                <div class="game-card" onclick="openGame('memoria.html')" title="Memória do Páramo">
+                    <img src="memoria.png" class="game-icon-img" alt="Memória do Páramo">
+                </div>
+                <div class="game-card" onclick="openGame('parejas.html')" title="Formar Pares">
+                    <img src="parejas.png" class="game-icon-img" alt="Formar Pares">
+                </div>
+                <div class="game-card" onclick="openGame('quiz.html')" title="Quiz de Aves">
+                    <img src="quiz.png" class="game-icon-img" alt="Quiz de Aves">
+                </div>
+                <div class="game-card" onclick="openGame('ahorcado.html')" title="Forca Ambiental">
+                    <img src="ahorcado.png" class="game-icon-img" alt="Forca Ambiental">
+                </div>
+                <div class="game-card" onclick="openGame('verdaderofalso.html')" title="O quanto você sabe?">
+                    <img src="verdaderofalso.png" class="game-icon-img" alt="O quanto você sabe?">
+                </div>
+
+                <div class="game-coming" title="Em breve mais jogos">
+                    <img src="proximamente.png" class="game-icon-img" alt="Em breve mais jogos">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="enlaces" class="section">
+        <h2>Links Externos</h2>
+        
+        <h3>Início</h3>
+        <ul>
+            <li><strong>[1] </strong> <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-chingaza/" target="_blank" rel="noopener"> Parques Nacionais </a></li>
+            <li><strong>[2] </strong> <a href="https://old.parquesnacionales.gov.co/portal/es/" target="_blank" rel="noopener"> Parques Nacionais Antiga </a></li>
+        </ul>
+        
+        <h3>História</h3>
+        <ul>
+            <li><strong>[3] </strong> <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-chingaza/" target="_blank" rel="noopener"> Parques Nacionais </a></li>
+            <li><strong>[4] </strong> <a href="https://accedacris.ulpgc.es/jspui/bitstream/10553/77226/2/0769081_00000_0000.pdf" target="_blank" rel="noopener"> Accedacris </a></li>
+            <li><strong>[5] </strong> <a href="https://colombiapais.com/viajes-a-colombia-guia-de-turismo-y-destinos-imperdibles/parques-nacionales-de-colombia-mas-que-paisajes-un-tesoro-por-descubrir/parques-nacionales-alta-montana/chingaza-parque-nacional-natural/" target="_blank" rel="noopener"> Colombia Pais </a></li>
+            <li><strong>[6] </strong> <a href="https://old.parquesnacionales.gov.co/portal/es/" target="_blank" rel="noopener"> Parques Nacionais Antiga </a></li>
+        </ul>
+        
+        <h3>Aves</h3>
+        <ul>
+            <li><strong>[7] </strong> <a href="https://old.parquesnacionales.gov.co/portal/wp-content/uploads/2017/12/La-magia-de-las-aves-de-chingaza-digital.pdf/" target="_blank" rel="noopener"> Parques Nacionais Antiga - A Magia das Aves de Chingaza </a></li>
+        </ul>
+        
+        <h3>Conservação</h3>
+        <ul>
+            <li><strong>[8] </strong> <a href="https://www.parquesnacionales.gov.co/nuestros-parques/pnn-chingaza/" target="_blank" rel="noopener"> Parques Nacionais </a></li>
+        </ul>
+    </div>
+
+</div> <footer class="footer">
+    <div class="footer-content">
+        <img src="logotesis.png" alt="Logo da tese Guardiões do Páramo" class="footer-logo">
+
+        <div class="footer-text">
+            <p>
+                Projeto acadêmico desenvolvido como parte da tese de graduação de
+                <strong>Angie Tatiana Rojas Rincón</strong>,
+                Licenciatura em Biologia – Universidade Pedagógica Nacional.
+            </p>
+
+            <p>
+                Desenvolvimento da página web:
+                <strong>Alvaro Mendoza</strong>.
+            </p>
+            <p style="font-size:0.8rem; opacity:0.7;">
+                Canais de divulgação educativa do projeto.
+            </p>
+            
+			<div class="footer-social">
+				<a href="https://www.youtube.com/channel/UCgNuF1w4iL8VQjGNa8_ei9w" class="social-btn youtube" target="_blank" aria-label="YouTube">
+					<i class="fab fa-youtube"></i>
+				</a>
+				<a href="https://www.facebook.com/profile.php?id=61586604059288" class="social-btn facebook" target="_blank" aria-label="Facebook">
+					<i class="fab fa-facebook-f"></i>
+				</a>
+				<a href="https://www.instagram.com/guardianesdelparamoch/" class="social-btn instagram" target="_blank" aria-label="Instagram">
+					<i class="fab fa-instagram"></i>
+				</a>
+				<a href="https://www.tiktok.com/@guardianesdelparamoch" class="social-btn tiktok" target="_blank" aria-label="TikTok">
+					<i class="fab fa-tiktok"></i>
+				</a>
+				<a href="https://t.me/guardianesdelparamoch" class="social-btn telegram" target="_blank" aria-label="Telegram">
+					<i class="fab fa-telegram"></i>
+				</a>
+				<a href="https://allmylinks.com/guardianesdelparamoch" class="social-btn link" target="_blank" aria-label="AllMyLinks">
+					<i class="fas fa-link"></i>
+				</a>
+			</div>
+
+
+            <div class="footer-feedback">
+			<button class="feedback-btn" onclick="window.location.href='mailto:guardianesdelparamoch@gmail.com?subject=Feedback%20Guardianes%20del%20Páramo'">
+				💬 Enviar feedback
+			</button>
+                <p style="font-size:0.75rem; opacity:0.7;">
+                    Espaço de feedback acadêmico e educativo.
+                </p>
+            </div>
+            
+            <p>© 2025 · Página web Guardiões do Páramo; conservação 2.0: estratégias biológicas e ferramentas digitais para a divulgação e conservação da avifauna do Parque Nacional Natural Chingaza</p>
+        </div>
+    </div>
+</footer>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <div id="modalContent">
+            <div class="modal-header">
+                <span class="modal-close" id="closeModal">&times;</span>
+                <h2 id="modalTitle"></h2>
+                <div class="scientific" id="modalScientific"></div>
+            </div>
+
+            <div class="modal-image-container">
+                <img id="modalImage" onclick="openFullImage()">
+                <div class="image-credit">
+                    Nota. Imagem original obtida da Wikipedia.org; adaptada, enquadrada e retocada digitalmente via ChatGPT e outros programas de edição fotográfica.
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-top-row">
+                    <span id="modalStatus" class="modal-status"></span>
+                    <div class="modal-qr-inline" id="modalQR">
+                        <img id="modalQRImage" alt="Código QR da ave" onclick="openViewer(this.src)" style="cursor: zoom-in;">
+                    </div>
+                </div>
+
+                <p id="modalInfo"></p>
+                <div id="modalExtra" class="modal-extra"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="image-viewer" id="imageViewer" onclick="closeViewer()">
+    <img id="viewerImage">
+</div>
+<script>
+/* =========================================
+   1. DADOS DE AVES (BIRD DATA)
+   ========================================= */
+const birdExtraData = {
+  "Condor-dos-Andes": {
+    image: "img/aves/Condor de los Andes (Vultur gryphus).png",
+    qr: "img/qr/1a.png",
+    info: "Emblema nacional da Colômbia e espécie chave para o equilíbrio ecossistêmico.",
+    habitat: "Cordilheiras e páramos andinos",
+    diet: "Carniça",
+    altitude: "3.000 - 5.000 m s.n.m."
+  },
+  "Pato-andino": {
+    image: "img/aves/Pato turrio (Oxyura jamaicensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave aquática dependente de áreas úmidas altoandinas.",
+    habitat: "Lagoas e áreas úmidas altoandinas",
+    diet: "Invertebrados aquáticos",
+    altitude: "2.500 - 4.000 m s.n.m."
+  },
+  "Frango-d'água-de-bogotá": {
+    image: "img/aves/Tingua bogotana (Rallus semiplumbeus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave endêmica da Savana de Bogotá.",
+    habitat: "Áreas úmidas",
+    diet: "Insetos e vegetação aquática",
+    altitude: "2.600 m s.n.m."
+  },
+  "Perdiz-da-montanha": {
+    image: "img/aves/Perdiz de montana (Odontophorus strophium).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Espécie endêmica dos Andes colombianos.",
+    habitat: "Florestas montanas densas",
+    diet: "Sementes e frutos",
+    altitude: "1.800 - 3.000 m s.n.m."
+  },
+  "Águia-cristada": {
+    image: "img/aves/Aguila crestada (Spizaetus isidori).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Grande ave de rapina de florestas andinas.",
+    habitat: "Florestas andinas e subandinas",
+    diet: "Mamíferos e aves",
+    altitude: "1.500 - 3.500 m s.n.m."
+  },
+  "Tororoi-de-cundinamarca": {
+    image: "img/aves/Tororoi de Cundinamarca (Grallaria kaestneri).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave terrestre e esquiva.",
+    habitat: "Florestas úmidas andinas",
+    diet: "Invertebrados",
+    altitude: "1.800 - 2.800 m s.n.m."
+  },
+  "Marreca-andina": {
+    image: "img/aves/Pato paramuno (Anas andium).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Pato especializado em ecossistemas de páramo.",
+    habitat: "Lagoas de páramo",
+    diet: "Plantas aquáticas",
+    altitude: "3.000 - 4.500 m s.n.m."
+  },
+  "Jacu-andino": {
+    image: "img/aves/Pava andina (Penelope montagnii).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave frugívora chave para a regeneração da floresta.",
+    habitat: "Florestas montanas",
+    diet: "Frutos",
+    altitude: "1.500 - 3.000 m s.n.m."
+  },
+  "Narceja-paramuna": {
+    image: "img/aves/Caica paramuna (Gallinago nobilis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave típica de páramo.",
+    habitat: "Páramos",
+    diet: "Invertebrados",
+    altitude: "3.000 - 4.000 m s.n.m."
+  },
+  "Periquito-de-asa-amarela": {
+    image: "img/aves/Periquito aliamarillo (Pyrrhura calliptera).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Periquito endêmico dos Andes colombianos.",
+    habitat: "Florestas andinas",
+    diet: "Frutos e sementes",
+    altitude: "1.800 - 3.000 m s.n.m."
+  },
+  "Periquito-de-asa-pintada": {
+    image: "img/aves/Periquito alipunteado (Touit stictopterus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ameaçado pelo comércio ilegal.",
+    habitat: "Florestas montanas",
+    diet: "Sementes",
+    altitude: "1.200 - 2.800 m s.n.m."
+  },
+  "Papagaio-de-cara-enferrujada": {
+    image: "img/aves/Loro aliamarillo (Hapalopsittaca amazonina).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Dependente de florestas maduras.",
+    habitat: "Florestas altoandinas",
+    diet: "Frutos",
+    altitude: "2.000 - 3.200 m s.n.m."
+  },
+  "Papagaio-de-orelha-amarela": {
+    image: "img/aves/Loro orejiamarillo (Ognorhynchus icterotis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Espécie emblemática associada à palmeira-de-cera.",
+    habitat: "Florestas altoandinas",
+    diet: "Frutos de palmeira",
+    altitude: "2.000 - 3.000 m s.n.m."
+  },
+  "João-de-barro-de-cundinamarca": {
+    image: "img/aves/Rastrojero de Cundinamarca (Synallaxis subpudica).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave endêmica de matagais altoandinos.",
+    habitat: "Matagais e bordas de floresta",
+    diet: "Insetos",
+    altitude: "2.500 - 3.400 m s.n.m."
+  },
+  "Barbudinho-do-páramo": {
+    image: "img/aves/Barbudito paramuno (Oxypogon guerinii).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Colibri exclusivo de páramos.",
+    habitat: "Páramos",
+    diet: "Néctar",
+    altitude: "3.200 - 4.300 m s.n.m."
+  },
+  "Tororoi-do-páramo": {
+    image: "img/aves/Tororoi paramuno (Grallaria quitensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Habitante do sub-bosque frio.",
+    habitat: "Florestas altoandinas",
+    diet: "Invertebrados",
+    altitude: "2.800 - 3.600 m s.n.m."
+  },
+  "Cochicho-do-páramo": {
+    image: "img/aves/Canastero paramuno (Asthenes flammulata).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Constrói ninhos em capinzais.",
+    habitat: "Páramos",
+    diet: "Insetos",
+    altitude: "3.000 - 4.000 m s.n.m."
+  },
+  "Yal-plúmbeo": {
+    image: "img/aves/Gorrion paramuno (Phrygilus unicolor).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Adaptado a climas extremos.",
+    habitat: "Páramos",
+    diet: "Sementes",
+    altitude: "3.000 - 4.500 m s.n.m."
+  },
+  "Colibri-bico-de-espada": {
+    image: "img/aves/Colibri pico de espada (Ensifera ensifera).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Especializado em flores profundas.",
+    habitat: "Florestas e páramos",
+    diet: "Néctar",
+    altitude: "2.500 - 4.000 m s.n.m."
+  },
+  "Águia-chilena": {
+    image: "img/aves/Aguila paramuna (Geranoaetus melanoleucus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave de rapina dominante do páramo.",
+    habitat: "Páramos",
+    diet: "Pequenos mamíferos",
+    altitude: "2.000 - 4.000 m s.n.m."
+  },
+  "Urubu-de-cabeça-vermelha": {
+    image: "img/aves/Guala comun (Cathartes aura).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Necrófaga chave.",
+    habitat: "Áreas abertas",
+    diet: "Carniça",
+    altitude: "0 - 4.000 m s.n.m."
+  },
+  "Urubu-preto": {
+    image: "img/aves/Gallinazo comun (Coragyps atratus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Frequente em zonas urbanas.",
+    habitat: "Áreas abertas",
+    diet: "Carniça",
+    altitude: "0 - 3.000 m s.n.m."
+  },
+  "Tucano-celeste": {
+    image: "img/aves/Tucan celeste (Andigena nigrirostris).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Dispersor de sementes.",
+    habitat: "Florestas montanas",
+    diet: "Frutos",
+    altitude: "1.500 - 2.800 m s.n.m."
+  },
+  "Sanhaço-real": {
+    image: "img/aves/Azulejo real (Buthraupis montana).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave colorida da floresta andina.",
+    habitat: "Florestas andinas",
+    diet: "Frutos",
+    altitude: "1.800 - 3.500 m s.n.m."
+  },
+  "Melro-grande": {
+    image: "img/aves/Mirla comun (Turdus fuscater).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Muito visível em jardins.",
+    habitat: "Florestas e áreas abertas",
+    diet: "Frutos",
+    altitude: "2.000 - 3.500 m s.n.m."
+  },
+  "Pomba-de-coleira": {
+    image: "img/aves/Torcaza collareja (Patagioenas fasciata).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Habitante de florestas altas.",
+    habitat: "Florestas montanas",
+    diet: "Sementes",
+    altitude: "1.500 - 3.500 m s.n.m."
+  },
+  "Asa-de-safira": {
+    image: "img/aves/Ala de zafiro (Pterophanes cyanopterus).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Colibri grande do páramo.",
+    habitat: "Páramos",
+    diet: "Néctar",
+    altitude: "3.000 - 4.500 m s.n.m."
+  },
+  "Bico-de-espinho-bronzeado": {
+    image: "img/aves/Pico de tuna broncineo (Chalcostigma heteropogon).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Especialista em flores altoandinas.",
+    habitat: "Páramos",
+    diet: "Néctar",
+    altitude: "3.200 - 4.500 m s.n.m."
+  },
+  "Corruíra-do-campo": {
+    image: "img/aves/Cucarachero paramuno (Cistothorus platensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Cantor do capinzal.",
+    habitat: "Páramos",
+    diet: "Insetos",
+    altitude: "3.000 - 4.200 m s.n.m."
+  },
+  "Cochicho-escuro": {
+    image: "img/aves/Canastero oscuro (Asthenes fuliginosa).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave discreta do páramo alto.",
+    habitat: "Páramos",
+    diet: "Insetos",
+    altitude: "3.000 - 4.500 m s.n.m."
+  },
+  "Carqueja-americana": {
+    image: "img/aves/Focha comun (Fulica americana).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave aquática comum.",
+    habitat: "Áreas úmidas",
+    diet: "Plantas aquáticas",
+    altitude: "0 - 4.000 m s.n.m."
+  },
+  "Maçarico-solitário": {
+    image: "img/aves/Andarrios solitario (Tringa solitaria).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave migratória.",
+    habitat: "Áreas úmidas",
+    diet: "Invertebrados",
+    altitude: "0 - 4.000 m s.n.m."
+  },
+  "Quero-quero": {
+    image: "img/aves/Alcaravan (Vanellus chilensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave vigilante.",
+    habitat: "Pastagens",
+    diet: "Insetos",
+    altitude: "0 - 3.000 m s.n.m."
+  },
+  "Guácharo": {
+    image: "img/aves/Guacharo (Steatornis caripensis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave noturna frugívora.",
+    habitat: "Cavernas",
+    diet: "Frutos",
+    altitude: "0 - 2.500 m s.n.m."
+  },
+  "Caburé-andino": {
+    image: "img/aves/Buhito andino (Glaucidium jardinii).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Pequena ave de rapina noturna.",
+    habitat: "Florestas andinas",
+    diet: "Insetos",
+    altitude: "1.500 - 3.500 m s.n.m."
+  },
+  "Corujinha-de-garganta-branca": {
+    image: "img/aves/Currucutu gorgiblanco (Megascops albogularis).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Coruja de florestas úmidas.",
+    habitat: "Florestas montanas",
+    diet: "Pequenos vertebrados",
+    altitude: "1.200 - 3.200 m s.n.m."
+  },
+  "Bacurau-andino": {
+    image: "img/aves/Guardacaminos andino (Systellura longirostris).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave noturna camuflada.",
+    habitat: "Zonas abertas",
+    diet: "Insetos",
+    altitude: "1.500 - 4.000 m s.n.m."
+  },
+  "Pica-pau-carmesim": {
+    image: "img/aves/Carpintero carmesi (Colaptes rivolii).png",
+    qr: "img/qr/condor_qr.png",
+    info: "Ave diurna colorida.",
+    habitat: "Florestas andinas e altoandinas",
+    diet: "Principalmente insetívoro",
+    altitude: "1.800 - 3.800 m s.n.m."
+  }
+};
+
+/* =========================================
+   2. LÓGICA DE NAVEGAÇÃO E MENU
+   ========================================= */
+const sideMenu = document.getElementById("sideMenu");
+const closeSideBtn = document.querySelector(".close-side");
+const mainHeader = document.getElementById("mainHeader");
+
+// Função para abrir o menu
+function openSideMenu() {
+    if (sideMenu) {
+        sideMenu.classList.add("open");
+        const toggleBtn = document.querySelector('.menu-toggle');
+        if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "true");
+    }
+}
+
+// Função para fechar o menu
+function closeSideMenu() {
+    if (sideMenu) {
+        sideMenu.classList.remove("open");
+        const toggleBtn = document.querySelector('.menu-toggle');
+        if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+    }
+}
+
+// Evento: Botão de fechar "X" dentro do menu
+if (closeSideBtn) {
+    closeSideBtn.onclick = closeSideMenu;
+}
+
+// Evento: Navegação entre seções
+function navigate(sectionId) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(sectionId);
+    if (target) {
+        target.classList.add('active');
+    }
+    closeSideMenu();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Evento: Fechar menu se clicar fora
+document.addEventListener("click", (e) => {
+    const toggleBtn = document.querySelector('.menu-toggle');
+    if (sideMenu && sideMenu.classList.contains('open')) {
+        if (!sideMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+            closeSideMenu();
+        }
+    }
+});
+
+/* =========================================
+  3. LÓGICA DE ACESSIBILIDADE (A+, A-, HC)
+   ========================================= */
+
+let currentScale = 1; 
+
+function updateTextSize() {
+    document.body.style.setProperty('--font-scale', currentScale + 'rem');
+    localStorage.setItem("userFontScale", currentScale);
+}
+
+// Botão A+
+function increaseText() {
+    if (currentScale < 1.5) { 
+        currentScale += 0.1;
+        updateTextSize();
+    }
+}
+
+// Botão A-
+function decreaseText() {
+    if (currentScale > 0.8) { 
+        currentScale -= 0.1;
+        updateTextSize();
+    }
+}
+
+// Botão A
+function resetText() {
+    currentScale = 1;
+    updateTextSize();
+}
+
+// Botão HC
+function toggleContrast() {
+    document.body.classList.toggle("high-contrast");
+    const isContrast = document.body.classList.contains("high-contrast");
+    localStorage.setItem("contrast", isContrast ? "on" : "off");
+}
+
+/* =========================================
+   4. SISTEMA DE IDIOMAS
+   ========================================= */
+const langToggle = document.getElementById("langToggle");
+const langMenu = document.getElementById("langMenu");
+
+if (langToggle && langMenu) {
+    langToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isHidden = (langMenu.style.display === "none" || langMenu.style.display === "");
+        langMenu.style.display = isHidden ? "block" : "none";
+        langToggle.setAttribute("aria-expanded", isHidden);
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!langMenu.contains(e.target) && !langToggle.contains(e.target)) {
+            langMenu.style.display = "none";
+            langToggle.setAttribute("aria-expanded", "false");
+        }
+    });
+}
+
+/* =========================================
+   SISTEMA DE IDIOMAS (REDIRECCIÓN)
+   ========================================= */
+function selectLanguage(lang) {
+    // 1. Guardamos la preferencia (opcional, pero útil)
+    localStorage.setItem("language", lang);
+
+    // 2. Redireccionamos al archivo correspondiente
+    if (lang === 'es') {
+        window.location.href = 'index.html';
+    } else if (lang === 'en') {
+        window.location.href = 'index_ing.html';
+    } else if (lang === 'pt') {
+        window.location.href = 'index_por.html';
+    }
+}
+
+/* =========================================
+   5. LÓGICA DE MODAIS (AVES)
+   ========================================= */
+const modal = document.getElementById("modal");
+const closeModalBtn = document.getElementById("closeModal");
+
+function openModal(card) {
+    // 1. Obter o nome desde o <h4>
+    const birdName = card.querySelector('h4').innerText.trim();
+    
+    // 2. Buscar na base de dados
+    const data = birdExtraData[birdName];
+
+    if (!data) {
+        console.warn("Não foi encontrada informação para a ave: '" + birdName + "'. Verifique se coincide exatamente com o objeto birdExtraData.");
+        return; 
+    }
+
+    // 3. Preencher o Modal
+    document.getElementById('modalTitle').innerText = birdName;
+    document.getElementById('modalScientific').innerText = card.querySelector('.scientific-name').innerText;
+    document.getElementById('modalImage').src = data.image;
+    document.getElementById('modalInfo').innerText = data.info;
+
+    // Estado (cor e texto)
+    const statusCard = card.querySelector('.status');
+    const modalStatus = document.getElementById('modalStatus');
+    modalStatus.innerText = statusCard.innerText;
+    modalStatus.className = 'modal-status ' + statusCard.className.replace('status', '').trim();
+
+    // QR
+    const qrImg = document.getElementById('modalQRImage');
+    if (data.qr) {
+        qrImg.src = data.qr;
+        document.getElementById('modalQR').style.display = 'block';
+    } else {
+        document.getElementById('modalQR').style.display = 'none';
+    }
+
+    // Dados extra (Habitat, Dieta, Altitude) - TRADUZIDO
+    const extraContainer = document.getElementById('modalExtra');
+    if (extraContainer) {
+        extraContainer.innerHTML = `
+            <div><strong>Habitat:</strong><br>${data.habitat || 'N/A'}</div>
+            <div><strong>Dieta:</strong><br>${data.diet || 'N/A'}</div>
+            <div><strong>Altitude:</strong><br>${data.altitude || 'N/A'}</div>
+        `;
+    }
+
+    // 4. Mostrar
+    document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+    if(modal) modal.style.display = "none";
+}
+
+if(closeModalBtn) closeModalBtn.onclick = closeModal;
+
+// Fechar com Escape
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal();
+});
+// Fechar clique fora
+if(modal) {
+    modal.onclick = function (e) {
+        if (e.target.id === "modal") closeModal();
+    };
+}
+
+/* =========================================
+   6. VISUALIZADOR DE IMAGEM (ZOOM)
+   ========================================= */
+function openViewer(src) {
+    const viewer = document.getElementById('imageViewer');
+    const viewerImg = document.getElementById('viewerImage');
+    if (viewer && viewerImg) {
+        viewerImg.src = src;
+        viewer.style.display = 'flex';
+    }
+}
+
+function openFullImage() {
+    const src = document.getElementById("modalImage").src;
+    openViewer(src);
+}
+
+function closeViewer() {
+    document.getElementById("imageViewer").style.display = "none";
+}
+
+/* =========================================
+   7. LEITURA DE TEXTO (TTS)
+   ========================================= */
+function readThisSection(button) {
+    stopReading();
+    const section = button.closest(".section");
+    if (!section) return;
+
+    let text = "";
+    section.querySelectorAll("h2, h3, p, h4").forEach(el => {
+        text += el.textContent.trim() + ". ";
+    });
+
+    if (!text.trim()) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "pt-BR"; // Alterado para Português
+    utterance.rate = 0.95;
+    speechSynthesis.speak(utterance);
+}
+
+function stopReading() {
+    speechSynthesis.cancel();
+}
+
+/* =========================================
+   8. MAPA INTERATIVO
+   ========================================= */
+function showZone(zone) {
+    // CONTEÚDO TRADUZIDO
+    const info = {
+        calera1: `<h3>La Calera</h3><p>Vereda La Portada - Cundinamarca</p>`,
+        calera2: `<h3>La Calera</h3><p>Vereda Mundo Nuevo - Cundinamarca</p>`,
+        juanito: `<h3>San Juanito</h3><p>Meta</p>`,
+        guasca: `<h3>Guasca</h3><p>Cundinamarca</p>`,
+        choachi: `<h3>Choachí</h3><p>Cundinamarca</p>`,
+        restrepo: `<h3>Restrepo</h3><p>Meta</p>`,
+        ubaque: `<h3>Ubaque</h3><p>Cundinamarca</p>`,
+        cumaral: `<h3>Cumaral</h3><p>Meta</p>`,
+        medina: `<h3>Medina</h3><p>Meta</p>`,
+        gachala: `<h3>Gachala</h3><p>Cundinamarca</p>`,
+        ubala: `<h3>Ubala</h3><p>Cundinamarca</p>`,
+        gama: `<h3>Gama</h3><p>Cundinamarca</p>`,
+        junin: `<h3>Junín</h3><p>Cundinamarca</p>`,
+        gacheta: `<h3>Gachetá</h3><p>Cundinamarca</p>`,
+        calvario: `<h3>El Calvario</h3><p>Meta</p>`
+    };
+    const mapInfo = document.getElementById("map-info");
+    if(mapInfo && info[zone]) {
+        mapInfo.innerHTML = info[zone];
+    }
+}
+
+/* =========================================
+   9. HEADER E JOGOS
+   ========================================= */
+let lastScroll = 0;
+window.addEventListener("scroll", () => {
+    const currentScroll = window.scrollY;
+    if (mainHeader) {
+        if (currentScroll > lastScroll && currentScroll > 120) {
+            mainHeader.classList.add("hide");
+        } else {
+            mainHeader.classList.remove("hide");
+        }
+    }
+    lastScroll = currentScroll;
+});
+
+function openGame(url) {
+    window.open(url, "_blank");
+}
+
+/* =========================================
+   10. CARGA INICIAL (PREFERÊNCIAS E ANIMAÇÕES)
+   ========================================= */
+window.addEventListener("load", () => {
+    console.log("Página carregada. Iniciando scripts...");
+
+    // 1. RECUPERAR PREFERÊNCIAS
+    const savedScale = localStorage.getItem("userFontScale");
+    if (savedScale) {
+        currentScale = parseFloat(savedScale);
+        updateTextSize();
+    }
+    if (localStorage.getItem("contrast") === "on") document.body.classList.add("high-contrast");
+    if (localStorage.getItem("classroomMode") === "on") document.body.classList.add("classroom-mode");
+
+    // 2. Service Worker
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+
+    // 3. ATIVAR ANIMAÇÕES DE SCROLL
+    const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Selecionar elementos para animar
+    const animatedElements = document.querySelectorAll('.bird-card, .stat-box, .info-box');
+    animatedElements.forEach(el => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(30px)";
+        el.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out";
+        observer.observe(el);
+    });
+});
+</script>
+</body>
+</html>

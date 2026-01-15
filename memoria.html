@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memoria del Páramo</title>
+	<link rel="icon" type="image/png" sizes="128x128" href="memoriaicon.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="memoriaicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="memoriaicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="memoriaicon.png">
+	<link rel="apple-touch-icon" href="memoriaicon.png">
+	<meta name="theme-color" content="#16A34A">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .stat span {
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 15px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card.matched {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .card.matched:hover {
+            transform: scale(1);
+        }
+
+        .card.matched .card-front {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card.matched .card-front::before {
+            content: '✅';
+            font-size: 2.5em;
+            position: absolute;
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            padding: 10px;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            font-size: 3em;
+        }
+
+        .card-back {
+            background: white;
+            transform: rotateY(180deg);
+            flex-direction: column;
+            font-size: 2.5em;
+        }
+
+        .card-back .bird-name {
+            font-size: 0.3em;
+            margin-top: 5px;
+            text-align: center;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: white;
+            color: #1e40af;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            color: #1e40af;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .game-board {
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: repeat(6, 1fr);
+                gap: 8px;
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .card-back {
+                font-size: 2em;
+            }
+        }
+		.inline-logo {
+			width: 100px;
+			height: 100px;
+			vertical-align: middle;
+			margin-right: 10px;
+		}
+		.bird-img {
+			width: 100%;
+			height: 70%;
+			object-fit: cover;
+			border-radius: 10px;
+		}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+			<img src="memoria.png" alt="Logo del juego" class="inline-logo">
+			Memoria del Páramo
+		</h1>
+            <p>Encuentra las parejas de aves del páramo colombiano</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat">Movimientos: <span id="moves">0</span></div>
+            <div class="stat">Parejas: <span id="pairs">0</span>/12</div>
+            <div class="stat">Tiempo: <span id="time">0:00</span></div>
+        </div>
+
+        <div class="game-board" id="gameBoard"></div>
+
+        <div class="controls">
+            <button class="btn" onclick="resetGame()">🔄 Nuevo Juego</button>
+        </div>
+    </div>
+
+    <div class="modal" id="winModal">
+        <div class="modal-content">
+            <h2>🎉 ¡Felicitaciones! 🎉</h2>
+            <p>Has completado el juego</p>
+            <p id="finalStats"></p>
+            <button class="btn" onclick="resetGame()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const birds = [
+    {
+        name: 'Cóndor de los Andes',
+        scientific: 'Vultur gryphus',
+        image: 'img/aves/Condor de los Andes (Vultur gryphus).png'
+    },
+    {
+        name: 'Pato Andino',
+        scientific: 'Oxyura jamaicensis',
+        image: 'img/aves/Pato turrio (Oxyura jamaicensis).png'
+    },
+    {
+        name: 'Tingua Bogotana',
+        scientific: 'Rallus semiplumbeus',
+        image: 'img/aves/Tingua bogotana (Rallus semiplumbeus).png'
+    },
+    {
+        name: 'Perdiz de Montaña',
+        scientific: 'Odontophorus strophium',
+        image: 'img/aves/Perdiz de montana (Odontophorus strophium).png'
+    },
+    {
+        name: 'Águila Crestada',
+        scientific: 'Spizaetus isidori',
+        image: 'img/aves/Aguila crestada (Spizaetus isidori).png'
+    },
+    {
+        name: 'Tororoi de Cundinamarca',
+        scientific: 'Grallaria kaestneri',
+        image: 'img/aves/Tororoi de Cundinamarca (Grallaria kaestneri).png'
+    },
+    {
+        name: 'Pato Paramuno',
+        scientific: 'Anas andium',
+        image: 'img/aves/Pato paramuno (Anas andium).png'
+    },
+    {
+        name: 'Pava Andina',
+        scientific: 'Penelope montagnii',
+        image: 'img/aves/Pava andina (Penelope montagnii).png'
+    },
+    {
+        name: 'Caica Paramuna',
+        scientific: 'Gallinago nobilis',
+        image: 'img/aves/Caica paramuna (Gallinago nobilis).png'
+    },
+    {
+        name: 'Periquito Aliamarillo',
+        scientific: 'Pyrrhura calliptera',
+        image: 'img/aves/Periquito aliamarillo (Pyrrhura calliptera).png'
+    },
+    {
+        name: 'Periquito Alipunteado',
+        scientific: 'Touit stictopterus',
+        image: 'img/aves/Periquito alipunteado (Touit stictopterus).png'
+    },
+    {
+        name: 'Loro Aliamarillo',
+        scientific: 'Hapalopsittaca amazonina',
+        image: 'img/aves/Loro aliamarillo (Hapalopsittaca amazonina).png'
+    }
+];
+
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let timer = 0;
+        let timerInterval;
+        let canFlip = true;
+
+        function initGame() {
+            const gameBoard = document.getElementById('gameBoard');
+            gameBoard.innerHTML = '';
+            
+            cards = [...birds, ...birds]
+                .sort(() => Math.random() - 0.5)
+                .map((bird, index) => ({
+                    ...bird,
+                    id: index,
+                    matched: false
+                }));
+
+            cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.dataset.id = card.id;
+                cardElement.innerHTML = `
+					<div class="card-front">🌿</div>
+					<div class="card-back">
+						<img src="${card.image}" alt="${card.name}" class="bird-img">
+						<div class="bird-name">${card.name}</div>
+					</div>
+				`;
+                cardElement.addEventListener('click', () => flipCard(card.id));
+                gameBoard.appendChild(cardElement);
+            });
+
+            resetStats();
+            startTimer();
+        }
+
+        function flipCard(cardId) {
+            if (!canFlip) return;
+            
+            const card = cards.find(c => c.id === cardId);
+            const cardElement = document.querySelector(`[data-id="${cardId}"]`);
+
+            if (card.matched || flippedCards.includes(cardId) || flippedCards.length === 2) {
+                return;
+            }
+
+            cardElement.classList.add('flipped');
+            flippedCards.push(cardId);
+
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('moves').textContent = moves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            canFlip = false;
+            const [id1, id2] = flippedCards;
+            const card1 = cards.find(c => c.id === id1);
+            const card2 = cards.find(c => c.id === id2);
+
+            setTimeout(() => {
+                if (card1.name === card2.name) {
+                    card1.matched = true;
+                    card2.matched = true;
+                    const elem1 = document.querySelector(`[data-id="${id1}"]`);
+                    const elem2 = document.querySelector(`[data-id="${id2}"]`);
+                    
+                    elem1.classList.add('matched');
+                    elem2.classList.add('matched');
+                    
+                    // Voltear las cartas de vuelta para mostrar el emoji de éxito
+                    setTimeout(() => {
+                        elem1.classList.remove('flipped');
+                        elem2.classList.remove('flipped');
+                    }, 500);
+                    
+                    matchedPairs++;
+                    document.getElementById('pairs').textContent = matchedPairs;
+
+                    if (matchedPairs === birds.length) {
+                        endGame();
+                    }
+                } else {
+                    document.querySelector(`[data-id="${id1}"]`).classList.remove('flipped');
+                    document.querySelector(`[data-id="${id2}"]`).classList.remove('flipped');
+                }
+
+                flippedCards = [];
+                canFlip = true;
+            }, 1000);
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timer++;
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                document.getElementById('time').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function resetStats() {
+            moves = 0;
+            matchedPairs = 0;
+            timer = 0;
+            flippedCards = [];
+            canFlip = true;
+            document.getElementById('moves').textContent = '0';
+            document.getElementById('pairs').textContent = '0';
+            document.getElementById('time').textContent = '0:00';
+            if (timerInterval) clearInterval(timerInterval);
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            const minutes = Math.floor(timer / 60);
+            const seconds = timer % 60;
+            document.getElementById('finalStats').innerHTML = 
+                `Completado en <strong>${moves}</strong> movimientos<br>
+                Tiempo: <strong>${minutes}:${seconds.toString().padStart(2, '0')}</strong>`;
+            document.getElementById('winModal').classList.add('show');
+        }
+
+        function resetGame() {
+            document.getElementById('winModal').classList.remove('show');
+            initGame();
+        }
+
+        initGame();
+    </script>
+</body>
+</html>

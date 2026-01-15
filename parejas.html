@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forma las parejas correctas</title>
+	<link rel="icon" type="image/png" sizes="128x128" href="parejasicon.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="parejasicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="parejasicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="parejasicon.png">
+	<link rel="apple-touch-icon" href="parejasicon.png">
+	<meta name="theme-color" content="#16A34A">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+			position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .game-area {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 60px;   /* 🔥 más espacio central */
+			align-items: center;   /* centra las cards */
+		}
+	
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .column h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .card {
+			background: #f8f9fa;
+			border: 2px solid #dee2e6;   /* más delgado */
+			border-radius: 10px;
+			padding: 10px;               /* menos espacio interno */
+			cursor: pointer;
+			transition: all 0.25s ease;
+			min-height: 125px;            /* 🔽 clave */
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			font-size: 0.95em;           /* letra un poco más pequeña */
+			max-width: 230px;     /* 🔽 clave: card más angosta */
+			margin: 0 auto;       /* centra la card */
+		}
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .card.selected {
+            border-color: #667eea;
+            background: #e7e9fc;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .card.matched {
+            border-color: #28a745;
+            background: #d4edda;
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .card.wrong {
+            border-color: #dc3545;
+            background: #f8d7da;
+            animation: shake 0.5s;
+        }
+
+        .scientific-card {
+			display: flex;
+			flex-direction: row;      /* 🔥 imagen y texto en línea */
+			align-items: center;
+			gap: 10px;
+		}
+
+        .bird-image {
+			width: 80px;        /* tamaño fijo */
+			height: 80px;
+			object-fit: cover;
+			border-radius: 6px;
+			margin-bottom: 0;   /* ya no va debajo */
+			flex-shrink: 0;     /* evita que se aplaste */
+		}
+
+        .bird-name {
+			font-style: italic;
+			color: #495057;
+			font-size: 0.95em;
+			text-align: left;   /* clave para legibilidad */
+			line-height: 1.2;
+		}
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .message {
+            text-align: center;
+            font-size: 1.5em;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 20px;
+            min-height: 30px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            font-size: 1.3em;
+            margin: 15px 0;
+            color: #333;
+        }
+
+        .modal-content .trophy {
+            font-size: 5em;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .stat {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+        }
+		.logo-title {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			margin-bottom: 20px;
+		}
+
+		.logo-img {
+			width: 100px;   /* logo más pequeño en móvil */
+		}
+		@media (max-width: 480px) {
+		.logo-title {
+        flex-direction: column;
+    }
+}
+		@media (min-width: 1200px) {
+			.card {
+				max-width: 240px;
+			}
+
+			.game-area {
+				gap: 80px;
+			}
+		}
+		.connections {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: 10;
+		}
+		@keyframes draw {
+			to {	
+				stroke-dashoffset: 0;
+			}
+		}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-title">
+				<img src="parejas.png" alt="Logo Guardianes del Páramo" class="logo-img">
+				<h1>Forma las parejas corectas</h1>
+		</div>
+        <div class="stats">
+            <div class="stat">⏱️ Tiempo: <span id="time">0</span>s</div>
+            <div class="stat">🎯 Intentos: <span id="attempts">0</span></div>
+            <div class="stat">✅ Parejas: <span id="matched">0</span>/5</div>
+        </div>
+
+        <div class="game-area">
+            <div class="column">
+                <h2>Nombres Comunes</h2>
+                <div id="common-names"></div>
+            </div>
+            <div class="column">
+                <h2>Nombres Científicos</h2>
+                <div id="scientific-names"></div>
+            </div>
+        </div>
+		<svg id="connections" class="connections" width="100%" height="100%"></svg>
+
+        <div class="message" id="message"></div>
+
+        <div class="buttons">
+            <button onclick="newGame()">🔄 Nuevo Juego</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="trophy">🏆</div>
+            <h2>¡Felicitaciones!</h2>
+            <p>Has completado el juego</p>
+            <p><strong>⏱️ Tiempo:</strong> <span id="final-time"></span> segundos</p>
+            <p><strong>🎯 Intentos:</strong> <span id="final-attempts"></span></p>
+            <button onclick="closeModal(); newGame();" style="margin-top: 20px;">🔄 Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const birds = [
+			{ common: "Cóndor de los Andes", scientific: "Vultur gryphus", image: "img/aves/Condor de los Andes (Vultur gryphus).png" },
+			{ common: "Pato andino / Pato turrio", scientific: "Oxyura jamaicensis", image: "img/aves/Pato turrio (Oxyura jamaicensis).png" },
+			{ common: "Tingua bogotana", scientific: "Rallus semiplumbeus", image: "img/aves/Tingua bogotana (Rallus semiplumbeus).png" },
+			{ common: "Perdiz de montaña", scientific: "Odontophorus strophium", image: "img/aves/Perdiz de montana (Odontophorus strophium).png" },
+			{ common: "Águila crestada", scientific: "Spizaetus isidori", image: "img/aves/Aguila crestada (Spizaetus isidori).png" },
+			{ common: "Tororoi de Cundinamarca", scientific: "Grallaria kaestneri", image: "img/aves/Tororoi de Cundinamarca (Grallaria kaestneri).png" },
+			{ common: "Pato paramuno", scientific: "Anas andium", image: "img/aves/Pato paramuno (Anas andium).png" },
+			{ common: "Pava andina", scientific: "Penelope montagnii", image: "img/aves/Pava andina (Penelope montagnii).png" },
+			{ common: "Caica paramuna", scientific: "Gallinago nobilis", image: "img/aves/Caica paramuna (Gallinago nobilis).png" },
+			{ common: "Periquito aliamarillo", scientific: "Pyrrhura calliptera", image: "img/aves/Periquito aliamarillo (Pyrrhura calliptera).png" },
+			{ common: "Periquito alipunteado", scientific: "Touit stictopterus", image: "img/aves/Periquito alipunteado (Touit stictopterus).png" },
+			{ common: "Loro aliamarillo", scientific: "Hapalopsittaca amazonina", image: "img/aves/Loro aliamarillo (Hapalopsittaca amazonina).png" },
+			{ common: "Loro orejiamarillo", scientific: "Ognorhynchus icterotis", image: "img/aves/Loro orejiamarillo (Ognorhynchus icterotis).png" },
+			{ common: "Rastrojero de Cundinamarca", scientific: "Synallaxis subpudica", image: "img/aves/Rastrojero de Cundinamarca (Synallaxis subpudica).png" },
+			{ common: "Barbudito paramuno", scientific: "Oxypogon guerinii", image: "img/aves/Barbudito paramuno (Oxypogon guerinii).png" },
+			{ common: "Tororoi paramuno", scientific: "Grallaria quitensis", image: "img/aves/Tororoi paramuno (Grallaria quitensis).png" },
+			{ common: "Canastero paramuno", scientific: "Asthenes flammulata", image: "img/aves/Canastero paramuno (Asthenes flammulata).png" },
+			{ common: "Gorrión paramuno", scientific: "Phrygilus unicolor", image: "img/aves/Gorrion paramuno (Phrygilus unicolor).png" },
+			{ common: "Colibrí pico de espada", scientific: "Ensifera ensifera", image: "img/aves/Colibri pico de espada (Ensifera ensifera).png" },
+			{ common: "Águila paramuna", scientific: "Geranoaetus melanoleucus", image: "img/aves/Aguila paramuna (Geranoaetus melanoleucus).png" },
+			{ common: "Guala común", scientific: "Cathartes aura", image: "img/aves/Guala comun (Cathartes aura).png" },
+			{ common: "Gallinazo común", scientific: "Coragyps atratus", image: "img/aves/Gallinazo comun (Coragyps atratus).png" },
+			{ common: "Tucán celeste", scientific: "Andigena nigrirostris", image: "img/aves/Tucan celeste (Andigena nigrirostris).png" },
+			{ common: "Carpintero carmesí", scientific: "Colaptes rivolii", image: "img/aves/Carpintero carmesi (Colaptes rivolii).png" },
+			{ common: "Azulejo real", scientific: "Buthraupis montana", image: "img/aves/Azulejo real (Buthraupis montana).png" },
+			{ common: "Mirla común", scientific: "Turdus fuscater", image: "img/aves/Mirla comun (Turdus fuscater).png" },
+			{ common: "Torcaza collareja", scientific: "Patagioenas fasciata", image: "img/aves/Torcaza collareja (Patagioenas fasciata).png" },
+			{ common: "Cucarachero común", scientific: "Troglodytes aedon", image: "img/aves/Cucarachero comun (Troglodytes aedon).png" },
+			{ common: "Ala de zafiro", scientific: "Pterophanes cyanopterus", image: "img/aves/Ala de zafiro (Pterophanes cyanopterus).png" },
+			{ common: "Pico de tuna broncíneo", scientific: "Chalcostigma heteropogon", image: "img/aves/Pico de tuna broncineo (Chalcostigma heteropogon).png" },
+			{ common: "Cucarachero paramuno", scientific: "Cistothorus platensis", image: "img/aves/Cucarachero paramuno (Cistothorus platensis).png" },
+			{ common: "Canastero oscuro", scientific: "Asthenes fuliginosa", image: "img/aves/Canastero oscuro (Asthenes fuliginosa).png" },
+			{ common: "Focha común", scientific: "Fulica americana", image: "img/aves/Focha comun (Fulica americana).png" },
+			{ common: "Andarríos solitario", scientific: "Tringa solitaria", image: "img/aves/Andarrios solitario (Tringa solitaria).png" },
+			{ common: "Alcaraván", scientific: "Vanellus chilensis", image: "img/aves/Alcaravan (Vanellus chilensis).png" },
+			{ common: "Guácharo", scientific: "Steatornis caripensis", image: "img/aves/Guacharo (Steatornis caripensis).png" },
+			{ common: "Buhito andino", scientific: "Glaucidium jardinii", image: "img/aves/Buhito andino (Glaucidium jardinii).png" },
+			{ common: "Currucutú gorgiblanco", scientific: "Megascops albogularis", image: "img/aves/Currucutu gorgiblanco (Megascops albogularis).png" },
+			{ common: "Guardacaminos andino", scientific: "Systellura longirostris", image: "img/aves/Guardacaminos andino (Systellura longirostris).png" }
+		];
+
+
+        let selectedBirds = [];
+        let selectedCommon = null;
+        let selectedScientific = null;
+        let matchedPairs = 0;
+        let attempts = 0;
+        let startTime = null;
+        let timerInterval = null;
+
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function newGame() {
+			document.getElementById('connections').innerHTML = '';
+            selectedBirds = shuffle(birds).slice(0, 5);
+            selectedCommon = null;
+            selectedScientific = null;
+            matchedPairs = 0;
+            attempts = 0;
+            startTime = Date.now();
+            
+            document.getElementById('attempts').textContent = '0';
+            document.getElementById('matched').textContent = '0';
+            document.getElementById('message').textContent = '';
+            
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            renderGame();
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('time').textContent = elapsed;
+        }
+
+        function renderGame() {
+            const commonContainer = document.getElementById('common-names');
+            const scientificContainer = document.getElementById('scientific-names');
+            
+            const shuffledCommon = shuffle(selectedBirds);
+            const shuffledScientific = shuffle(selectedBirds);
+            
+            commonContainer.innerHTML = shuffledCommon.map((bird, i) => 
+                `<div class="card" onclick="selectCommon(${i}, '${bird.common}')" id="common-${i}">
+                    ${bird.common}
+                </div>`
+            ).join('');
+            
+            scientificContainer.innerHTML = shuffledScientific.map((bird, i) => 
+                `<div class="card scientific-card" onclick="selectScientific(${i}, '${bird.scientific}')" id="scientific-${i}">
+                    <img src="${bird.image}" alt="${bird.common}" class="bird-image" onerror="this.src='https://images.unsplash.com/photo-1444464666168-49d633b86797?w=300&h=200&fit=crop'">
+                    <span class="bird-name">${bird.scientific}</span>
+                </div>`
+            ).join('');
+        }
+
+        function selectCommon(index, name) {
+            const card = document.getElementById(`common-${index}`);
+            if (card.classList.contains('matched')) return;
+            
+            if (selectedCommon && selectedCommon.element === card) {
+                card.classList.remove('selected');
+                selectedCommon = null;
+                return;
+            }
+            
+            if (selectedCommon) {
+                document.getElementById(selectedCommon.element.id).classList.remove('selected');
+            }
+            
+            selectedCommon = { element: card, name: name };
+            card.classList.add('selected');
+            
+            checkMatch();
+        }
+
+        function selectScientific(index, name) {
+            const card = document.getElementById(`scientific-${index}`);
+            if (card.classList.contains('matched')) return;
+            
+            if (selectedScientific && selectedScientific.element === card) {
+                card.classList.remove('selected');
+                selectedScientific = null;
+                return;
+            }
+            
+            if (selectedScientific) {
+                document.getElementById(selectedScientific.element.id).classList.remove('selected');
+            }
+            
+            selectedScientific = { element: card, name: name };
+            card.classList.add('selected');
+            
+            checkMatch();
+        }
+
+        function checkMatch() {
+            if (!selectedCommon || !selectedScientific) return;
+            
+            attempts++;
+            document.getElementById('attempts').textContent = attempts;
+            
+            const bird = selectedBirds.find(b => 
+                b.common === selectedCommon.name && b.scientific === selectedScientific.name
+            );
+            
+            if (bird) {
+                selectedCommon.element.classList.remove('selected', 'wrong');
+                selectedCommon.element.classList.add('matched');
+                selectedScientific.element.classList.remove('selected', 'wrong');
+                selectedScientific.element.classList.add('matched');
+				drawLine(selectedCommon.element, selectedScientific.element);
+                
+                matchedPairs++;
+                document.getElementById('matched').textContent = matchedPairs;
+                document.getElementById('message').textContent = '¡Correcto! 🎉';
+                document.getElementById('message').style.color = '#28a745';
+                
+                if (matchedPairs === 5) {
+                    clearInterval(timerInterval);
+                    const time = Math.floor((Date.now() - startTime) / 1000);
+                    
+                    setTimeout(() => {
+                        document.getElementById('final-time').textContent = time;
+                        document.getElementById('final-attempts').textContent = attempts;
+                        document.getElementById('modal').classList.add('active');
+                    }, 500);
+                }
+            } else {
+                selectedCommon.element.classList.add('wrong');
+                selectedScientific.element.classList.add('wrong');
+                document.getElementById('message').textContent = 'Incorrecto, intenta de nuevo ❌';
+                document.getElementById('message').style.color = '#dc3545';
+                
+                setTimeout(() => {
+                    selectedCommon.element.classList.remove('wrong', 'selected');
+                    selectedScientific.element.classList.remove('wrong', 'selected');
+                }, 500);
+            }
+            
+            setTimeout(() => {
+                document.getElementById('message').textContent = '';
+            }, 2000);
+            
+            selectedCommon = null;
+            selectedScientific = null;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        newGame();
+		function drawLine(fromEl, toEl) {
+			const svg = document.getElementById('connections');
+			const container = document.querySelector('.container');
+
+			const rect1 = fromEl.getBoundingClientRect();
+			const rect2 = toEl.getBoundingClientRect();
+			const containerRect = container.getBoundingClientRect();
+
+			const x1 = rect1.right - containerRect.left;
+			const y1 = rect1.top + rect1.height / 2 - containerRect.top;
+
+			const x2 = rect2.left - containerRect.left;
+			const y2 = rect2.top + rect2.height / 2 - containerRect.top;
+
+			// ajustar el sistema de coordenadas del SVG
+			svg.setAttribute("viewBox", `0 0 ${containerRect.width} ${containerRect.height}`);
+
+			const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			line.setAttribute("x1", x1);
+			line.setAttribute("y1", y1);
+			line.setAttribute("x2", x2);
+			line.setAttribute("y2", y2);
+			line.setAttribute("stroke", "#28a745");
+			line.setAttribute("stroke-width", "4");
+			line.setAttribute("stroke-linecap", "round");
+
+			// animación
+			line.style.strokeDasharray = "1000";
+			line.style.strokeDashoffset = "1000";
+			line.style.animation = "draw 0.5s ease forwards";
+
+			svg.appendChild(line);
+		}
+    </script>
+</body>
+</html>
